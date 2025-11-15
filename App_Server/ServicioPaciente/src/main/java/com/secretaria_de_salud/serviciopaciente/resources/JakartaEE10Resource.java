@@ -1,4 +1,4 @@
-package com.Secretaria_de_Salud.ServicioPaciente.resources;
+package com.secretaria_de_salud.serviciopaciente.resources;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
