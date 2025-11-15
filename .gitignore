@@ -1,3 +1,8 @@
 /cliente_usuario/nbproject/private/
 /App_Web_Server/ServicioExpediente/target/
 /App_Web_Server/ServicioMedico/target/
+/App_Server/ServicioExpediente/target/
+/App_Server/ServicioMedico/target/
+/App_Server/ObjetosSecretariaSalud/nbproject/private/
+/App_Server/Objetos_SecretariaSalud/target/
+/App_Server/ServicioPaciente/target/
