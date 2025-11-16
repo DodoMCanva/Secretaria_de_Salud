@@ -30,6 +30,11 @@
             <artifactId>json</artifactId>
             <version>20250517</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>Objetos_SecretariaSalud</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     
     <build>

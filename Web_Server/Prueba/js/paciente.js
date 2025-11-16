@@ -1,7 +1,7 @@
 function consultaPaciente() {
   const jwt = localStorage.getItem('jwt');
   const curp = document.getElementById('curp').value;
-  fetch('http://localhost:5000/paciente/consulta?curp=' + encodeURIComponent(curp), {
+  fetch('http://localhost:5000/paciente/consulta-rest?curp=' + encodeURIComponent(curp), {
     headers: {'Authorization': 'Bearer ' + jwt}
   })
   .then(r => r.json())

@@ -1,6 +1,6 @@
 import requests
 
-GLASSFISH_REST_URL = "http://localhost:8080/ServicioPacientes/api/pacientes/buscar"
+GLASSFISH_URL = "http://localhost:8080/ServicioPacientes/api/pacientes/buscar"
 
 def consultar_paciente_rest(curp, jwt_token):
     headers = {"Authorization": f"Bearer {jwt_token}"}

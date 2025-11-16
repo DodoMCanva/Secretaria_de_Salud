@@ -3,14 +3,21 @@ import requests
 import jwt
 
 app = Flask(__name__)
-GLASSFISH_URL = "http://ip-glassfish:8080/ServicioPaciente/api/pacientes/buscar"
+
+GLASSFISH_URL = "http://localhost:8080/ServicioPaciente/resources/pacientes/buscar"
+
+def validar_token(token):
+    try:
+        secret = 'secreto'
+        datos = jwt.decode(token, secret, algorithms=["HS256"])
+        return datos
+    except Exception:
+        return None
 
 @app.route('/login', methods=['POST'])
 def login():
-    # Validar usuario, generar JWT (ejemplo)
     usuario = request.json['usuario']
     password = request.json['password']
-    # ...verificar credenciales...
     if usuario == "demo" and password == "123":
         token = jwt.encode({'usuario': usuario}, 'secreto', algorithm="HS256")
         return jsonify({"token": token})
@@ -40,5 +47,14 @@ def consulta_mqtt():
     publicar_consulta_paciente(curp, token)
     return jsonify({"status": "Consulta publicada por MQTT"}), 202
 
+def consultar_paciente_rest(curp, jwt_token):
+    headers = {"Authorization": f"Bearer {jwt_token}"}
+    params = {"curp": curp}
+    resp = requests.get(GLASSFISH_URL, headers=headers, params=params)
+    if resp.status_code == 200:
+        return resp.json()
+    return None
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
+
