@@ -1,14 +1,16 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import requests
 import jwt
 
 app = Flask(__name__)
+CORS(app)
 
 GLASSFISH_URL = "http://localhost:8080/ServicioPaciente/resources/pacientes/buscar"
 
 def validar_token(token):
     try:
-        secret = 'secreto'
+        secret = 'cesvalferpaukimivsectrsalud!!@##'
         datos = jwt.decode(token, secret, algorithms=["HS256"])
         return datos
     except Exception:
@@ -19,12 +21,13 @@ def login():
     usuario = request.json['usuario']
     password = request.json['password']
     if usuario == "demo" and password == "123":
-        token = jwt.encode({'usuario': usuario}, 'secreto', algorithm="HS256")
+        token = jwt.encode({'usuario': usuario}, 'cesvalferpaukimivsectrsalud!!@##', algorithm="HS256")
         return jsonify({"token": token})
     return jsonify({"error": "Credenciales incorrectas"}), 401
 
 @app.route("/paciente/consulta-rest", methods=["GET"])
 def consulta_rest():
+    print("Header Authorization:", request.headers.get("Authorization"))
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
     usuario = validar_token(token)
     if not usuario:
