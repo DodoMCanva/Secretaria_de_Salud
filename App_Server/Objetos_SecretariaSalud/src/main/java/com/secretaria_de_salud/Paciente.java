@@ -5,15 +5,15 @@ package com.secretaria_de_salud;
  * @author dodo
  */
 public class Paciente {
-    private String CURP;
+    private String NSS;
     private String Nombre;
 
     public String getCURP() {
-        return CURP;
+        return NSS;
     }
 
     public void setCurp(String CURP) {
-        this.CURP = CURP;
+        this.NSS = CURP;
     }
 
     public String getNombre() {
