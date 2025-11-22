@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema Médico Integrado</title>
     <link rel="stylesheet" href="styles.css">
-</head>
+    </head>
 <body>
-    <!-- Pantalla de Autenticación Biométrica -->
     <div id="auth-screen" class="auth-screen">
         <div class="auth-container">
             <div class="auth-card">
@@ -20,23 +19,34 @@
                     <h1>Sistema Médico Integrado</h1>
                     <p class="auth-description">Autenticación biométrica requerida</p>
                 </div>
+                
                 <div class="auth-content">
                     <div class="fingerprint-container">
-                        <div id="fingerprint-circle" class="fingerprint-circle">
-                            <svg class="icon-xlarge" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"/>
-                            </svg>
+                        <div class="login-form-container">
+                            <div class="form-group">
+                                <label class="login-label">ID Huella (Usuario)</label>
+                                <input type="text" id="login-user" class="form-input login-input" placeholder="Ej. dra.ana">
+                            </div>
+                            <div class="form-group">
+                                <label class="login-label">Código de Acceso</label>
+                                <input type="password" id="login-pass" class="form-input login-input" placeholder="••••••">
+                            </div>
                         </div>
                     </div>
+                    
                     <button id="auth-button" class="btn btn-primary btn-large">
-                        Validar Huella Digital
+                        Validar Credenciales
                     </button>
-                    <div id="auth-status" class="auth-status" style="display: none;">
-                        <svg class="icon-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
-                        <span></span>
+                    
+                    <div id="auth-status" class="auth-status">
+                        <svg class="icon-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span id="auth-message"></span>
                     </div>
+                    
                     <div class="auth-info">
-                        <p>Coloque su dedo en el sensor biométrico</p>
+                        <p>Coloque sus credenciales para simular el acceso</p>
                         <div class="auth-help">
                             <p>• Pacientes y tutores: Acceso a expediente personal</p>
                             <p>• Personal médico: Acceso según permisos asignados</p>
@@ -47,9 +57,7 @@
         </div>
     </div>
 
-    <!-- Aplicación Principal -->
     <div id="main-app" class="main-app" style="display: none;">
-        <!-- Barra Lateral de Navegación -->
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-logo">
@@ -64,7 +72,7 @@
                     </div>
                 </div>
                 <div class="user-info">
-                    <p id="user-name" class="user-name">Dra. Ana Ruiz Fernández</p>
+                    <p id="user-name" class="user-name">Cargando usuario...</p>
                     <span class="badge badge-purple">Personal Médico</span>
                 </div>
             </div>
@@ -106,12 +114,9 @@
             </div>
         </aside>
 
-        <!-- Contenido Principal -->
         <main class="main-content">
-            <!-- Vista: Expediente Clínico -->
             <div id="view-clinical-record" class="view-content active">
                 <div class="content-wrapper">
-                    <!-- Información del Paciente -->
                     <div class="card">
                         <div class="card-header">
                             <div class="patient-header">
@@ -160,7 +165,6 @@
                         </div>
                     </div>
 
-                    <!-- Historial de Consultas -->
                     <div class="card">
                         <div class="card-header">
                             <div>
@@ -173,12 +177,6 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                                     </svg>
                                     Agregar Consulta
-                                </button>
-                                <button class="btn btn-outline">
-                                    <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                                    </svg>
-                                    Descargar Expediente
                                 </button>
                             </div>
                         </div>
@@ -194,21 +192,7 @@
                                             <th>Notas</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>15/01/2024</td>
-                                            <td>Dr. Carlos Mendoza</td>
-                                            <td>Hipertensión arterial</td>
-                                            <td>Losartán 50mg diario</td>
-                                            <td class="truncate">Control en 3 meses. Dieta baja en sodio.</td>
-                                        </tr>
-                                        <tr>
-                                            <td>20/02/2024</td>
-                                            <td>Dra. Ana Ruiz</td>
-                                            <td>Control rutinario</td>
-                                            <td>Continuar medicación actual</td>
-                                            <td class="truncate">Presión arterial controlada. Excelente adherencia al tratamiento.</td>
-                                        </tr>
+                                    <tbody id="tabla-historial">
                                     </tbody>
                                 </table>
                             </div>
@@ -217,7 +201,6 @@
                 </div>
             </div>
 
-            <!-- Vista: Citas Médicas -->
             <div id="view-appointments" class="view-content">
                 <div class="content-wrapper">
                     <div class="card">
@@ -229,95 +212,18 @@
                                     </svg>
                                     Gestión de Citas Médicas
                                 </h2>
-                                <p class="text-muted">Agende citas y gestione el acceso remoto al expediente clínico</p>
                             </div>
-                            <button class="btn btn-primary">
-                                <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                                </svg>
-                                Nueva Cita
-                            </button>
+                            <button class="btn btn-primary">Nueva Cita</button>
                         </div>
                     </div>
-
                     <div class="card">
-                        <div class="card-header">
-                            <h2>Citas Programadas</h2>
-                        </div>
                         <div class="card-content">
-                            <div class="table-container">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Fecha y Hora</th>
-                                            <th>Especialidad</th>
-                                            <th>Médico</th>
-                                            <th>Estado</th>
-                                            <th>Acceso Remoto</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="date-cell">
-                                                    <svg class="icon-small text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                                    </svg>
-                                                    <div>
-                                                        <p>15/03/2024</p>
-                                                        <p class="text-muted text-sm">10:00</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>Cardiología</td>
-                                            <td>Dr. Carlos Mendoza</td>
-                                            <td><span class="badge badge-success">Confirmada</span></td>
-                                            <td>
-                                                <div class="switch-group">
-                                                    <label class="switch">
-                                                        <input type="checkbox" checked>
-                                                        <span class="switch-slider"></span>
-                                                    </label>
-                                                    <span class="badge badge-success-outline">
-                                                        <svg class="icon-xs" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"/>
-                                                        </svg>
-                                                        Autorizado
-                                                    </span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="date-cell">
-                                                    <svg class="icon-small text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                                    </svg>
-                                                    <div>
-                                                        <p>22/03/2024</p>
-                                                        <p class="text-muted text-sm">14:30</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>Medicina General</td>
-                                            <td>Dra. Ana Ruiz</td>
-                                            <td><span class="badge badge-info">Programada</span></td>
-                                            <td>
-                                                <label class="switch">
-                                                    <input type="checkbox">
-                                                    <span class="switch-slider"></span>
-                                                </label>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <p class="text-muted">Funcionalidad de citas en construcción...</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Vista: Gestión de Accesos -->
             <div id="view-access-management" class="view-content">
                 <div class="content-wrapper">
                     <div class="card">
@@ -331,12 +237,7 @@
                                 </h2>
                                 <p class="text-muted">Gestione los permisos de acceso al expediente clínico</p>
                             </div>
-                            <button class="btn btn-primary">
-                                <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                                </svg>
-                                Agregar Acceso
-                            </button>
+                            <button class="btn btn-primary">Agregar Acceso</button>
                         </div>
                     </div>
 
@@ -352,40 +253,7 @@
                                 <p class="stat-value">2</p>
                             </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon stat-icon-warning">
-                                <svg class="icon-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="stat-label">Pendientes</p>
-                                <p class="stat-value">0</p>
-                            </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon stat-icon-danger">
-                                <svg class="icon-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="stat-label">Revocados</p>
-                                <p class="stat-value">0</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon stat-icon-info">
-                                <svg class="icon-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="stat-label">Total</p>
-                                <p class="stat-value">2</p>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="card">
                         <div class="card-header">
@@ -404,59 +272,7 @@
                                             <th class="text-right">Acciones</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="user-cell">
-                                                    <div class="user-avatar-small">
-                                                        <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                                        </svg>
-                                                    </div>
-                                                    <div>
-                                                        <p class="user-cell-name">Dr. Carlos Mendoza</p>
-                                                        <p class="text-muted text-sm">Autorizado: 15/01/2024</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td><span class="badge badge-info">Médico</span></td>
-                                            <td class="font-mono">CED-12345678</td>
-                                            <td><span class="badge badge-success">Activo</span></td>
-                                            <td>28/02/2024</td>
-                                            <td class="text-right">
-                                                <button class="btn btn-sm btn-danger-outline">
-                                                    <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                    </svg>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="user-cell">
-                                                    <div class="user-avatar-small">
-                                                        <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                                        </svg>
-                                                    </div>
-                                                    <div>
-                                                        <p class="user-cell-name">Dra. Ana Ruiz</p>
-                                                        <p class="text-muted text-sm">Autorizado: 01/02/2024</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td><span class="badge badge-info">Médico</span></td>
-                                            <td class="font-mono">CED-87654321</td>
-                                            <td><span class="badge badge-success">Activo</span></td>
-                                            <td>25/02/2024</td>
-                                            <td class="text-right">
-                                                <button class="btn btn-sm btn-danger-outline">
-                                                    <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                    </svg>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                    <tbody id="tabla-accesos">
                                     </tbody>
                                 </table>
                             </div>
@@ -465,23 +281,19 @@
                 </div>
             </div>
 
-            <!-- Vista: Configuración de Perfil -->
             <div id="view-profile" class="view-content">
                 <div class="content-wrapper">
                     <div class="card">
                         <div class="card-header">
                             <div class="profile-header">
-                                <div class="avatar-large">AR</div>
+                                <div class="avatar-large">DR</div>
                                 <div>
-                                    <h2>Dra. Ana Ruiz Fernández</h2>
+                                    <h2>Perfil Profesional</h2>
                                     <p class="text-muted">
                                         <span class="badge badge-outline">Personal Médico</span>
-                                        <span class="separator">•</span>
-                                        <span>Cuenta verificada</span>
                                     </p>
                                 </div>
                             </div>
-                            <button class="btn btn-outline">Editar Perfil</button>
                         </div>
                     </div>
 
@@ -489,11 +301,9 @@
                         <div class="tabs-header">
                             <button class="tab-button active" data-tab="personal">Información Personal</button>
                             <button class="tab-button" data-tab="security">Seguridad</button>
-                            <button class="tab-button" data-tab="preferences">Preferencias</button>
                         </div>
 
                         <div class="tabs-content">
-                            <!-- Tab: Información Personal -->
                             <div id="tab-personal" class="tab-content active">
                                 <div class="card">
                                     <div class="card-header">
@@ -503,84 +313,29 @@
                                         <div class="form-grid">
                                             <div class="form-group">
                                                 <label>Nombre Completo</label>
-                                                <input type="text" class="form-input" value="Dra. Ana Ruiz Fernández" disabled>
+                                                <input type="text" id="perfil-nombre" class="form-input" disabled>
                                             </div>
                                             <div class="form-group">
                                                 <label>Correo Electrónico</label>
-                                                <input type="email" class="form-input" value="ana.ruiz@hospital.com" disabled>
+                                                <input type="email" id="perfil-email" class="form-input" disabled>
                                             </div>
                                             <div class="form-group">
                                                 <label>Teléfono</label>
-                                                <input type="tel" class="form-input" value="+52 55 1234 5678" disabled>
+                                                <input type="tel" id="perfil-telefono" class="form-input" disabled>
                                             </div>
                                             <div class="form-group">
-                                                <label>Contacto de Emergencia</label>
-                                                <input type="text" class="form-input" value="Carlos Ruiz - +52 55 8765 4321" disabled>
+                                                <label>Cédula Profesional</label>
+                                                <input type="text" id="perfil-cedula" class="form-input" disabled>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Tab: Seguridad -->
                             <div id="tab-security" class="tab-content">
                                 <div class="card">
-                                    <div class="card-header">
-                                        <h2>Autenticación Biométrica</h2>
-                                    </div>
                                     <div class="card-content">
-                                        <div class="biometric-item">
-                                            <div class="biometric-info">
-                                                <div class="biometric-icon">
-                                                    <svg class="icon-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"/>
-                                                    </svg>
-                                                </div>
-                                                <div>
-                                                    <p class="biometric-title">Huella Digital Principal</p>
-                                                    <p class="text-muted">Registrada y activa</p>
-                                                </div>
-                                            </div>
-                                            <span class="badge badge-success">
-                                                <svg class="icon-xs" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                                </svg>
-                                                Activa
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Tab: Preferencias -->
-                            <div id="tab-preferences" class="tab-content">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h2>Notificaciones</h2>
-                                    </div>
-                                    <div class="card-content">
-                                        <div class="settings-list">
-                                            <div class="setting-item">
-                                                <div>
-                                                    <label>Recordatorios de Citas</label>
-                                                    <p class="text-muted">Notificaciones antes de sus citas médicas</p>
-                                                </div>
-                                                <label class="switch">
-                                                    <input type="checkbox" checked>
-                                                    <span class="switch-slider"></span>
-                                                </label>
-                                            </div>
-                                            <div class="setting-item">
-                                                <div>
-                                                    <label>Actualizaciones del Expediente</label>
-                                                    <p class="text-muted">Cuando se agregue nueva información</p>
-                                                </div>
-                                                <label class="switch">
-                                                    <input type="checkbox" checked>
-                                                    <span class="switch-slider"></span>
-                                                </label>
-                                            </div>
-                                        </div>
+                                        <p class="text-muted">Configuración de seguridad (huella digital, contraseña) gestionada por administrador.</p>
                                     </div>
                                 </div>
                             </div>
