@@ -1,260 +1,266 @@
-// Sistema Médico Integrado - JavaScript
 
-// Estado de la aplicación
-let appState = {
-    authenticated: false,
-    userType: 'medical_staff', // 'patient', 'guardian', 'medical_staff'
-    userName: 'Dra. Ana Ruiz Fernández',
-    currentView: 'clinical-record',
-    authStatus: 'idle' // 'idle', 'authenticating', 'success', 'failed'
+const dbSistema = {
+    // Datos del Médico (Usuario que inicia sesión)
+    medico: {
+        usuario: "dra.ana",
+        password: "123", // Contraseña simulada
+        nombre: "Dra. Ana Ruiz Fernández",
+        email: "ana.ruiz@hospital.com",
+        telefono: "+52 55 1234 5678",
+        cedula: "CED-87654321",
+        rol: "Personal Médico",
+        especialidad: "Medicina Interna"
+    },
+
+    // Datos del Paciente (Solo uno, como pediste)
+    paciente: {
+        id: "pat_001",
+        nombre: "Valeria",
+        edad: 34,
+        historial: [
+            {
+                fecha: "15/01/2024",
+                medico: "Dr. Carlos Mendoza",
+                diagnostico: "Hipertensión arterial",
+                tratamiento: "Losartán 50mg diario",
+                notas: "Control en 3 meses. Dieta baja en sodio."
+            },
+            {
+                fecha: "20/02/2024",
+                medico: "Dra. Ana Ruiz",
+                diagnostico: "Control rutinario",
+                tratamiento: "Continuar medicación",
+                notas: "Presión arterial controlada. Excelente adherencia."
+            },
+            {
+                fecha: "22/11/2025",
+                medico: "Dra. Ana Ruiz",
+                diagnostico: "Migraña Leve",
+                tratamiento: "Paracetamol 500mg",
+                notas: "Paciente reporta estrés laboral."
+            },
+            {
+            fecha: "15/01/2024",
+                medico: "Dr. Carlos Mendoza",
+                diagnostico: "lele pancha",
+                tratamiento: "treta",
+                notas: "Cesar no sigue nada."
+        }
+        ]
+    },
+     
+
+    // Datos para la tabla de Accesos (Mezcla de datos fijos y dinámicos)
+    accesos: [
+        {
+            nombre: "Dr. Carlos Mendoza",
+            rol: "Médico",
+            cedula: "CED-12345678",
+            estado: "Activo",
+            ultimoAcceso: "28/02/2024"
+        }
+        // El usuario logueado se agregará dinámicamente aquí
+    ]
 };
 
-// Inicialización
-document.addEventListener('DOMContentLoaded', function() {
-    initAuth();
-    initNavigation();
-    initTabs();
-    initLogout();
+
+document.addEventListener('DOMContentLoaded', () => {
+    iniciarEventListeners();
 });
 
-// ===== AUTENTICACIÓN =====
+function iniciarEventListeners() {
+    // Botón de Login
+    const btnLogin = document.getElementById('auth-button');
+    if(btnLogin) btnLogin.addEventListener('click', realizarLogin);
 
-function initAuth() {
-    const authButton = document.getElementById('auth-button');
-    const fingerprintCircle = document.getElementById('fingerprint-circle');
-    const authStatus = document.getElementById('auth-status');
-    
-    if (authButton) {
-        authButton.addEventListener('click', function() {
-            if (appState.authStatus === 'idle') {
-                simulateBiometricAuth();
-            }
+    // Navegación del Sidebar (Cambio de vistas)
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            // Remover clase active de todos
+            navItems.forEach(nav => nav.classList.remove('active'));
+            
+            // Agregar a el clickeado (buscando el elemento padre button si se clickea el icono)
+            const target = e.currentTarget;
+            target.classList.add('active');
+            
+            // Manejar cambio de vista
+            const viewId = target.getAttribute('data-view');
+            cambiarVista(viewId);
         });
+    });
+
+    // Botón Cerrar Sesión
+    const btnLogout = document.getElementById('logout-button');
+    if(btnLogout) btnLogout.addEventListener('click', cerrarSesion);
+
+    // Tabs del Perfil
+    const tabButtons = document.querySelectorAll('.tab-button');
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            // Activar botón
+            tabButtons.forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+
+            // Mostrar contenido
+            const tabId = e.target.getAttribute('data-tab');
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            const tabContent = document.getElementById(`tab-${tabId}`);
+            if(tabContent) tabContent.classList.add('active');
+        });
+    });
+}
+
+// --- Funciones de Autenticación ---
+
+function realizarLogin() {
+    const userInput = document.getElementById('login-user');
+    const passInput = document.getElementById('login-pass');
+    const statusDiv = document.getElementById('auth-status');
+    const statusMsg = document.getElementById('auth-message');
+    const btnLogin = document.getElementById('auth-button');
+
+    if(!userInput || !passInput) return;
+
+    // Simulación de carga visual (spinner)
+    btnLogin.disabled = true;
+    const textoOriginal = btnLogin.innerText;
+    btnLogin.innerText = "Validando...";
+
+    // Pequeño delay para simular conexión a servidor
+    setTimeout(() => {
+        if (userInput.value === dbSistema.medico.usuario && passInput.value === dbSistema.medico.password) {
+            // Login Exitoso
+            statusDiv.style.display = "none";
+            document.getElementById('auth-screen').style.display = "none";
+            document.getElementById('main-app').style.display = "flex";
+            
+            // Cargar datos simulados
+            cargarDatosEnInterfaz();
+        } else {
+            // Login Fallido
+            statusDiv.style.display = "flex";
+            statusDiv.style.color = "red"; 
+            statusMsg.innerText = " Credenciales incorrectas    ";
+        }
+        
+        // Restaurar botón
+        btnLogin.disabled = false;
+        btnLogin.innerText = textoOriginal;
+    }, 800); // 800ms de espera simulada
+}
+
+function cerrarSesion() {
+    if(confirm("¿Desea cerrar la sesión?")) {
+        document.getElementById('main-app').style.display = "none";
+        document.getElementById('auth-screen').style.display = "flex";
+        // Limpiar inputs
+        document.getElementById('login-user').value = "";
+        document.getElementById('login-pass').value = "";
+        document.getElementById('auth-status').style.display = "none";
     }
 }
 
-function simulateBiometricAuth() {
-    const authButton = document.getElementById('auth-button');
-    const fingerprintCircle = document.getElementById('fingerprint-circle');
-    const authStatus = document.getElementById('auth-status');
+// --- Funciones de Carga de Datos (Renderizado) ---
+
+function cargarDatosEnInterfaz() {
+    console.log("Cargando datos del sistema...");
     
-    // Cambiar estado a autenticando
-    appState.authStatus = 'authenticating';
-    authButton.disabled = true;
-    authButton.innerHTML = `
-        <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="animation: spin 1s linear infinite;">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-        </svg>
-        Validando...
-    `;
-    fingerprintCircle.classList.add('authenticating');
+    // 1. Cargar Datos del Médico en Sidebar y Perfil
+    const userNameDisplay = document.getElementById('user-name');
+    if(userNameDisplay) userNameDisplay.innerText = dbSistema.medico.nombre;
     
-    // Simular autenticación (2 segundos)
-    setTimeout(function() {
-        // Autenticación exitosa
-        appState.authStatus = 'success';
-        
-        authStatus.style.display = 'flex';
-        authStatus.className = 'auth-status success';
-        authStatus.innerHTML = `
-            <svg class="icon-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <span>Acceso autorizado</span>
+    // Llenar inputs del perfil
+    const perfilNombre = document.getElementById('perfil-nombre');
+    if(perfilNombre) { 
+        perfilNombre.value = dbSistema.medico.nombre;
+        document.getElementById('perfil-email').value = dbSistema.medico.email;
+        document.getElementById('perfil-telefono').value = dbSistema.medico.telefono;
+        document.getElementById('perfil-cedula').value = dbSistema.medico.cedula;
+    }
+
+    // 2. Cargar Tabla Historial Clínico
+    renderizarTablaHistorial();
+
+    // 3. Cargar Tabla Accesos
+    renderizarTablaAccesos();
+}
+
+function renderizarTablaHistorial() {
+    const tbody = document.getElementById('tabla-historial');
+    if(!tbody) return;
+    
+    tbody.innerHTML = ""; // Limpiar tabla
+
+    // Iteramos sobre el array de historial del paciente
+    dbSistema.paciente.historial.forEach(consulta => {
+        const fila = `
+            <tr>
+                <td>${consulta.fecha}</td>
+                <td>${consulta.medico}</td>
+                <td>${consulta.diagnostico}</td>
+                <td>${consulta.tratamiento}</td>
+                <td class="truncate">${consulta.notas}</td>
+            </tr>
         `;
-        
-        // Después de 1 segundo, mostrar la aplicación principal
-        setTimeout(function() {
-            appState.authenticated = true;
-            showMainApp();
-        }, 1000);
-    }, 2000);
+        tbody.innerHTML += fila;
+    });
 }
 
-function showMainApp() {
-    const authScreen = document.getElementById('auth-screen');
-    const mainApp = document.getElementById('main-app');
+function renderizarTablaAccesos() {
+    const tbody = document.getElementById('tabla-accesos');
+    if(!tbody) return;
+
+    tbody.innerHTML = ""; // Limpiar tabla
+
+    // Creamos una lista temporal que incluye al médico logueado
+    const listaCompleta = [...dbSistema.accesos];
     
-    if (authScreen && mainApp) {
-        authScreen.style.display = 'none';
-        mainApp.style.display = 'flex';
+    // Agregamos al médico logueado a la tabla visualmente
+    listaCompleta.push({
+        nombre: dbSistema.medico.nombre,
+        rol: dbSistema.medico.rol,
+        cedula: dbSistema.medico.cedula,
+        estado: "Activo (Tú)",
+        ultimoAcceso: "Ahora mismo"
+    });
+
+    listaCompleta.forEach(acceso => {
+        const fila = `
+            <tr>
+                <td>
+                    <div class="user-cell">
+                        <div class="user-avatar-small">
+                             <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="user-cell-name">${acceso.nombre}</p>
+                        </div>
+                    </div>
+                </td>
+                <td><span class="badge badge-info">${acceso.rol}</span></td>
+                <td class="font-mono">${acceso.cedula}</td>
+                <td><span class="badge badge-success">${acceso.estado}</span></td>
+                <td>${acceso.ultimoAcceso}</td>
+                <td class="text-right">
+                    <button class="btn btn-sm btn-danger-outline">Revocar</button>
+                </td>
+            </tr>
+        `;
+        tbody.innerHTML += fila;
+    });
+}
+
+function cambiarVista(viewId) {
+    // Ocultar todas las vistas
+    document.querySelectorAll('.view-content').forEach(div => {
+        div.classList.remove('active');
+    });
+    // Mostrar la deseada
+    const view = document.getElementById(`view-${viewId}`);
+    if (view) {
+        view.classList.add('active');
     }
 }
-
-// ===== NAVEGACIÓN =====
-
-function initNavigation() {
-    const navItems = document.querySelectorAll('.nav-item');
-    
-    navItems.forEach(function(item) {
-        item.addEventListener('click', function() {
-            const view = this.getAttribute('data-view');
-            switchView(view);
-        });
-    });
-}
-
-function switchView(viewName) {
-    // Actualizar estado
-    appState.currentView = viewName;
-    
-    // Actualizar navegación activa
-    const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(function(item) {
-        if (item.getAttribute('data-view') === viewName) {
-            item.classList.add('active');
-        } else {
-            item.classList.remove('active');
-        }
-    });
-    
-    // Actualizar vista activa
-    const views = document.querySelectorAll('.view-content');
-    views.forEach(function(view) {
-        view.classList.remove('active');
-    });
-    
-    const activeView = document.getElementById('view-' + viewName);
-    if (activeView) {
-        activeView.classList.add('active');
-    }
-}
-
-// ===== TABS =====
-
-function initTabs() {
-    const tabButtons = document.querySelectorAll('.tab-button');
-    
-    tabButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
-            const tabName = this.getAttribute('data-tab');
-            switchTab(tabName);
-        });
-    });
-}
-
-function switchTab(tabName) {
-    // Actualizar botones activos
-    const tabButtons = document.querySelectorAll('.tab-button');
-    tabButtons.forEach(function(button) {
-        if (button.getAttribute('data-tab') === tabName) {
-            button.classList.add('active');
-        } else {
-            button.classList.remove('active');
-        }
-    });
-    
-    // Actualizar contenido activo
-    const tabContents = document.querySelectorAll('.tab-content');
-    tabContents.forEach(function(content) {
-        content.classList.remove('active');
-    });
-    
-    const activeContent = document.getElementById('tab-' + tabName);
-    if (activeContent) {
-        activeContent.classList.add('active');
-    }
-}
-
-// ===== CERRAR SESIÓN =====
-
-function initLogout() {
-    const logoutButton = document.getElementById('logout-button');
-    
-    if (logoutButton) {
-        logoutButton.addEventListener('click', function() {
-            logout();
-        });
-    }
-}
-
-function logout() {
-    // Confirmar cierre de sesión
-    if (confirm('¿Está seguro que desea cerrar sesión?')) {
-        // Reiniciar estado
-        appState.authenticated = false;
-        appState.authStatus = 'idle';
-        
-        // Ocultar aplicación y mostrar pantalla de autenticación
-        const authScreen = document.getElementById('auth-screen');
-        const mainApp = document.getElementById('main-app');
-        
-        if (authScreen && mainApp) {
-            mainApp.style.display = 'none';
-            authScreen.style.display = 'flex';
-            
-            // Reiniciar interfaz de autenticación
-            const authButton = document.getElementById('auth-button');
-            const fingerprintCircle = document.getElementById('fingerprint-circle');
-            const authStatus = document.getElementById('auth-status');
-            
-            if (authButton) {
-                authButton.disabled = false;
-                authButton.innerHTML = 'Validar Huella Digital';
-            }
-            
-            if (fingerprintCircle) {
-                fingerprintCircle.classList.remove('authenticating');
-            }
-            
-            if (authStatus) {
-                authStatus.style.display = 'none';
-            }
-        }
-    }
-}
-
-// ===== UTILIDADES =====
-
-// Animación de spin para iconos de carga
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
-`;
-document.head.appendChild(style);
-
-// Función para formatear fechas (opcional)
-function formatDate(dateString) {
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-    return new Date(dateString).toLocaleDateString('es-MX', options);
-}
-
-// Función para mostrar notificaciones (opcional)
-function showNotification(message, type = 'info') {
-    // Implementar sistema de notificaciones toast si es necesario
-    console.log(`[${type.toUpperCase()}] ${message}`);
-}
-
-// Event listeners adicionales para funcionalidad futura
-document.addEventListener('DOMContentLoaded', function() {
-    // Switches
-    const switches = document.querySelectorAll('.switch input[type="checkbox"]');
-    switches.forEach(function(switchEl) {
-        switchEl.addEventListener('change', function() {
-            console.log('Switch toggled:', this.checked);
-            // Aquí puedes agregar lógica adicional
-        });
-    });
-    
-    // Botones de acción
-    const actionButtons = document.querySelectorAll('.btn:not(.nav-item):not(#auth-button):not(#logout-button):not(.tab-button)');
-    actionButtons.forEach(function(button) {
-        // Agregar efectos de clic si es necesario
-        button.addEventListener('click', function(e) {
-            // Prevenir comportamiento por defecto para demostración
-            const buttonText = this.textContent.trim();
-            console.log('Botón clickeado:', buttonText);
-            
-            // Ejemplo: mostrar alerta para botones de acción
-            if (buttonText.includes('Agregar')) {
-                showNotification('Función en desarrollo: ' + buttonText, 'info');
-            }
-        });
-    });
-});
-
-// Debug: Exponer estado global para desarrollo
-window.medicalAppState = appState;
