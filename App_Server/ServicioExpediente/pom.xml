@@ -19,6 +19,11 @@
             <version>${jakartaee}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.Secretaria_de_Salud</groupId>
+            <artifactId>Objetos_SecretariaSalud</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     
     <build>
