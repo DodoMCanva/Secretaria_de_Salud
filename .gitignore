@@ -7,3 +7,9 @@
 /App_Server/Objetos_SecretariaSalud/target/
 /App_Server/ServicioPaciente/target/
 /App_Server/BaseDatosExpedienteClinico/target/
+
+# Archivos de configuración locales de NetBeans
+App_Server/ServicioPaciente/nb-configuration.xml
+
+# Ignorar cualquier __pycache__ en todo el proyecto
+**/__pycache__/
