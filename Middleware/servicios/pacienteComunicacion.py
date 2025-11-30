@@ -36,8 +36,8 @@ def login_rest(nss, pwd, jwt_token=None):
 
 
 #Consulta por mqtt
-def publicar_consulta_paciente(curp, jwt_token):
-    msg = {"curp": curp, "jwt": jwt_token}
+def publicar_consulta_paciente(_id, jwt_token):
+    msg = {"_id": _id, "jwt": jwt_token}
     client = mqtt.Client()
     client.connect(MQTT_BROKER, MQTT_PORT, 60)
     client.publish(TOPIC_PUBLICAR, json.dumps(msg))

@@ -1,3 +1,3 @@
-function consultarExpediente(nss){
+function consultarExpediente(){
 
 }

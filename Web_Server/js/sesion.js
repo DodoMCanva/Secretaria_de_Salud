@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
+  //Usuario
   const raw = localStorage.getItem('usuario');
   let usuario = null;
   try {
@@ -16,11 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  
+  //Cargar graficos
   const graficoInstance = new grafico();
   graficoInstance.initNavigation();
   graficoInstance.cargarDatosEnInterfaz(usuario);
 
+  //Cerrar sesion
   const cerrarSesion = document.getElementById('logout-button');
   if (cerrarSesion) {
     cerrarSesion.addEventListener('click', (e) => {
