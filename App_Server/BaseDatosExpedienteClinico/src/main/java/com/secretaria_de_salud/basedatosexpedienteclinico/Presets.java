@@ -35,7 +35,23 @@ public class Presets {
         p1.setAlergias(new ArrayList<String>());
         p1.setExp(new Expediente());
         
-        p.agregarPaciente(p1);
+        Paciente p2 = new Paciente();
+        p2.setNss("12345678901");
+        p2.setNombre("Juan Pérez");
+        p2.setCorreo("juan@example.com");
+        p2.setTelefono("6441234567");
+        p2.setCurp("JUAP800101HSONRN01");
+        p2.setTipoSangre("O+");
+        p2.setPwd("pwd123");
+        p2.setHuella(null);
+        p2.setTutor(null);
+        p2.setNombreContEm("Madre");
+        p2.setTelefonoContEm("9809787576");
+        p2.setFehcaNac(new Date(1997, 12, 16));
+        p2.setAlergias(new ArrayList<String>());
+        p2.setExp(new Expediente());
+        
+        p.agregarPaciente(p2);
     }
 
 }
