@@ -11,13 +11,16 @@ import org.bson.types.ObjectId;
  */
 public class Paciente {
 
+    //Cargar local
     private ObjectId ID;
-    private String nss, nombre, correo, telefono, curp, tipoSangre, pwd;
+    private String nss, nombre, correo, telefono, curp, tipoSangre, nombreContEm, telefonoContEm;
+    private ArrayList<String> alergias;
+    
+    //No cargar completamente
     private Binary huella;
     private Date fehcaNac;
     private ObjectId tutor;
-    private String nombreContEm, telefonoContEm;
-    private ArrayList<String> alergias;
+    private String pwd;
     private Expediente exp;
 
     public Paciente() {

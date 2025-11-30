@@ -1,11 +1,6 @@
-function verificarSesion() {
-  if (!localStorage.getItem('jwt')) {
-    alert('Debes iniciar sesión primero');
-    window.location.href = 'login.html';
-    return;
-  }
+function cargarPaciente(){
+  
 }
-verificarSesion();
 
 function consultaExpediente() {
   verificarSesion();

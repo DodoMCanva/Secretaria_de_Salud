@@ -13,10 +13,3 @@ def validar_token(token):
     except Exception:
         return None
         
-def consultar_paciente_rest(curp, jwt_token):
-    headers = {"Authorization": f"Bearer {jwt_token}"}
-    params = {"curp": curp}
-    resp = requests.get(GLASSFISH_URL, headers=headers, params=params)
-    if resp.status_code == 200:
-        return resp.json()
-    return None

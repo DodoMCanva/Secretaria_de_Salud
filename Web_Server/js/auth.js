@@ -18,8 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.token) {
           localStorage.setItem('jwt', data.token);
           if (data.paciente) {
-            localStorage.setItem('nss', data.paciente.nss);
-            localStorage.setItem('nombre', data.paciente.nombre);
+            localStorage.setItem('usuario', JSON.stringify(data.paciente));
           }
           window.location.href = 'index.html';
         } else {
