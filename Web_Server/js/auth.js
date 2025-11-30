@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   btn.addEventListener('click', function (e) {
     e.preventDefault();
-    console.log('inicio el evento auth');
     fetch('http://localhost:5000/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -17,14 +16,15 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(data);
         if (data.token) {
           localStorage.setItem('jwt', data.token);
-          if (data.paciente) {
-            localStorage.setItem('usuario', JSON.stringify(data.paciente));
+          if (data.usuario) {
+            localStorage.setItem('usuario', JSON.stringify({ nss: data.usuario }));
           }
           window.location.href = 'index.html';
         } else {
           alert(data.error || 'Credenciales inválidas');
         }
       })
+
       .catch(err => {
         console.error(err);
         alert('Error en el servidor');

@@ -24,49 +24,47 @@ def login():
         return jsonify({"error": "Error interno login_rest"}), 500
 
     if paciente:
-        payload = {
-            "nss": paciente.get("nss"),
-            "nombre": paciente.get("nombre"),
-            "rol": "paciente"
-        }
-        
+        print("paciente devuelto por login_rest:", paciente, type(paciente))
+        payload = {"usuario": paciente.get("nss"), "nombre": paciente.get("nombre"), "rol": "paciente"}
         token = jwt.encode(payload, "cesvalferpaukimivsectrsalud!!@##", algorithm="HS256")
         return jsonify({
             "token": token,
-            "paciente": paciente
+            "usuario": paciente.get("nss")
         }), 200
+
     
     return jsonify({"error": "Credenciales incorrectas"}), 401
 
 #Este es el mismo del anterior caso para mqtt no creo que sea comun que se utilice
-@app.route("/expediente/consulta-mqtt", methods=["POST"])
-def consulta_mqtt():
+@app.route("/expediente/consulta", methods=["POST"])
+def consulta_expediente():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
-    usuario = validar_token(token)
+    usuario = auth.validar_token(token)
     if not usuario:
         return jsonify({"error": "Token inválido o expirado"}), 401
+
     data = request.json
-    curp = data.get('curp')
-    publicar_consulta_paciente(curp, token)
+    nss = data.get('nss')
+    #expediente.publicar_consulta_expediente(_id, token)
     return jsonify({"status": "Consulta publicada por MQTT"}), 202
 
 
+@app.route("/paciente/consulta", methods=["POST"])
+def consulta_paciente():
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    usuario = auth.validar_token(token)
+    if not usuario:
+        print("Token inválido o expirado")
+        return jsonify({"error": "Token inválido o expirado"}), 401
+
+    print("Raw body:", request.get_data(as_text=True))
+    data = request.json
+    nss = data.get('nss')
+    print("Entró /paciente/consulta con nss:", nss)
+
+    resp = pacienteComunicacion.consulta_paciente_esperando_respuesta(nss, token)
+    print("Respuesta desde MQTT:", resp)
+    return jsonify(resp), 200
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
-
-"""
-#Este es el metodo que esta al pendiente de todas las acciones del paciente
-@app.route("/paciente/consulta-rest", methods=["GET"])
-def consulta_rest():
-    print("Header Authorization:", request.headers.get("Authorization"))
-    token = request.headers.get("Authorization", "").replace("Bearer ", "")
-    usuario = validar_token(token)
-    if not usuario:
-        return jsonify({"error": "Token inválido o expirado"}), 401
-    curp = request.args.get("curp")
-    paciente = consultar_paciente_rest(curp, token)
-    if paciente:
-        return jsonify(paciente)
-    else:
-        return jsonify({"error": "Paciente no encontrado"}), 404
-"""

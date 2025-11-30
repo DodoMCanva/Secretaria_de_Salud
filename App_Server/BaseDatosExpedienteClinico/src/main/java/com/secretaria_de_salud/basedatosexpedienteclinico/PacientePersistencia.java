@@ -39,6 +39,7 @@ public class PacientePersistencia {
 
     //metodos reciclados simplificar
     public Paciente login(String nss, String pwd) {
+        System.out.println("logeamos");
         MongoDatabase db = client.getDatabase("expedientedb");
         MongoCollection<Paciente> col = db.getCollection("pacientes", Paciente.class);
         Paciente paciente = col.find(
@@ -68,10 +69,10 @@ public class PacientePersistencia {
         );
     }
 
-    public Paciente buscarPaciente(ObjectId id) {
+    public Paciente buscarPaciente(String nss) {
         MongoDatabase db = client.getDatabase("expedientedb");
         MongoCollection<Paciente> col = db.getCollection("pacientes", Paciente.class);
-        Paciente paciente = col.find(eq("_id", new ObjectId("tu_id_aqui"))).first();
+        Paciente paciente = col.find(eq("nss", nss)).first();
         if (paciente.getNombre() == null || paciente.getNombre() == "s") {
             return null;
         }
