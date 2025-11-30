@@ -1,5 +1,5 @@
 
-package funciones;
+package com.secretaria_de_salud.funciones;
 
 /**
  *

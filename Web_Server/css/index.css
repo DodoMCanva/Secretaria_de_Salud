@@ -2722,3 +2722,25 @@ html {
   inherits: false;
   initial-value: solid;
 }
+
+.login-form-container {
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 20px;
+}
+
+.login-label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--color-text-muted);
+  text-align: left;
+}
+
+.login-input {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.auth-status {
+  display: none; 
+}

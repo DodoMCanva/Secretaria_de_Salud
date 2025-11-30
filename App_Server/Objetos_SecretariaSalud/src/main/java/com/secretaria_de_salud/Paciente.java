@@ -3,35 +3,41 @@ package com.secretaria_de_salud;
 import java.util.ArrayList;
 import java.util.Date;
 import org.bson.types.Binary;
+import org.bson.types.ObjectId;
 
 /**
  *
- * @author dodo
+ * @author Secretaria de Salud
  */
 public class Paciente {
-    private String ID;
-    private String nss;
-    private String nombre;
-    private String correo;
-    private String telefono;
-    private String curp;
-    private String tipoSangre;
-    private String contraseña;
+
+    private ObjectId ID;
+    private String nss, nombre, correo, telefono, curp, tipoSangre, pwd;
     private Binary huella;
     private Date fehcaNac;
-    private Paciente tutor;
-    private String nombreContEm;
-    private String telefonoContEm;
-    private ArrayList alergias;
+    private ObjectId tutor;
+    private String nombreContEm, telefonoContEm;
+    private ArrayList<String> alergias;
+    private Expediente exp;
 
     public Paciente() {
     }
 
-    public Paciente(String ID) {
-        this.ID = ID;
-    }
-
-    public Paciente(String ID, String nss, String nombre, String correo, String telefono, String curp, String tipoSangre, String contraseña, Date fehcaNac, Paciente tutor, String nombreContEm, String telefonoContEm, ArrayList alergias) {
+    public Paciente(ObjectId ID,
+            String nss,
+            String nombre,
+            String correo,
+            String telefono,
+            String curp,
+            String tipoSangre,
+            String pwd,
+            Binary huella,
+            Date fehcaNac,
+            ObjectId tutor,
+            String nombreContEm,
+            String telefonoContEm,
+            ArrayList<String> alergias,
+            Expediente exp) {
         this.ID = ID;
         this.nss = nss;
         this.nombre = nombre;
@@ -39,23 +45,21 @@ public class Paciente {
         this.telefono = telefono;
         this.curp = curp;
         this.tipoSangre = tipoSangre;
-        this.contraseña = contraseña;
+        this.pwd = pwd;
+        this.huella = huella;
         this.fehcaNac = fehcaNac;
         this.tutor = tutor;
         this.nombreContEm = nombreContEm;
         this.telefonoContEm = telefonoContEm;
         this.alergias = alergias;
+        this.exp = exp;
     }
 
-
-
-
-
-    public String getID() {
+    public ObjectId getID() {
         return ID;
     }
 
-    public void setID(String ID) {
+    public void setID(ObjectId ID) {
         this.ID = ID;
     }
 
@@ -107,12 +111,20 @@ public class Paciente {
         this.tipoSangre = tipoSangre;
     }
 
-    public String getContraseña() {
-        return contraseña;
+    public String getPwd() {
+        return pwd;
     }
 
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
+
+    public Binary getHuella() {
+        return huella;
+    }
+
+    public void setHuella(Binary huella) {
+        this.huella = huella;
     }
 
     public Date getFehcaNac() {
@@ -123,11 +135,11 @@ public class Paciente {
         this.fehcaNac = fehcaNac;
     }
 
-    public Paciente getTutor() {
+    public ObjectId getTutor() {
         return tutor;
     }
 
-    public void setTutor(Paciente tutor) {
+    public void setTutor(ObjectId tutor) {
         this.tutor = tutor;
     }
 
@@ -147,33 +159,25 @@ public class Paciente {
         this.telefonoContEm = telefonoContEm;
     }
 
-    public ArrayList getAlergias() {
+    public ArrayList<String> getAlergias() {
         return alergias;
     }
 
-    public void setAlergias(ArrayList alergias) {
+    public void setAlergias(ArrayList<String> alergias) {
         this.alergias = alergias;
     }
 
-    public Binary getHuella() {
-        return huella;
+    public Expediente getExp() {
+        return exp;
     }
 
-    public void setHuella(Binary huella) {
-        this.huella = huella;
+    public void setExp(Expediente exp) {
+        this.exp = exp;
     }
 
     @Override
     public String toString() {
-        return "Paciente{" + "ID=" + ID + ", nss=" + nss + ", nombre=" + nombre + ", correo=" + correo + ", telefono=" + telefono + ", curp=" + curp + ", tipoSangre=" + tipoSangre + ", contrase\u00f1a=" + contraseña + ", huella=" + huella + ", fehcaNac=" + fehcaNac + ", tutor=" + tutor + ", nombreContEm=" + nombreContEm + ", telefonoContEm=" + telefonoContEm + ", alergias=" + alergias + '}';
+        return "Paciente{" + "ID=" + ID + ", nss=" + nss + ", nombre=" + nombre + ", correo=" + correo + ", telefono=" + telefono + ", curp=" + curp + ", tipoSangre=" + tipoSangre + ", contrase\u00f1a=" + pwd + ", huella=" + huella + ", fehcaNac=" + fehcaNac + ", tutor=" + tutor + ", nombreContEm=" + nombreContEm + ", telefonoContEm=" + telefonoContEm + ", alergias=" + alergias + '}';
     }
 
-    
-
-
-
-
-    
-
-    
 }

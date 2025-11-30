@@ -1,19 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.secretaria_de_salud;
 
 import java.util.ArrayList;
 import java.util.Date;
 import org.bson.types.Binary;
+import org.bson.types.ObjectId;
 
 /**
  *
  * @author pauli
  */
 public class Medico {
-    private String ID;
+    private ObjectId ID;
     private String nombre;
     private String correo;
     private String telefono;
@@ -25,21 +22,22 @@ public class Medico {
     public Medico() {
     }
 
-    public Medico(String ID, String nombre, String correo, String telefono, String cedula, String contraseña, Date fehcaNac) {
+    public Medico(ObjectId ID, String nombre, String correo, String telefono, String cedula, String contraseña, Binary huella, Date fehcaNac) {
         this.ID = ID;
         this.nombre = nombre;
         this.correo = correo;
         this.telefono = telefono;
         this.cedula = cedula;
         this.contraseña = contraseña;
+        this.huella = huella;
         this.fehcaNac = fehcaNac;
     }
 
-    public String getID() {
+    public ObjectId getID() {
         return ID;
     }
 
-    public void setID(String ID) {
+    public void setID(ObjectId ID) {
         this.ID = ID;
     }
 
@@ -98,6 +96,8 @@ public class Medico {
     public void setFehcaNac(Date fehcaNac) {
         this.fehcaNac = fehcaNac;
     }
+
+    
 
     @Override
     public String toString() {

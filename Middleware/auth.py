@@ -12,7 +12,7 @@ def validar_token(token):
         return datos
     except Exception:
         return None
-
+        
 def consultar_paciente_rest(curp, jwt_token):
     headers = {"Authorization": f"Bearer {jwt_token}"}
     params = {"curp": curp}
@@ -20,10 +20,3 @@ def consultar_paciente_rest(curp, jwt_token):
     if resp.status_code == 200:
         return resp.json()
     return None
-
-    # Ejemplo de endpoint protegido
-@app.route('/endpoint')
-def protegida():
-    token = request.headers.get('Authorization').split()[1]
-    datos = decode_jwt(token)
-    # Procesar según datos del usuario

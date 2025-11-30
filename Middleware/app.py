@@ -2,36 +2,41 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 import jwt
-
-from servicios import paciente 
+import auth
+from servicios import pacienteComunicacion
 
 app = Flask(__name__)
 CORS(app)
 
-def validar_token(token):
-    try:
-        secret = 'cesvalferpaukimivsectrsalud!!@##'
-        datos = jwt.decode(token, secret, algorithms=["HS256"])
-        return datos
-    except Exception:
-        return None
-
 @app.route('/login', methods=['POST'])
 def login():
-    usuario = request.json['usuario']
-    password = request.json['password']
+    print("Headers:", request.headers)
+    print("Raw data:", request.get_data())
+    data = request.get_json(silent=True) or {}
+    print("JSON:", data)
 
-    #aqui deberia consultarse en la bd utilizando el servicio de medico o paciente
-    #primero al servicio de pacientes y si no encuentra nada, al servicio de medicos
+    usuario = data.get('usuario')
+    password = data.get('password')
 
+    if not usuario or not password:
+        return jsonify({"error": "Faltan credenciales"}), 400
 
-    if usuario == "demo" and password == "123":
-        #de usuario se cambiaria por su id
-        token = jwt.encode({'usuario': usuario}, 'cesvalferpaukimivsectrsalud!!@##', algorithm="HS256")
-        return jsonify({"token": token})
+    try:
+        paciente = pacienteComunicacion.login_rest(usuario, password, jwt_token=None)
+    except Exception as e:
+        print("ERROR login_rest:", e)
+        return jsonify({"error": "Error interno login_rest"}), 500
+
+    if paciente:
+        payload = {
+            "nss": paciente.get("nss"),
+            "nombre": paciente.get("nombre"),
+            "rol": "paciente"
+        }
+        token = jwt.encode(payload, "cesvalferpaukimivsectrsalud!!@##", algorithm="HS256")
+        return jsonify({"token": token, "paciente": paciente}), 200
+
     return jsonify({"error": "Credenciales incorrectas"}), 401
-
-
 
 #Este es el metodo que esta al pendiente de todas las acciones del paciente
 @app.route("/paciente/consulta-rest", methods=["GET"])

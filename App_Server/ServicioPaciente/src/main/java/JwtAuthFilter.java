@@ -12,12 +12,22 @@ public class JwtAuthFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
+        String path = requestContext.getUriInfo().getPath();
+        System.out.println("Path en filtro: [" + path + "]");
+
+        // IGNORAR login
+        if (path.equals("pacientes/login") || path.endsWith("pacientes/login")) {
+            System.out.println("Saltando filtro JWT para login");
+            return;
+        }
+
         String authHeader = requestContext.getHeaderString("Authorization");
         System.out.println("Auth header recibido en filtro: [" + authHeader + "]");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             abort(requestContext, "Falta el token JWT");
             return;
         }
+
         String jwt = authHeader.substring("Bearer ".length());
         try {
             System.out.println("Intentando validar JWT: " + jwt);
