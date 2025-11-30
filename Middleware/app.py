@@ -39,7 +39,7 @@ def login():
     return jsonify({"error": "Credenciales incorrectas"}), 401
 
 #Este es el mismo del anterior caso para mqtt no creo que sea comun que se utilice
-@app.route("/expediente/consulta-mqtt", methods=["POST"])
+@app.route("/expediente/consulta", methods=["POST"])
 def consulta_mqtt():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
     usuario = validar_token(token)
