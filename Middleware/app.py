@@ -24,13 +24,14 @@ def login():
         return jsonify({"error": "Error interno login_rest"}), 500
 
     if paciente:
-        payload = {"usuario": paciente.get("_id"), "nombre": paciente.get("nombre"), "rol": "paciente"}
-        _id = paciente.get("_id")
+        print("paciente devuelto por login_rest:", paciente, type(paciente))
+        payload = {"usuario": paciente.get("nss"), "nombre": paciente.get("nombre"), "rol": "paciente"}
         token = jwt.encode(payload, "cesvalferpaukimivsectrsalud!!@##", algorithm="HS256")
         return jsonify({
             "token": token,
-            "usuario": _id
+            "usuario": paciente.get("nss")
         }), 200
+
     
     return jsonify({"error": "Credenciales incorrectas"}), 401
 
@@ -43,20 +44,27 @@ def consulta_expediente():
         return jsonify({"error": "Token inválido o expirado"}), 401
 
     data = request.json
-    _id = data.get('_id')
+    nss = data.get('nss')
     #expediente.publicar_consulta_expediente(_id, token)
     return jsonify({"status": "Consulta publicada por MQTT"}), 202
+
 
 @app.route("/paciente/consulta", methods=["POST"])
 def consulta_paciente():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
     usuario = auth.validar_token(token)
     if not usuario:
+        print("Token inválido o expirado")
         return jsonify({"error": "Token inválido o expirado"}), 401
+
+    print("Raw body:", request.get_data(as_text=True))
     data = request.json
-    _id = data.get('_id')
-    pacienteComunicacion.publicar_consulta_paciente(_id, token)
-    return jsonify({"status": "Consulta publicada por MQTT"}), 202
+    nss = data.get('nss')
+    print("Entró /paciente/consulta con nss:", nss)
+
+    resp = pacienteComunicacion.consulta_paciente_esperando_respuesta(nss, token)
+    print("Respuesta desde MQTT:", resp)
+    return jsonify(resp), 200
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

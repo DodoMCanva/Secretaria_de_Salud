@@ -16,14 +16,15 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(data);
         if (data.token) {
           localStorage.setItem('jwt', data.token);
-          if (data.paciente) {
-            localStorage.setItem('usuario', data.usuario);
+          if (data.usuario) {
+            localStorage.setItem('usuario', JSON.stringify({ nss: data.usuario }));
           }
           window.location.href = 'index.html';
         } else {
           alert(data.error || 'Credenciales inválidas');
         }
       })
+
       .catch(err => {
         console.error(err);
         alert('Error en el servidor');

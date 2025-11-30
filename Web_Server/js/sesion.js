@@ -1,3 +1,5 @@
+let graficoInstance = null;
+
 document.addEventListener('DOMContentLoaded', () => {
   if (!localStorage.getItem('jwt')) {
     alert('Debes iniciar sesión primero');
@@ -5,25 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  //Usuario
-  const raw = localStorage.getItem('usuario');
-  let usuario = null;
-  try {
-    usuario = raw ? JSON.parse(raw) : null;
-  } catch (e) {
-    console.error('Error parseando usuario:', e, raw);
-    localStorage.clear();
-    window.location.href = 'login.html';
-    return;
-  }
+  graficoInstance = new grafico();
+  graficoInstance.initNavigation();
 
-  //Cargar graficos
-  //const graficoInstance = new grafico();
-  //graficoInstance.initNavigation();
-  //graficoInstance.cargarDatosEnInterfaz(usuario);
   consultarPaciente();
 
-  //Cerrar sesion
   const cerrarSesion = document.getElementById('logout-button');
   if (cerrarSesion) {
     cerrarSesion.addEventListener('click', (e) => {
@@ -35,7 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function consultarPaciente() {
-  const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
+  console.log('usuario en consultarPaciente:', usuario);
+
   fetch('http://localhost:5000/paciente/consulta', {
     method: 'POST',
     headers: {
@@ -43,15 +33,25 @@ function consultarPaciente() {
       'Authorization': 'Bearer ' + localStorage.getItem('jwt')
     },
     body: JSON.stringify({
-      _id: usuario._id  
+      nss: usuario.nss
     })
   })
     .then(r => r.json())
     .then(data => {
       console.log(data);
+      if (data.status === 'OK' && data.paciente) {
+        if (graficoInstance) {
+          graficoInstance.cargarDatosEnInterfaz(data.paciente);
+        } else {
+          console.warn('graficoInstance no está inicializado');
+        }
+      } else {
+        alert(data.error || 'Error consultando paciente');
+      }
     })
     .catch(err => {
       console.error(err);
       alert('Error en el servidor');
     });
 }
+

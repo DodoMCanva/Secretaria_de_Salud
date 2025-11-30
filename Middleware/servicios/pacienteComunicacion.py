@@ -2,6 +2,8 @@
 import paho.mqtt.client as mqtt
 import json
 import requests
+import queue
+import time
 from rutas import rutas
 direcciones = rutas.rutasActuales()
 
@@ -22,8 +24,6 @@ def login_rest(nss, pwd, jwt_token=None):
     except Exception as e:
         print("Error llamando a GlassFish:", e)
         return None
-        
-    print("status:", resp.status_code, "body:", resp.text)
 
     if resp.status_code == 200:
         return resp.json()
@@ -32,8 +32,46 @@ def login_rest(nss, pwd, jwt_token=None):
 
 #Consulta por mqtt
 def publicar_consulta_paciente(_id, jwt_token):
-    msg = {"_id": _id, "jwt": jwt_token}
+    reply_to = f"respuesta/paciente/{_id}"
+    msg = {
+        "_id": _id,
+        "jwt": jwt_token,
+        "replyTo": reply_to
+    }
     client = mqtt.Client()
     client.connect(MQTT_BROKER, MQTT_PORT, 60)
     client.publish(TOPIC_PUBLICAR, json.dumps(msg))
     client.disconnect()
+
+def consulta_paciente_esperando_respuesta(nss, jwt_token, timeout=5):
+    reply_to = f"respuesta/paciente/{nss}"
+    q = queue.Queue()
+
+    def on_message(client, userdata, msg):
+        try:
+            data = json.loads(msg.payload.decode("utf-8"))
+            q.put(data)
+        except Exception as e:
+            q.put({"error": str(e)})
+
+    client = mqtt.Client()
+    client.on_message = on_message
+    client.connect(MQTT_BROKER, MQTT_PORT, 60)
+    client.subscribe(reply_to)
+    client.loop_start()
+
+    msg = {
+        "nss": nss,
+        "jwt": jwt_token,
+        "replyTo": reply_to
+    }
+    client.publish(TOPIC_PUBLICAR, json.dumps(msg))
+
+    try:
+        resp = q.get(timeout=timeout)
+    except queue.Empty:
+        resp = {"error": "Timeout esperando respuesta del servicio paciente"}
+
+    client.loop_stop()
+    client.disconnect()
+    return resp
