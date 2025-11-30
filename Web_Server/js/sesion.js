@@ -18,9 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   //Cargar graficos
-  const graficoInstance = new grafico();
-  graficoInstance.initNavigation();
-  graficoInstance.cargarDatosEnInterfaz(usuario);
+  //const graficoInstance = new grafico();
+  //graficoInstance.initNavigation();
+  //graficoInstance.cargarDatosEnInterfaz(usuario);
+  consultarPaciente();
 
   //Cerrar sesion
   const cerrarSesion = document.getElementById('logout-button');
@@ -32,3 +33,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+function consultarPaciente() {
+  const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+  fetch('http://localhost:5000/paciente/consulta', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+    },
+    body: JSON.stringify({
+      _id: usuario._id  
+    })
+  })
+    .then(r => r.json())
+    .then(data => {
+      console.log(data);
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Error en el servidor');
+    });
+}

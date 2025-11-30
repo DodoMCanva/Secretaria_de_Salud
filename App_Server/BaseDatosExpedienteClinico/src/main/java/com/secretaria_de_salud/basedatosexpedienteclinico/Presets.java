@@ -34,6 +34,7 @@ public class Presets {
         p1.setFehcaNac(new Date(1997, 12, 16));
         p1.setAlergias(new ArrayList<String>());
         p1.setExp(new Expediente());
+        p.agregarPaciente(p1);
         
         Paciente p2 = new Paciente();
         p2.setNss("423482374");

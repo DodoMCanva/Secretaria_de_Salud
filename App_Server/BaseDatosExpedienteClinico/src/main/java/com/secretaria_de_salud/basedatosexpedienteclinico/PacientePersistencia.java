@@ -39,6 +39,7 @@ public class PacientePersistencia {
 
     //metodos reciclados simplificar
     public Paciente login(String nss, String pwd) {
+        System.out.println("logeamos");
         MongoDatabase db = client.getDatabase("expedientedb");
         MongoCollection<Paciente> col = db.getCollection("pacientes", Paciente.class);
         Paciente paciente = col.find(

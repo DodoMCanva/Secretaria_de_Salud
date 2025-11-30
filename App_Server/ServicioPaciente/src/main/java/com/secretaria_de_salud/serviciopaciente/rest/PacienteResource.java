@@ -29,23 +29,4 @@ public class PacienteResource {
         }
     }
     
-    /*
-    @GET
-    @Path("/buscar")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response buscarPorCurp(@QueryParam("curp") String curp) {
-        System.out.println("CURP recibido: [" + curp + "]");
-        if (curp != null && curp.trim().equalsIgnoreCase("TESTCURP")) { 
-            Paciente paciente = new Paciente();
-            paciente.setNombre("Demo");
-            return Response.ok(paciente).build();
-        } else {
-            System.out.println("CURP recibido: [" + curp + "]");
-            return Response.status(Response.Status.NOT_FOUND)
-                .entity("{\"error\":\"Paciente no encontrado\"}")
-                .type(MediaType.APPLICATION_JSON)
-                .build();
-        }
-    }
-    */
 }

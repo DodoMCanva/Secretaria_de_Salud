@@ -1,5 +1,5 @@
 //Datos basicos paciente
-function cargarPaciente(){
+function consultaPaciente(){
   
 }
 

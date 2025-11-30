@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   btn.addEventListener('click', function (e) {
     e.preventDefault();
-    console.log('inicio el evento auth');
     fetch('http://localhost:5000/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -18,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.token) {
           localStorage.setItem('jwt', data.token);
           if (data.paciente) {
-            localStorage.setItem('usuario', JSON.stringify(data.paciente));
+            localStorage.setItem('usuario', data.usuario);
           }
           window.location.href = 'index.html';
         } else {

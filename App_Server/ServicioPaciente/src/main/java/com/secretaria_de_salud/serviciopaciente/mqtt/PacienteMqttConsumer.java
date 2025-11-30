@@ -18,10 +18,10 @@ public class PacienteMqttConsumer implements MqttCallback {
     public void messageArrived(String topic, MqttMessage message) {
         String payload = new String(message.getPayload());
         JSONObject json = new JSONObject(payload);
-        String curp = json.getString("curp");
+        String _id = json.getString("_id");
         String jwt = json.getString("jwt");
         // Aquí verifica tu JWT, busca el paciente, responde (si quieres: publica en otro tópico, actualiza base, etc.)
-        System.out.println("Llego consulta por MQTT para curp: " + curp);
+        System.out.println("Llego consulta por MQTT para curp: " + _id);
     }
 
     @Override
