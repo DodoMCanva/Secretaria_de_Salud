@@ -22,11 +22,57 @@ def rutasKim():
     #Servicios: paciente, medico, expediente, cita, solicitud
     #adicional: base de datos, http local, middleware, mqtt
     direcciones = {
-        "paciente" : "18609", 
-        "medico" : "9300", 
-        "expediente" : "36059", 
-        "cita" : "20023", 
-        "solicitud" : "23106",
+        "paciente" : "8080", 
+        "medico" : "46040", 
+        "expediente" : "41388", 
+        "cita" : "10432", 
+        "solicitud" : "45258",
+        "http_local" : "8800", 
+        "mid" : "5000", 
+        "mqtt" : "1883"}
+
+    return direcciones
+
+def rutasPau():
+    #Son los puertos que usamos localmente para ejecutarlo
+    #Servicios: paciente, medico, expediente, cita, solicitud
+    #adicional: base de datos, http local, middleware, mqtt
+    direcciones = {
+        "paciente" : "42384", 
+        "medico" : "30340", 
+        "expediente" : "13952", 
+        "cita" : "42116", 
+        "solicitud" : "29164",
+        "http_local" : "8800", 
+        "mid" : "5000", 
+        "mqtt" : "1883"}
+    return direcciones
+
+def rutasVale():
+    #Son los puertos que usamos localmente para ejecutarlo
+    #Servicios: paciente, medico, expediente, cita, solicitud
+    #adicional: base de datos, http local, middleware, mqtt
+    direcciones = {
+        "paciente" : "44443", 
+        "medico" : "23757", 
+        "expediente" : "20366", 
+        "cita" : "38716", 
+        "solicitud" : "38271",
+        "http_local" : "8800", 
+        "mid" : "5000", 
+        "mqtt" : "1883"}
+    return direcciones
+
+def rutasCesar():
+    #Son los puertos que usamos localmente para ejecutarlo
+    #Servicios: paciente, medico, expediente, cita, solicitud
+    #adicional: base de datos, http local, middleware, mqtt
+    direcciones = {
+        "paciente" : "8084", 
+        "medico" : "8083", 
+        "expediente" : "8082", 
+        "cita" : "8081", 
+        "solicitud" : "8085",
         "http_local" : "8800", 
         "mid" : "5000", 
         "mqtt" : "1883"}
