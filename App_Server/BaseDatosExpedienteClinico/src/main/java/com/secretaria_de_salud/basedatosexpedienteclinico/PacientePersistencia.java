@@ -88,4 +88,11 @@ public class PacientePersistencia {
         col.deleteMany(new Document());
 
     }
+
+    public void close() {
+        if (client != null) {
+            client.close();
+            System.out.println("Conexión a MongoDB cerrada.");
+        }
+    }
 }

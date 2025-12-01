@@ -1,6 +1,7 @@
 package com.secretaria_de_salud.basedatosexpedienteclinico;
 
 import com.secretaria_de_salud.Expediente;
+import com.secretaria_de_salud.Medico;
 import com.secretaria_de_salud.Paciente;
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,8 @@ public class Presets {
      */
     public static void main(String[] args) {
         PacientePersistencia p = new PacientePersistencia();
+        MedicoPersistencia m = new MedicoPersistencia();
+
         //Limpiar expedientebd de mongo
         p.eliminarPacientes();
         //Agregar registros predeterminados
@@ -59,6 +62,24 @@ public class Presets {
         p2.setAlergias(alergias);
 
         p.agregarPaciente(p2);
+
+        // ===== MEDICOS =====
+        Medico med1 = new Medico();
+        med1.setNss("11111111111");
+        med1.setNombre("Dr. Carlos López");
+        med1.setCorreo("carlos.medico@example.com");
+        med1.setTelefono("6449998888");
+        med1.setContraseña("med123");
+        // agrega aquí más campos si tu clase Medico los tiene (especialidad, cedula, etc.)
+        m.agregarMedico(med1);
+
+        Medico med2 = new Medico();
+        med2.setNss("22222222222");
+        med2.setNombre("Dra. Ana Ruiz");
+        med2.setCorreo("ana.medico@example.com");
+        med2.setTelefono("6447776666");
+        med2.setContraseña("med456");
+        m.agregarMedico(med2);
 
         // --- EJECUTAR PRUEBAS DE EXPEDIENTE ---
         Presets tester = new Presets();

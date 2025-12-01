@@ -20,8 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('usuario', JSON.stringify({ nss: data.usuario }));
           }
           localStorage.setItem('rol',data.rol);
+          if(data.rol === 'paciente'){
+            window.location.href = 'paciente.html';
+          } else {
+            window.location.href = 'medico.html';
+          }
           
-          window.location.href = 'index.html';
         } else {
           alert(data.error || 'Credenciales inválidas');
         }

@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   graficoInstance.initNavigation();
 
   
-    consultarPaciente();
+  consultarPaciente();
   
   const cerrarSesion = document.getElementById('logout-button');
   if (cerrarSesion) {
