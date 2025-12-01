@@ -18,11 +18,12 @@ public class Medico {
     private String contraseña;
     private Binary huella;
     private Date fehcaNac;
+    private String nss;
 
     public Medico() {
     }
 
-    public Medico(ObjectId ID, String nombre, String correo, String telefono, String cedula, String contraseña, Binary huella, Date fehcaNac) {
+    public Medico(ObjectId ID, String nombre, String correo, String telefono, String cedula, String contraseña, Binary huella, Date fehcaNac, String nss) {
         this.ID = ID;
         this.nombre = nombre;
         this.correo = correo;
@@ -31,7 +32,11 @@ public class Medico {
         this.contraseña = contraseña;
         this.huella = huella;
         this.fehcaNac = fehcaNac;
+        this.nss = nss;
     }
+
+   
+    
 
     public ObjectId getID() {
         return ID;
@@ -97,12 +102,20 @@ public class Medico {
         this.fehcaNac = fehcaNac;
     }
 
-    
+    public String getNss() {
+        return nss;
+    }
+
+    public void setNss(String nss) {
+        this.nss = nss;
+    }
 
     @Override
     public String toString() {
-        return "Medico{" + "ID=" + ID + ", nombre=" + nombre + ", correo=" + correo + ", telefono=" + telefono + ", cedula=" + cedula + ", contrase\u00f1a=" + contraseña + ", huella=" + huella + ", fehcaNac=" + fehcaNac + '}';
+        return "Medico{" + "ID=" + ID + ", nombre=" + nombre + ", correo=" + correo + ", telefono=" + telefono + ", cedula=" + cedula + ", contrase\u00f1a=" + contraseña + ", huella=" + huella + ", fehcaNac=" + fehcaNac + ", nss=" + nss + '}';
     }
+        
+    
 
     
     

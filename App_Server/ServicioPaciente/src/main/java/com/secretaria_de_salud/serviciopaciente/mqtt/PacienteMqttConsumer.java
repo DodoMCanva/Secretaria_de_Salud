@@ -22,7 +22,7 @@ public class PacienteMqttConsumer implements MqttCallback {
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws MqttException, JsonProcessingException {
-        
+
         String payload = new String(message.getPayload());
         JSONObject json = new JSONObject(payload);
         String nss = json.getString("nss");
