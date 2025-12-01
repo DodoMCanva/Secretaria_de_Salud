@@ -14,10 +14,22 @@
     
     <dependencies>
         <dependency>
+            <groupId>com.Secretaria_de_Salud</groupId>
+            <artifactId>Objetos_SecretariaSalud</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
             <version>${jakartaee}</version>
             <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.Secretaria_de_Salud</groupId>
+            <artifactId>BaseDatosExpedienteClinico</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
     
