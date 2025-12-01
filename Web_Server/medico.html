@@ -74,92 +74,143 @@
 
         <main class="main-content">
             <div id="view-expedientevista" class="view-content active">
-                <div class="content-wrapper">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="patient-header">
-                                <div class="patient-avatar">
-                                    <svg class="icon-large" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h2>María Elena González López</h2>
-                                    <p class="text-muted">Expediente Clínico - ID: pat_001</p>
-                                </div>
-                            </div>
-                            <span class="badge badge-success">Activo</span>
-                        </div>
-                        <div class="card-content">
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <label>Edad</label>
-                                    <p>34 años</p>
-                                </div>
-                                <div class="info-item">
-                                    <label>CURP</label>
-                                    <p class="font-mono">GOLM890515MDFNLR08</p>
-                                </div>
-                                <div class="info-item">
-                                    <label>NSS</label>
-                                    <p class="font-mono">12345678901</p>
-                                </div>
-                                <div class="info-item">
-                                    <label>Tipo de Sangre</label>
-                                    <p>O+</p>
-                                </div>
-                                <div class="info-item">
-                                    <label>Alergias</label>
-                                    <div class="badge-group">
-                                        <span class="badge badge-danger">Penicilina</span>
-                                        <span class="badge badge-danger">Mariscos</span>
-                                    </div>
-                                </div>
-                                <div class="info-item">
-                                    <label>Contacto de Emergencia</label>
-                                    <p>+52 55 1234 5678</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+				<div id="expediente-busqueda" class="content-wrapper active">
+					<div class="card">
+						<div class="card-header">
+							<h2>🔎 Búsqueda de Pacientes</h2>
+							<p class="text-muted">Busque un paciente por nombre, ID, CURP o NSS.</p>
+						</div>
+						<div class="card-content">
+							<div class="form-group search-bar">
+								<input type="text" id="input-paciente-search" class="form-input" placeholder="Escriba nombre o identificación del paciente...">
+								<button class="btn btn-primary" id="btn-search-pacientes">Buscar</button>
+							</div>
+						</div>
+					</div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <h2>Historial de Consultas</h2>
-                                <p class="text-muted">Registro completo de consultas médicas</p>
-                            </div>
-                            <div class="btn-group">
-                                <button class="btn btn-primary">
-                                    <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 4v16m8-8H4" />
-                                    </svg>
-                                    Agregar Consulta
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-content">
-                            <div class="table-container">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Fecha</th>
-                                            <th>Médico</th>
-                                            <th>Diagnóstico</th>
-                                            <th>Tratamiento</th>
-                                            <th>Notas</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabla-historial">
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+					<div class="card patient-results-card">
+						<div class="card-header">
+							<h3>Resultados de la Búsqueda</h3>
+						</div>
+						<div class="card-content">
+							<div class="table-container">
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th>ID Paciente</th>
+											<th>Nombre Completo</th>
+											<th>CURP</th>
+											<th>Última Modf.</th>
+											<th>Acción</th>
+										</tr>
+									</thead>
+									<tbody id="tabla-pacientes-resultados">
+										<tr>
+											<td>pat_001</td>
+											<td>María Elena González López</td>
+											<td class="font-mono">GOLM890515MDFNLR08</td>
+											<td>2025-11-20</td>
+											<td><button class="btn btn-sm btn-info btn-solicitar" data-id="pat_001">Solicitar Expediente</button></td>
+										</tr>
+										<tr>
+											<td>pat_002</td>
+											<td>Juan Carlos Ramírez Pérez</td>
+											<td class="font-mono">RAPJ950101HDSDFA01</td>
+											<td>2025-10-05</td>
+											<td><button class="btn btn-sm btn-info btn-solicitar" data-id="pat_002">Solicitar Expediente</button></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div id="expediente-detalle" class="content-wrapper hidden">
+					<div class="card patient-detail-card">
+						<div class="card-header">
+							<div class="patient-header">
+								<div class="patient-avatar">
+									<svg class="icon-large" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+								</div>
+								<div>
+									<h2 id="detalle-nombre">Expediente de [Nombre del Paciente]</h2>
+									<p class="text-muted">ID: <span id="detalle-id"></span> | Última Modificación: <span id="detalle-ultmodf"></span></p>
+								</div>
+							</div>
+							<button class="btn btn-danger" id="btn-cerrar-expediente">Cerrar Expediente</button>
+						</div>
+					</div>
+					
+					<div class="card">
+						<div class="card-header">
+							<h2>Información Biográfica y Médica</h2>
+							<span class="badge badge-success" id="detalle-estado">Activo</span>
+						</div>
+						<div class="card-content">
+							<div class="info-grid">
+								<div class="info-item">
+									<label>Edad</label>
+									<p id="detalle-edad">--</p>
+								</div>
+								<div class="info-item">
+									<label>CURP</label>
+									<p id="detalle-curp" class="font-mono">--</p>
+								</div>
+								<div class="info-item">
+									<label>NSS</label>
+									<p id="detalle-nss" class="font-mono">--</p>
+								</div>
+								<div class="info-item">
+									<label>Tipo de Sangre</label>
+									<p id="detalle-tiposangre">--</p>
+								</div>
+								<div class="info-item">
+									<label>Alergias</label>
+									<div class="badge-group" id="detalle-alergias">
+										</div>
+								</div>
+								<div class="info-item">
+									<label>Contacto de Emergencia</label>
+									<p id="detalle-contacto">--</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="card">
+						<div class="card-header">
+							<h2>Documentos del Expediente</h2>
+							<button class="btn btn-primary" id="btn-subir-archivo">
+								<svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0l-4 4m4-4v12" /></svg>
+								Subir Archivo
+							</button>
+						</div>
+						<div class="card-content">
+							<div class="document-list-grid">
+								<div class="document-section">
+									<h4><span class="badge badge-primary">PDFs</span></h4>
+									<ul id="lista-pdfs" class="file-list">
+										</ul>
+								</div>
+								
+								<div class="document-section">
+									<h4><span class="badge badge-info">Imágenes</span></h4> 
+									<ul id="lista-imagenes" class="file-list">
+										</ul>
+								</div>
+
+								<div class="document-section">
+									<h4><span class="badge badge-success">Recetas</span></h4>
+									<ul id="lista-recetas" class="file-list">
+										</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					</div>
+			</div>
 
             <div id="view-citasvista" class="view-content">
                 <div class="content-wrapper">
