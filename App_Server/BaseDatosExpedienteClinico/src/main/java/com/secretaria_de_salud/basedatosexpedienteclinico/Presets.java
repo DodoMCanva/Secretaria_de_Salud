@@ -42,7 +42,7 @@ public class Presets {
         p2.setCorreo("mari@example.com");
         p2.setTelefono("644213213");
         p2.setCurp("MARIE73470324HR3");
-        p2.setTipoSangre("A");
+        p2.setTipoSangre("A+");
         p2.setPwd("123pwd");
         p2.setHuella(null);
         p2.setTutor(null);

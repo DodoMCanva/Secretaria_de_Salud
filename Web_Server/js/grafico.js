@@ -1,33 +1,95 @@
 
 const appState = {
-    currentView: 'perfilvista'
+    currentView: 'expedientevista'
 }
 
 class grafico {
 
     cargarDatosEnInterfaz(usuario) {
-        const userNameDisplay = document.getElementById('user-name');
-        if (userNameDisplay && usuario?.nombre) userNameDisplay.innerText = usuario.nombre;
+        console.log("Procesando datos para la vista:", usuario);
+
+        // nombre del paciente en la barra
+        const sideName = document.getElementById('user-name');
+        if (sideName) sideName.innerText = usuario.nombre || "Usuario";
 
         const perfilNombre = document.getElementById('perfil-nombre');
-        if (perfilNombre && usuario) {
+        if (perfilNombre) {
             perfilNombre.value = usuario.nombre || "";
-            const email = document.getElementById('perfil-email');
-            const tel = document.getElementById('perfil-telefono');
-            const cedula = document.getElementById('perfil-cedula');
-            if (email) email.value = usuario.correo || "";
-            if (tel) tel.value = usuario.telefono || "";
-            if (cedula) cedula.value = usuario.nss || "";
+            document.getElementById('perfil-email').value = usuario.correo || "";
+            document.getElementById('perfil-telefono').value = usuario.telefono || "";
+            document.getElementById('perfil-cedula').value = usuario.nss || "";
         }
 
-        //this.renderizarTablaHistorial();
-        //this.renderizarTablaAccesos(usuario);
+        // datos de paciente
+        this.setText('dato-nombre', usuario.nombre);
+        this.setText('dato-id', usuario.nss);
+        this.setText('dato-curp', usuario.curp);
+        this.setText('dato-nss', usuario.nss);
+        this.setText('dato-sangre', usuario.tipoSangre); 
+
+        // nombre y telefono del contacto
+        const contacto = (usuario.nombreContEm || "") + " - " + (usuario.telefonoContEm || "");
+        this.setText('dato-contacto', contacto);
+
+        //edad
+        if (usuario.fehcaNac) {
+             const edadTexto = this.calcularEdadCorregida(usuario.fehcaNac);
+             this.setText('dato-edad', edadTexto);
+        } else {
+             this.setText('dato-edad', "--");
+        }
+
+        // alergias
+        const divAlergias = document.getElementById('dato-alergias');
+        if (divAlergias) {
+            divAlergias.innerHTML = ''; 
+            if (usuario.alergias && usuario.alergias.length > 0) {
+                usuario.alergias.forEach(al => {
+                    const span = document.createElement('span');
+                    span.className = 'badge badge-danger';
+                    span.innerText = al;
+                    span.style.marginRight = '5px';
+                    divAlergias.appendChild(span);
+                });
+            } else {
+                divAlergias.innerText = "Ninguna";
+            }
+        }
+    }
+
+    //metodo para calcular la edad
+    calcularEdadCorregida(fechaInput) {
+        if (!fechaInput) return "--";
+        let fechaNac = new Date(fechaInput);
+        const anioActual = new Date().getFullYear();
+        if (fechaNac.getFullYear() > anioActual) {
+            console.warn("Fecha futura detectada (" + fechaNac.getFullYear() + "). Corrigiendo error de Java...");
+            fechaNac.setFullYear(fechaNac.getFullYear() - 1900);
+        }
+        const hoy = new Date();
+        let edad = hoy.getFullYear() - fechaNac.getFullYear();
+        const mes = hoy.getMonth() - fechaNac.getMonth();
+        if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+            edad--;
+        }
+
+        return edad + " años";
+    }
+
+    // Pequeña ayuda para no romper si falta un ID
+    setText(id, texto) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.innerText = texto || "--";
+        } else {
+            console.warn("Falta en el HTML el ID: " + id);
+        }
     }
 
     cargarExpediente() {
 
     }
-    // ===== NAVEGACIÓN =====
+    //navigacion
 
     initNavigation() {
         const self = this;
