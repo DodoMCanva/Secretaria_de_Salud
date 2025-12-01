@@ -85,12 +85,14 @@ public class Presets {
         m.agregarMedico(med2);
 
         // --- EJECUTAR PRUEBAS DE EXPEDIENTE ---
-        //Presets tester = new Presets();
+        Presets tester = new Presets();
 
-        //tester.PruebasExpediente();
+        tester.PruebasExpediente();
 
         // Cerrar las conexiones
-        //p.close();
+        p.close();
+        m.close();
+        
 
     }
 

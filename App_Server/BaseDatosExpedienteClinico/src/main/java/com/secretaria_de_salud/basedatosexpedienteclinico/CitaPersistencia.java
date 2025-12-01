@@ -19,5 +19,14 @@ public class CitaPersistencia {
         return null;
     }
     
+    /*
+    public void close() {
+        if (client != null) {
+            client.close();
+            System.out.println("Conexión a MongoDB cerrada.");
+        }
+    }*/
+    
+    
     
 }

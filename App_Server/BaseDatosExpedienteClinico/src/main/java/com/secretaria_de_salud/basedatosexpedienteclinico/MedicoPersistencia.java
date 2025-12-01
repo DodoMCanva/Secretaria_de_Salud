@@ -94,4 +94,11 @@ public class MedicoPersistencia {
         MongoCollection<Medico> col = db.getCollection("medicos", Medico.class);
         col.deleteOne(eq("nss", nss));
     }
+    
+    public void close() {
+        if (client != null) {
+            client.close();
+            System.out.println("Conexión a MongoDB cerrada.");
+        }
+    }
 }
