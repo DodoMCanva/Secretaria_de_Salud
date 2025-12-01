@@ -31,7 +31,7 @@ function consultarPaciente() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + localStorage.getItem('jwt')  // bearer token en header[web:146][web:153]
+      'Authorization': 'Bearer ' + localStorage.getItem('jwt')  
     },
     body: JSON.stringify({
       nss: usuario.nss

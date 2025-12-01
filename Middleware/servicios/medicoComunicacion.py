@@ -20,13 +20,13 @@ GLASSFISH_URL_LOGIN = (
 
 def login_rest(nss, pwd, jwt_token=None):
     headers = {}
-    params = {"nss": nss, "pwd": pwd}
+    params = {"nss": nss, "pwd": pwd} 
     if jwt_token:
         headers["Authorization"] = f"Bearer {jwt_token}"
     try:
         resp = requests.get(GLASSFISH_URL_LOGIN, headers=headers, params=params)
     except Exception as e:
-        print("Error llamando a GlassFish (medico):", e)
+        print("Error llamando a GlassFish:", e)
         return None
 
     if resp.status_code == 200:

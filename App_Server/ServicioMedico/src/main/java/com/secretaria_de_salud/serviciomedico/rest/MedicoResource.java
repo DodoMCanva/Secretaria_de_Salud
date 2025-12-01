@@ -32,8 +32,9 @@ public class MedicoResource {
                     .type(MediaType.APPLICATION_JSON)
                     .build();
         }
-        
     }
+
+    /*
       // ServicioMedico NO crea solicitudes, solo revisa permiso y devuelve expediente
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -72,6 +73,5 @@ public class MedicoResource {
                     .build();
         }
         return Response.ok(p).build();
-    }
-
+    }*/
 }

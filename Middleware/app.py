@@ -38,26 +38,25 @@ def login():
             "usuario": paciente.get("nss"),
             "rol": "paciente"
         }), 200
-    else:
-        try:
-            medico = medicoComunicacion.login_rest(usuario, password, jwt_token=None)
-        except Exception as e:
-            print("ERROR login_rest medico:", e)
-            medico = None
-
-        if medico:
-            payload = {
-                "usuario": medico.get("nss"),
-                "nombre": medico.get("nombre"),
-                "rol": "medico"
-            }
-            token = jwt.encode(payload, SECRET, algorithm="HS256")
-            return jsonify({
-                "token": token,
-                "usuario": medico.get("nss"),
-                "rol": "medico"
-            }), 200
     
+    try:
+        medico = medicoComunicacion.login_rest(usuario, password, jwt_token=None)
+    except Exception as e:
+        print("ERROR login_rest medico:", e)
+        medico = None
+
+    if medico:
+        payload = {
+            "usuario": medico.get("nss"),
+            "nombre": medico.get("nombre"),
+            "rol": "medico"
+        }
+        token = jwt.encode(payload, SECRET, algorithm="HS256")
+        return jsonify({
+            "token": token,
+            "usuario": medico.get("nss"),
+            "rol": "medico"
+        }), 200
     return jsonify({"error": "Credenciales incorrectas"}), 401
 
 #Este es el mismo del anterior caso para mqtt no creo que sea comun que se utilice

@@ -7,9 +7,11 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import com.secretaria_de_salud.Medico;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.and;
+import com.secretaria_de_salud.Paciente;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -36,23 +38,31 @@ public class MedicoPersistencia {
     private MongoClient client = MongoClients.create(settings);
 
     public Medico login(String nss, String pwd) {
+        System.out.println("Entro aqui login medico");
         MongoDatabase db = client.getDatabase("expedientedb");
         MongoCollection<Medico> col = db.getCollection("medicos", Medico.class);
 
         Medico medico = col.find(
-                and(
-                        eq("nss", nss),
-                        eq("pwd", pwd)
+                Filters.and(
+                        Filters.eq("nss", nss),
+                        Filters.eq("pwd", pwd)
                 )
         ).first();
 
-        if (medico == null || medico.getNombre() == null) {
+        if (medico == null) {
+            System.out.println("Medico no encontrado para nss=" + nss);
             return null;
         }
+
+        if (medico.getNombre() == null) {
+            System.out.println("Medico sin nombre para nss=" + nss);
+            return null;
+        }
+
         return medico;
     }
 
-   // Agregar médico
+    // Agregar médico
     public void agregarMedico(Medico medico) {
         MongoDatabase db = client.getDatabase("expedientedb");
         MongoCollection<Medico> col = db.getCollection("medicos", Medico.class);
