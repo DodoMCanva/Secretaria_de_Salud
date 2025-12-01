@@ -10,8 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
   graficoInstance = new grafico();
   graficoInstance.initNavigation();
 
-  consultarPaciente();
-
+  
+    consultarPaciente();
+  
   const cerrarSesion = document.getElementById('logout-button');
   if (cerrarSesion) {
     cerrarSesion.addEventListener('click', (e) => {
@@ -30,7 +31,7 @@ function consultarPaciente() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+      'Authorization': 'Bearer ' + localStorage.getItem('jwt')  // bearer token en header[web:146][web:153]
     },
     body: JSON.stringify({
       nss: usuario.nss

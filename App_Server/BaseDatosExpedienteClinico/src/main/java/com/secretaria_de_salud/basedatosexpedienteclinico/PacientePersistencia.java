@@ -42,13 +42,15 @@ public class PacientePersistencia {
         System.out.println("logeamos");
         MongoDatabase db = client.getDatabase("expedientedb");
         MongoCollection<Paciente> col = db.getCollection("pacientes", Paciente.class);
+
         Paciente paciente = col.find(
                 Filters.and(
                         Filters.eq("nss", nss),
                         Filters.eq("pwd", pwd)
                 )
         ).first();
-        if (paciente.getNombre() == null || paciente.getNombre() == "s") {
+
+        if (paciente == null || paciente.getNombre() == null || paciente.getNombre().equals("s")) {
             return null;
         }
         return paciente;
@@ -65,7 +67,7 @@ public class PacientePersistencia {
         MongoCollection<Paciente> col = db.getCollection("pacientes", Paciente.class);
         col.updateOne(
                 new Document("_id", paciente),
-                Updates.set("tutor", tutor) 
+                Updates.set("tutor", tutor)
         );
     }
 

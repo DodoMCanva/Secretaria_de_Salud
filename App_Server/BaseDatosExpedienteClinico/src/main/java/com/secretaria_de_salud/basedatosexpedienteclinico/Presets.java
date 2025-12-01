@@ -1,6 +1,7 @@
 package com.secretaria_de_salud.basedatosexpedienteclinico;
 
 import com.secretaria_de_salud.Expediente;
+import com.secretaria_de_salud.Medico;
 import com.secretaria_de_salud.Paciente;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,6 +17,8 @@ public class Presets {
      */
     public static void main(String[] args) {
         PacientePersistencia p = new PacientePersistencia();
+        MedicoPersistencia m = new MedicoPersistencia();
+
         //Limpiar expedientebd de mongo
         p.eliminarPacientes();
         //Agregar registros predeterminados
@@ -35,7 +38,7 @@ public class Presets {
         p1.setAlergias(new ArrayList<String>());
         p1.setExp(new Expediente());
         p.agregarPaciente(p1);
-        
+
         Paciente p2 = new Paciente();
         p2.setNss("423482374");
         p2.setNombre("Maria Hinojosa");
@@ -54,8 +57,28 @@ public class Presets {
         alergias.add("Gatos");
         p2.setAlergias(alergias);
         p2.setExp(new Expediente());
-        
+
         p.agregarPaciente(p2);
+
+        // Médico SIN cédula
+        Medico med1 = new Medico();
+        med1.setNss("11111111111");
+        med1.setNombre("Dr. Carlos López");
+        med1.setCorreo("carlos.medico@example.com");
+        med1.setTelefono("6449998888");
+        med1.setContraseña("med123");
+        m.agregarMedico(med1);
+
+// Médico CON cédula
+        Medico med2 = new Medico();
+        med2.setNss("22222222222");
+        med2.setNombre("Dra. Ana Ruiz");
+        med2.setCorreo("ana.medico@example.com");
+        med2.setTelefono("6447776666");
+        med2.setContraseña("med456");
+        med2.setCedula("ABC1234567");
+        m.agregarMedico(med2);
+
     }
 
 }

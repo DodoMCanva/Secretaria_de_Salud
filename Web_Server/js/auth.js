@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
           if (data.usuario) {
             localStorage.setItem('usuario', JSON.stringify({ nss: data.usuario }));
           }
+          localStorage.setItem('rol',data.rol);
+          
           window.location.href = 'index.html';
         } else {
           alert(data.error || 'Credenciales inválidas');
