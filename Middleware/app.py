@@ -7,6 +7,7 @@ from servicios import pacienteComunicacion, medicoComunicacion  # agrega medicoC
 app = Flask(__name__)
 CORS(app)
 
+
 SECRET = "cesvalferpaukimivsectrsalud!!@##"
 
 @app.route('/login', methods=['POST'])
@@ -31,35 +32,31 @@ def login():
             "nombre": paciente.get("nombre"),
             "rol": "paciente"
         }
-        token = jwt.encode(payload, SECRET, algorithm="HS256")  # payload con rol[web:168][web:164]
-        return jsonify({
-            "token": token,
-            "usuario": paciente,
-            "rol": "paciente"
-        }), 200
-
-    # 2) Si no es paciente, intentar como MÉDICO (REST o MQTT, según tu diseño)
-    try:
-        medico = medicoComunicacion.login_rest(usuario, password, jwt_token=None)
-        # o login_mqtt(...), según cómo lo hayas implementado
-    except Exception as e:
-        print("ERROR login_rest medico:", e)
-        medico = None
-
-    if medico:
-        payload = {
-            "usuario": medico.get("nss"),
-            "nombre": medico.get("nombre"),
-            "rol": "medico"
-        }
         token = jwt.encode(payload, SECRET, algorithm="HS256")
         return jsonify({
             "token": token,
-            "usuario": medico,
-            "rol": "medico"
+            "usuario": paciente.get("nss"),
+            "rol": "paciente"
         }), 200
+    else:
+        try:
+            medico = medicoComunicacion.login_rest(usuario, password, jwt_token=None)
+        except Exception as e:
+            print("ERROR login_rest medico:", e)
+            medico = None
 
-
+        if medico:
+            payload = {
+                "usuario": medico.get("nss"),
+                "nombre": medico.get("nombre"),
+                "rol": "medico"
+            }
+            token = jwt.encode(payload, SECRET, algorithm="HS256")
+            return jsonify({
+                "token": token,
+                "usuario": medico.get("nss"),
+                "rol": "medico"
+            }), 200
     
     return jsonify({"error": "Credenciales incorrectas"}), 401
 
@@ -107,7 +104,7 @@ def consulta_paciente():
     data = request.json
     nss = data.get('nss')
     print("Entró /paciente/consulta con nss:", nss)
-
+    
     resp = pacienteComunicacion.consulta_paciente_esperando_respuesta(nss, token)
     print("Respuesta desde MQTT:", resp)
     return jsonify(resp), 200

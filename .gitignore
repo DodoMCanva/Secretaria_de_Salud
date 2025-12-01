@@ -13,3 +13,4 @@ App_Server/ServicioPaciente/nb-configuration.xml
 
 # Ignorar cualquier __pycache__ en todo el proyecto
 **/__pycache__/
+/App_Server/ServicioSolicitud/target/

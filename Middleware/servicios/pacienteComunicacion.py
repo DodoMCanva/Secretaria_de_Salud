@@ -43,7 +43,7 @@ def publicar_consulta_paciente(_id, jwt_token):
     client.publish(TOPIC_PUBLICAR, json.dumps(msg))
     client.disconnect()
 
-def consulta_paciente_esperando_respuesta(nss, jwt_token, timeout=5):
+def consulta_paciente_esperando_respuesta(nss, jwt_token, timeout=10):
     reply_to = f"respuesta/paciente/{nss}"
     q = queue.Queue()
 
