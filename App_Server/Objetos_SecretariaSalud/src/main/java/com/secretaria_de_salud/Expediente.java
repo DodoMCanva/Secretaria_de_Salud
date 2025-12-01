@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.bson.types.Binary;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -11,12 +12,30 @@ import org.bson.types.Binary;
  */
 public class Expediente {
 
+    private ObjectId ID;
+    private String nss;
     private Date ultModf;
     private List<Binary> pdfs;
     private List<Binary> imagenes;
     private List<String> recetas;
 
     public Expediente() {
+    }
+
+    public ObjectId getID() {
+        return ID;
+    }
+
+    public void setID(ObjectId ID) {
+        this.ID = ID;
+    }
+
+    public String getNss() {
+        return nss;
+    }
+
+    public void setNss(String nss) {
+        this.nss = nss;
     }
 
     public Date getUltModf() {

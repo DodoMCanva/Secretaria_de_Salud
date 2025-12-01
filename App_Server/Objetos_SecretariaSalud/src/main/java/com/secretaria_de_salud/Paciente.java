@@ -15,13 +15,12 @@ public class Paciente {
     private ObjectId ID;
     private String nss, nombre, correo, telefono, curp, tipoSangre, nombreContEm, telefonoContEm;
     private ArrayList<String> alergias;
-    
+
     //No cargar completamente
     private Binary huella;
     private Date fehcaNac;
     private ObjectId tutor;
     private String pwd;
-    private Expediente exp;
 
     public Paciente() {
     }
@@ -55,7 +54,6 @@ public class Paciente {
         this.nombreContEm = nombreContEm;
         this.telefonoContEm = telefonoContEm;
         this.alergias = alergias;
-        this.exp = exp;
     }
 
     public ObjectId getID() {
@@ -168,14 +166,6 @@ public class Paciente {
 
     public void setAlergias(ArrayList<String> alergias) {
         this.alergias = alergias;
-    }
-
-    public Expediente getExp() {
-        return exp;
-    }
-
-    public void setExp(Expediente exp) {
-        this.exp = exp;
     }
 
     @Override
