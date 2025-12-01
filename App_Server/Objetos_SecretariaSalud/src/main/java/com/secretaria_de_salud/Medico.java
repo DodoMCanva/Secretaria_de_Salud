@@ -15,7 +15,7 @@ public class Medico {
     private String correo;
     private String telefono;
     private String cedula;
-    private String contraseña;
+    private String pwd;
     private Binary huella;
     private Date fehcaNac;
     private String nss;
@@ -23,13 +23,13 @@ public class Medico {
     public Medico() {
     }
 
-    public Medico(ObjectId ID, String nombre, String correo, String telefono, String cedula, String contraseña, Binary huella, Date fehcaNac, String nss) {
+    public Medico(ObjectId ID, String nombre, String correo, String telefono, String cedula, String pwd, Binary huella, Date fehcaNac, String nss) {
         this.ID = ID;
         this.nombre = nombre;
         this.correo = correo;
         this.telefono = telefono;
         this.cedula = cedula;
-        this.contraseña = contraseña;
+        this.pwd = pwd;
         this.huella = huella;
         this.fehcaNac = fehcaNac;
         this.nss = nss;
@@ -78,12 +78,12 @@ public class Medico {
         this.cedula = cedula;
     }
 
-    public String getContraseña() {
-        return contraseña;
+    public String getPwd() {
+        return pwd;
     }
 
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
     }
 
     public Binary getHuella() {
@@ -112,7 +112,7 @@ public class Medico {
 
     @Override
     public String toString() {
-        return "Medico{" + "ID=" + ID + ", nombre=" + nombre + ", correo=" + correo + ", telefono=" + telefono + ", cedula=" + cedula + ", contrase\u00f1a=" + contraseña + ", huella=" + huella + ", fehcaNac=" + fehcaNac + ", nss=" + nss + '}';
+        return "Medico{" + "ID=" + ID + ", nombre=" + nombre + ", correo=" + correo + ", telefono=" + telefono + ", cedula=" + cedula + ", contrase\u00f1a=" + pwd + ", huella=" + huella + ", fehcaNac=" + fehcaNac + ", nss=" + nss + '}';
     }
         
     

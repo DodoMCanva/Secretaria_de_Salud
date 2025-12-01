@@ -64,12 +64,14 @@ public class Presets {
         p.agregarPaciente(p2);
 
         // ===== MEDICOS =====
+        m.eliminarMedicos();
+        
         Medico med1 = new Medico();
-        med1.setNss("11111111111");
+        med1.setNss("150294");
         med1.setNombre("Dr. Carlos López");
         med1.setCorreo("carlos.medico@example.com");
         med1.setTelefono("6449998888");
-        med1.setContraseña("med123");
+        med1.setPwd("med123");
         // agrega aquí más campos si tu clase Medico los tiene (especialidad, cedula, etc.)
         m.agregarMedico(med1);
 
@@ -78,7 +80,8 @@ public class Presets {
         med2.setNombre("Dra. Ana Ruiz");
         med2.setCorreo("ana.medico@example.com");
         med2.setTelefono("6447776666");
-        med2.setContraseña("med456");
+        med2.setPwd("med456");
+        
         m.agregarMedico(med2);
 
         // --- EJECUTAR PRUEBAS DE EXPEDIENTE ---
