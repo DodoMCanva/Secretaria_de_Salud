@@ -355,5 +355,5 @@ def responder_solicitud():
     resp = solicitudComunicacion.responder_solicitud(id_solicitud, nuevo_estado, token)
     return jsonify(resp), 200
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     app.run(debug=True, port=5000)
