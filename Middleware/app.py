@@ -221,18 +221,22 @@ def consulta_expediente_mqtt():
 @app.route("/solicitudes/crear", methods=["POST"])
 def crear_solicitud():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
-    usuario = auth.validar_token(token)                    # LEE JWT DEL MÉDICO
-    # usuario["usuario"] = idSolicitante (médico)
+    usuario = auth.validar_token(token)
+    if not usuario:
+        return jsonify({"error": "Token inválido o expirado"}), 401
 
     data = request.get_json(silent=True) or {}
     nss_paciente = data.get("nssPaciente")
-    motivo = data.get("motivo", "Consulta clínica")
-    id_solicitante = usuario.get("usuario")                # id del MÉDICO
+    motivo = data.get("motivo")
+    nss_medico = usuario.get("usuario")   # este será nssMedico
+
+    if not nss_paciente:
+        return jsonify({"error": "Falta nssPaciente"}), 400
 
     res = solicitudComunicacion.crear_solicitud(
-        nss_paciente, id_solicitante, motivo, token        # MIDDLEWARE - ServicioSolicitud
+        nss_paciente, nss_medico, motivo, token
     )
-    return jsonify(res), 200
+    return jsonify({"respuesta": res}), 200
 
 
 

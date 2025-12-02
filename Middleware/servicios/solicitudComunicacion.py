@@ -12,56 +12,20 @@ GLASSFISH_URL_SOLICITUD_BASE = (
 # =========================
 # MÉDICO -> CREAR SOLICITUD
 # =========================
-def crear_solicitud_acceso(nss_paciente, id_medico, motivo, jwt_token):
-    """
-    Llama al ServicioSolicitud para crear una nueva solicitud de acceso.
-    """
-    url = f"{GLASSFISH_URL_SOLICITUD_BASE}/solicitudes"
+def crear_solicitud(nss_paciente, nss_medico, motivo, jwt_token):
+    # llama a /solicitudes/crear con QUERY PARAMS
+    url = f"{GLASSFISH_URL_SOLICITUD_BASE}/solicitudes/crear"
     headers = {
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json",
     }
-    payload = {
+    params = {
         "nssPaciente": nss_paciente,
-        "idMedico": id_medico,
+        "nssMedico": nss_medico,
         "motivo": motivo,
     }
-    resp = requests.post(url, json=payload, headers=headers)
+    # cuerpo vacío; todo va en query
+    resp = requests.post(url, headers=headers, params=params)
     if resp.status_code == 200:
-        return resp.json()
+        return resp.text  # Java devuelve "Se armo"
     return {"error": resp.text or "Error creando solicitud", "status": resp.status_code}
-
-
-# =========================
-# PACIENTE -> LISTAR SOLICITUDES
-# =========================
-def listar_solicitudes_pendientes(nss_paciente, jwt_token):
-    """
-    Devuelve las solicitudes PENDIENTES para ese paciente.
-    """
-    url = f"{GLASSFISH_URL_SOLICITUD_BASE}/solicitudes/paciente/{nss_paciente}"
-    headers = {"Authorization": f"Bearer {jwt_token}"}
-    resp = requests.get(url, headers=headers)
-    if resp.status_code == 200:
-        return resp.json()
-    return {"error": resp.text or "Error listando solicitudes", "status": resp.status_code}
-
-
-# =========================
-# PACIENTE -> RESPONDER SOLICITUD
-# =========================
-def responder_solicitud(id_solicitud, nuevo_estado, jwt_token):
-    """
-    Cambia el estado de la solicitud a ACEPTADA o RECHAZADA.
-    """
-    url = f"{GLASSFISH_URL_SOLICITUD_BASE}/solicitudes/{id_solicitud}"
-    headers = {
-        "Authorization": f"Bearer {jwt_token}",
-        "Content-Type": "application/json",
-    }
-    payload = {"estado": nuevo_estado}  # "ACEPTADA" o "RECHAZADA"
-    resp = requests.put(url, json=payload, headers=headers)
-    if resp.status_code == 200:
-        return resp.json()
-    return {"error": resp.text or "Error respondiendo solicitud", "status": resp.status_code}
-
