@@ -78,6 +78,21 @@ def rutasCesar():
         "mqtt" : "1883"}
     return direcciones
 
+def rutasIvan():
+    #Son los puertos que usamos localmente para ejecutarlo
+    #Servicios: paciente, medico, expediente, cita, solicitud
+    #adicional: base de datos, http local, middleware, mqtt
+    direcciones = {
+        "paciente" : "30775", 
+        "medico" : "26487", 
+        "expediente" : "23287", 
+        "cita" : "9371", 
+        "solicitud" : "31989",
+        "http_local" : "8800", 
+        "mid" : "5000", 
+        "mqtt" : "1883"}
+    return direcciones
+
 def rutasActuales():
-    return rutasFer()
+    return rutasIvan()
     
