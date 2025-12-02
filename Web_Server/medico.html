@@ -25,6 +25,7 @@
                     </div>
                 </div>
                 <div class="user-info">
+                    <!-- ID para la barra lateral -->
                     <p id="user-name" class="user-name">Cargando usuario...</p>
                     <span class="badge badge-purple">Personal Médico</span>
                 </div>
@@ -74,143 +75,153 @@
 
         <main class="main-content">
             <div id="view-expedientevista" class="view-content active">
-				<div id="expediente-busqueda" class="content-wrapper active">
-					<div class="card">
-						<div class="card-header">
-							<h2>🔎 Búsqueda de Pacientes</h2>
-							<p class="text-muted">Busque un paciente por nombre, ID, CURP o NSS.</p>
-						</div>
-						<div class="card-content">
-							<div class="form-group search-bar">
-								<input type="text" id="input-paciente-search" class="form-input" placeholder="Escriba nombre o identificación del paciente...">
-								<button class="btn btn-primary" id="btn-search-pacientes">Buscar</button>
-							</div>
-						</div>
-					</div>
+                <div id="expediente-busqueda" class="content-wrapper active">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>🔎 Búsqueda de Pacientes</h2>
+                            <p class="text-muted">Busque un paciente por nombre, ID, CURP o NSS.</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="form-group search-bar">
+                                <input type="text" id="input-paciente-search" class="form-input"
+                                    placeholder="Escriba nombre o identificación del paciente...">
+                                <button class="btn btn-primary" id="btn-search-pacientes">Buscar</button>
+                            </div>
+                        </div>
+                    </div>
 
-					<div class="card patient-results-card">
-						<div class="card-header">
-							<h3>Resultados de la Búsqueda</h3>
-						</div>
-						<div class="card-content">
-							<div class="table-container">
-								<table class="table table-hover">
-									<thead>
-										<tr>
-											<th>ID Paciente</th>
-											<th>Nombre Completo</th>
-											<th>CURP</th>
-											<th>Última Modf.</th>
-											<th>Acción</th>
-										</tr>
-									</thead>
-									<tbody id="tabla-pacientes-resultados">
-										<tr>
-											<td>pat_001</td>
-											<td>Juan Pérez</td>
-											<td class="font-mono">GOLM890515MDFNLR08</td>
-											<td>2025-11-20</td>
-											<td><button class="btn btn-sm btn-info btn-solicitar" data-id="12345678901">Solicitar Expediente</button></td>
-										</tr>
-										<tr>
-											<td>pat_002</td>
-											<td>Maria Hinojosa</td>
-											<td class="font-mono">RAPJ950101HDSDFA01</td>
-											<td>2025-10-05</td>
-											<td><button class="btn btn-sm btn-info btn-solicitar" data-id="423482374">Solicitar Expediente</button></td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
+                    <div class="card patient-results-card">
+                        <div class="card-header">
+                            <h3>Resultados de la Búsqueda</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="table-container">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID Paciente</th>
+                                            <th>Nombre Completo</th>
+                                            <th>CURP</th>
+                                            <th>Última Modf.</th>
+                                            <th>Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabla-pacientes-resultados">
+                                        <tr>
+                                            <td>pat_001</td>
+                                            <td>María Elena González López</td>
+                                            <td class="font-mono">GOLM890515MDFNLR08</td>
+                                            <td>2025-11-20</td>
+                                            <td><button class="btn btn-sm btn-info btn-solicitar"
+                                                    data-id="pat_001">Solicitar Expediente</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>pat_002</td>
+                                            <td>Juan Carlos Ramírez Pérez</td>
+                                            <td class="font-mono">RAPJ950101HDSDFA01</td>
+                                            <td>2025-10-05</td>
+                                            <td><button class="btn btn-sm btn-info btn-solicitar"
+                                                    data-id="pat_002">Solicitar Expediente</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-				<div id="expediente-detalle" class="content-wrapper hidden">
-					<div class="card patient-detail-card">
-						<div class="card-header">
-							<div class="patient-header">
-								<div class="patient-avatar">
-									<svg class="icon-large" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-								</div>
-								<div>
-									<h2 id="detalle-nombre">Expediente de [Nombre del Paciente]</h2>
-									<p class="text-muted">ID: <span id="detalle-id"></span> | Última Modificación: <span id="detalle-ultmodf"></span></p>
-								</div>
-							</div>
-							<button class="btn btn-danger" id="btn-cerrar-expediente">Cerrar Expediente</button>
-						</div>
-					</div>
-					
-					<div class="card">
-						<div class="card-header">
-							<h2>Información Biográfica y Médica</h2>
-							<span class="badge badge-success" id="detalle-estado">Activo</span>
-						</div>
-						<div class="card-content">
-							<div class="info-grid">
-								<div class="info-item">
-									<label>Edad</label>
-									<p id="detalle-edad">--</p>
-								</div>
-								<div class="info-item">
-									<label>CURP</label>
-									<p id="detalle-curp" class="font-mono">--</p>
-								</div>
-								<div class="info-item">
-									<label>NSS</label>
-									<p id="detalle-nss" class="font-mono">--</p>
-								</div>
-								<div class="info-item">
-									<label>Tipo de Sangre</label>
-									<p id="detalle-tiposangre">--</p>
-								</div>
-								<div class="info-item">
-									<label>Alergias</label>
-									<div class="badge-group" id="detalle-alergias">
-										</div>
-								</div>
-								<div class="info-item">
-									<label>Contacto de Emergencia</label>
-									<p id="detalle-contacto">--</p>
-								</div>
-							</div>
-						</div>
-					</div>
+                <div id="expediente-detalle" class="content-wrapper hidden">
+                    <div class="card patient-detail-card">
+                        <div class="card-header">
+                            <div class="patient-header">
+                                <div class="patient-avatar">
+                                    <svg class="icon-large" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h2 id="detalle-nombre">Expediente de [Nombre del Paciente]</h2>
+                                    <p class="text-muted">ID: <span id="detalle-id"></span> | Última Modificación: <span
+                                            id="detalle-ultmodf"></span></p>
+                                </div>
+                            </div>
+                            <button class="btn btn-danger" id="btn-cerrar-expediente">Cerrar Expediente</button>
+                        </div>
+                    </div>
 
-					<div class="card">
-						<div class="card-header">
-							<h2>Documentos del Expediente</h2>
-							<button class="btn btn-primary" id="btn-subir-archivo">
-								<svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0l-4 4m4-4v12" /></svg>
-								Subir Archivo
-							</button>
-						</div>
-						<div class="card-content">
-							<div class="document-list-grid">
-								<div class="document-section">
-									<h4><span class="badge badge-primary">PDFs</span></h4>
-									<ul id="lista-pdfs" class="file-list">
-										</ul>
-								</div>
-								
-								<div class="document-section">
-									<h4><span class="badge badge-info">Imágenes</span></h4> 
-									<ul id="lista-imagenes" class="file-list">
-										</ul>
-								</div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Información Biográfica y Médica</h2>
+                            <span class="badge badge-success" id="detalle-estado">Activo</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <label>Edad</label>
+                                    <p id="detalle-edad">--</p>
+                                </div>
+                                <div class="info-item">
+                                    <label>CURP</label>
+                                    <p id="detalle-curp" class="font-mono">--</p>
+                                </div>
+                                <div class="info-item">
+                                    <label>NSS</label>
+                                    <p id="detalle-nss" class="font-mono">--</p>
+                                </div>
+                                <div class="info-item">
+                                    <label>Tipo de Sangre</label>
+                                    <p id="detalle-tiposangre">--</p>
+                                </div>
+                                <div class="info-item">
+                                    <label>Alergias</label>
+                                    <div class="badge-group" id="detalle-alergias">
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Contacto de Emergencia</label>
+                                    <p id="detalle-contacto">--</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-								<div class="document-section">
-									<h4><span class="badge badge-success">Recetas</span></h4>
-									<ul id="lista-recetas" class="file-list">
-										</ul>
-								</div>
-							</div>
-						</div>
-					</div>
-					
-					</div>
-			</div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Documentos del Expediente</h2>
+                            <button class="btn btn-primary" id="btn-subir-archivo">
+                                <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0l-4 4m4-4v12" />
+                                </svg>
+                                Subir Archivo
+                            </button>
+                        </div>
+                        <div class="card-content">
+                            <div class="document-list-grid">
+                                <div class="document-section">
+                                    <h4><span class="badge badge-primary">PDFs</span></h4>
+                                    <ul id="lista-pdfs" class="file-list">
+                                    </ul>
+                                </div>
+
+                                <div class="document-section">
+                                    <h4><span class="badge badge-info">Imágenes</span></h4>
+                                    <ul id="lista-imagenes" class="file-list">
+                                    </ul>
+                                </div>
+
+                                <div class="document-section">
+                                    <h4><span class="badge badge-success">Recetas</span></h4>
+                                    <ul id="lista-recetas" class="file-list">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
 
             <div id="view-citasvista" class="view-content">
                 <div class="content-wrapper">
@@ -296,7 +307,7 @@
                     </div>
                 </div>
             </div>
-
+            <!-- VISTA PERFIL (CONFIGURACIÓN) -->
             <div id="view-perfilvista" class="view-content">
                 <div class="content-wrapper">
                     <div class="card">
@@ -304,9 +315,10 @@
                             <div class="profile-header">
                                 <div class="avatar-large">DR</div>
                                 <div>
-                                    <h2>Perfil Profesional</h2>
+                                    <!-- AQUI CORREGÍ: AGREGUÉ IDs -->
+                                    <h2 id="header-medico-nombre">Cargando...</h2>
                                     <p class="text-muted">
-                                        <span class="badge badge-outline">Personal Médico</span>
+                                        <span class="badge badge-outline" id="header-medico-rol">Personal Médico</span>
                                     </p>
                                 </div>
                             </div>
@@ -320,6 +332,7 @@
                         </div>
 
                         <div class="tabs-content">
+                            <!-- PESTAÑA INFORMACIÓN PERSONAL -->
                             <div id="tab-personal" class="tab-content active">
                                 <div class="card">
                                     <div class="card-header">
@@ -329,18 +342,22 @@
                                         <div class="form-grid">
                                             <div class="form-group">
                                                 <label>Nombre Completo</label>
+                                                <!-- ID CORRECTO -->
                                                 <input type="text" id="perfil-nombre" class="form-input" disabled>
                                             </div>
                                             <div class="form-group">
                                                 <label>Correo Electrónico</label>
+                                                <!-- ID CORRECTO -->
                                                 <input type="email" id="perfil-email" class="form-input" disabled>
                                             </div>
                                             <div class="form-group">
                                                 <label>Teléfono</label>
+                                                <!-- ID CORRECTO -->
                                                 <input type="tel" id="perfil-telefono" class="form-input" disabled>
                                             </div>
                                             <div class="form-group">
                                                 <label>Cédula Profesional</label>
+                                                <!-- ID CORRECTO -->
                                                 <input type="text" id="perfil-cedula" class="form-input" disabled>
                                             </div>
                                         </div>

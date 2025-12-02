@@ -1,8 +1,13 @@
 # servicios/solicitudComunicacion.py
 import requests
 from rutas import rutas
+import json
+import paho.mqtt.client as mqtt
+import queue
 
 direcciones = rutas.rutasActuales()
+MQTT_BROKER = "localhost"
+
 
 # ServicioSolicitud corre en otro puerto; ajústalo en rutasActuales()
 GLASSFISH_URL_SOLICITUD_BASE = (
@@ -12,24 +17,36 @@ GLASSFISH_URL_SOLICITUD_BASE = (
 # =========================
 # MÉDICO -> CREAR SOLICITUD
 # =========================
-def crear_solicitud_acceso(nss_paciente, id_medico, motivo, jwt_token):
-    """
-    Llama al ServicioSolicitud para crear una nueva solicitud de acceso.
-    """
-    url = f"{GLASSFISH_URL_SOLICITUD_BASE}/solicitudes"
+def crear_solicitud(nss_paciente, nss_medico, motivo, jwt_token):
+    # llama a /solicitudes/crear con QUERY PARAMS
+    url = f"{GLASSFISH_URL_SOLICITUD_BASE}/solicitudes/crear"
     headers = {
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json",
     }
-    payload = {
+    params = {
         "nssPaciente": nss_paciente,
-        "idMedico": id_medico,
+        "nssMedico": nss_medico,
         "motivo": motivo,
     }
-    resp = requests.post(url, json=payload, headers=headers)
+
+
+    # cuerpo vacío; todo va en query
+    resp = requests.post(url, headers=headers, params=params)
     if resp.status_code == 200:
-        return resp.json()
+        return resp.text  # Java devuelve "Se armo"
     return {"error": resp.text or "Error creando solicitud", "status": resp.status_code}
+# Lógica para definir el puerto dinámicamente
+# Si existe una configuración específica "solicitud_mqtt" (Caso Fer), úsala.
+# Si no, usa la general "mqtt" (Caso Pau, Kim, etc).
+if "solicitud_mqtt" in direcciones:
+    MQTT_PORT = int(direcciones["solicitud_mqtt"])
+elif "mqtt" in direcciones:
+    MQTT_PORT = int(direcciones["mqtt"])
+else:
+    MQTT_PORT = 1883 # Default de seguridad
+
+TOPIC_PUBLICAR_SOLICITUDES = "consulta/solicitudes"
 
 
 # =========================
@@ -65,3 +82,47 @@ def responder_solicitud(id_solicitud, nuevo_estado, jwt_token):
         return resp.json()
     return {"error": resp.text or "Error respondiendo solicitud", "status": resp.status_code}
 
+# =========================
+# NUEVO: CONSULTA MQTT
+# =========================
+def consultar_solicitudes_mqtt(nss_paciente, jwt_token, timeout=10):
+    """
+    Consulta las solicitudes de un paciente vía MQTT esperando respuesta síncrona.
+    """
+    # 1. Crear tópico único de respuesta
+    reply_to = f"respuesta/solicitudes/{nss_paciente}"
+    q = queue.Queue()
+
+    # 2. Callback interno
+    def on_message(client, userdata, msg):
+        try:
+            data = json.loads(msg.payload.decode("utf-8"))
+            q.put(data)
+        except Exception as e:
+            q.put({"error": str(e)})
+
+    # 3. Configurar cliente MQTT temporal
+    client = mqtt.Client()
+    client.on_message = on_message
+    client.connect(MQTT_BROKER, MQTT_PORT, 60)
+    client.subscribe(reply_to)
+    client.loop_start()
+
+    # 4. Publicar mensaje
+    msg = {
+        "nss": nss_paciente,
+        "jwt": jwt_token,
+        "replyTo": reply_to
+    }
+    client.publish(TOPIC_PUBLICAR_SOLICITUDES, json.dumps(msg))
+
+    # 5. Esperar respuesta
+    try:
+        resp = q.get(timeout=timeout)
+    except queue.Empty:
+        resp = {"error": "Timeout esperando respuesta del servicio solicitudes"}
+
+    client.loop_stop()
+    client.disconnect()
+    
+    return resp
