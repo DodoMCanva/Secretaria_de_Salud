@@ -1,4 +1,3 @@
-
 const appState = {
     currentView: 'expedientevista'
 }
@@ -89,8 +88,8 @@ class grafico {
     cargarExpediente() {
 
     }
+    
     //navigacion
-
     initNavigation() {
         const self = this;
         const navItems = document.querySelectorAll('.nav-item');
@@ -100,28 +99,29 @@ class grafico {
                 self.switchView(view);
             });
         });
+        
+        // Iniciar tabs también
+        this.initTabs();
     }
 
     switchView(viewName) {
-        // Actualizar estado
-        appState.currentView = viewName;
+        // 1. Ocultar todas
+        const views = document.querySelectorAll('.view-content');
+        views.forEach(view => {
+            view.classList.remove('active');
 
-        // Actualizar navegación activa
+        });
+
+        // 2. Desactivar botones
         const navItems = document.querySelectorAll('.nav-item');
-        navItems.forEach(function (item) {
+        navItems.forEach(item => {
+            item.classList.remove('active');
             if (item.getAttribute('data-view') === viewName) {
                 item.classList.add('active');
-            } else {
-                item.classList.remove('active');
             }
         });
 
-        // Actualizar vista activa
-        const views = document.querySelectorAll('.view-content');
-        views.forEach(function (view) {
-            view.classList.remove('active');
-        });
-
+        // 3. Mostrar la seleccionada
         const activeView = document.getElementById('view-' + viewName);
         if (activeView) {
             activeView.classList.add('active');
@@ -131,12 +131,13 @@ class grafico {
     // ===== TABS =====
 
     initTabs() {
+        const self = this; // Guardar referencia
         const tabButtons = document.querySelectorAll('.tab-button');
 
         tabButtons.forEach(function (button) {
             button.addEventListener('click', function () {
                 const tabName = this.getAttribute('data-tab');
-                switchTab(tabName);
+                self.switchTab(tabName);
             });
         });
     }
@@ -166,43 +167,86 @@ class grafico {
 
 
     cargarSolicitudesEnTabla(solicitudes) {
-        const tbody = document.getElementById('tabla-accesos');
-        if (!tbody) return;
+        console.log(">>> INICIANDO RENDERIZADO DE TABLA. Datos:", solicitudes);
 
-        tbody.innerHTML = ''; // Limpiar tabla
+        const tbody = document.getElementById('tabla-accesos');
+        if (!tbody) {
+            console.error("!!! ERROR CRÍTICO: No existe el tbody con id 'tabla-accesos' en el HTML");
+            return;
+        }
+
+        // 1. Limpiar tabla
+        tbody.innerHTML = '';
 
         if (!solicitudes || solicitudes.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" class="text-center">No hay solicitudes pendientes</td></tr>';
             return;
         }
 
-        solicitudes.forEach(sol => {
-            const tr = document.createElement('tr');
+        // 2. Recorrer datos con seguridad
+        solicitudes.forEach((sol, index) => {
+            try {
+                console.log(`Procesando fila ${index}:`, sol);
 
-            // Asumiendo que el objeto solicitud tiene estos campos
-            // Ajusta según tu clase Java Solicitud
-            const fechaFmt = sol.fecha || "Sin fecha";
-            const medicoNombre = sol.nombreMedico || sol.idMedico || "Médico";
+                // --- A. OBTENER ID SEGURO ---
+                let idSafe = "error_id";
 
-            // Renderizar estado con estilo
-            let badgeClass = 'badge-purple';
-            if (sol.estado === 'ACEPTADA') badgeClass = 'badge-success';
-            if (sol.estado === 'RECHAZADA') badgeClass = 'badge-danger';
+                if (sol.id) {
+                    if (typeof sol.id === 'string') {
+                        idSafe = sol.id;
+                    } else if (sol.id.$oid) {
+                        idSafe = sol.id.$oid; 
+                    } else if (sol.id.timestamp) {
+                        idSafe = "temp_" + sol.id.timestamp; 
+                    } else {
+                        idSafe = JSON.stringify(sol.id).replace(/["'{}]/g, "");
+                    }
+                } else if (sol._id) {
+                    idSafe = sol._id.$oid || sol._id;
+                }
 
-            tr.innerHTML = `
-                <td>${medicoNombre}</td> <td>Médico General</td> <td>${sol.idMedico}</td> <td><span class="badge ${badgeClass}">${sol.estado}</span></td>
-                <td>${fechaFmt}</td>
-                <td class="text-right">
-                    ${sol.estado === 'PENDIENTE' ?
-                    `<button class="btn btn-primary btn-sm" onclick="responderSolicitud('${sol.id}', 'ACEPTADA')">Aceptar</button>
-                         <button class="btn btn-ghost btn-danger btn-sm" onclick="responderSolicitud('${sol.id}', 'RECHAZADA')">Rechazar</button>`
-                    : '--'}
-                </td>
-            `;
-            tbody.appendChild(tr);
+                // --- B. OBTENER OTROS DATOS ---
+                const medico = sol.nombreMedico || sol.idMedico || "Médico";
+                const estado = sol.estado || "PENDIENTE";
+
+                // Fecha
+                let fechaFmt = "--";
+                if (sol.fechaSolicitud) {
+                    try {
+                        let fechaObj = new Date(sol.fechaSolicitud);
+                        fechaFmt = fechaObj.toLocaleDateString() + " " + fechaObj.toLocaleTimeString();
+                    } catch (e) { fechaFmt = "Fecha inválida"; }
+                }
+
+                // Estilos
+                let badgeClass = 'badge-purple';
+                if (estado === 'ACEPTADA') badgeClass = 'badge-success';
+                if (estado === 'RECHAZADA') badgeClass = 'badge-danger';
+
+                // --- C. CREAR HTML ---
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${medico}</td> 
+                    <td>Médico General</td> 
+                    <td>${sol.idMedico || '--'}</td> 
+                    <td><span class="badge ${badgeClass}">${estado}</span></td>
+                    <td>${fechaFmt}</td>
+                    <td class="text-right">
+                        ${estado === 'PENDIENTE' ?
+                        `<button class="btn btn-primary btn-sm" onclick="responderSolicitud('${idSafe}', 'ACEPTADA')">Aceptar</button>
+                         <button class="btn btn-ghost btn-danger btn-sm" onclick="responderSolicitud('${idSafe}', 'RECHAZADA')">Rechazar</button>`
+                        : '--'}
+                    </td>
+                `;
+
+                // --- D. AGREGAR A LA TABLA ---
+                tbody.appendChild(tr);
+                console.log(`Fila ${index} agregada correctamente.`);
+
+            } catch (errorFila) {
+                console.error(`!!! ERROR al procesar la fila ${index}:`, errorFila);
+                console.error("Datos que causaron el error:", sol);
+            }
         });
     }
-
-
-
 }
