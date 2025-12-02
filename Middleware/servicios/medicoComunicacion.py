@@ -48,17 +48,27 @@ def publicar_consulta_medico(nss, jwt_token):
     client.disconnect()
 
 
-# --- Consulta por MQTT esperando respuesta ---
+# Datos medicos
 def consulta_medico_esperando_respuesta(nss, jwt_token, timeout=5):
     reply_to = f"respuesta/medico/{nss}"
     q = queue.Queue()
 
     def on_message(client, userdata, msg):
+        raw = msg.payload
+
         try:
-            data = json.loads(msg.payload.decode("utf-8"))
+            decoded = raw.decode("utf-8")
+        except:
+            try:
+                decoded = raw.decode("latin1")
+            except:
+                q.put({"error": "No se pudo decodificar el mensaje del servicio médico"})
+                return
+        try:
+            data = json.loads(decoded)
             q.put(data)
         except Exception as e:
-            q.put({"error": str(e)})
+            q.put({"error": f"JSON inválido: {e}", "raw": decoded})
 
     client = mqtt.Client()
     client.on_message = on_message
@@ -76,8 +86,9 @@ def consulta_medico_esperando_respuesta(nss, jwt_token, timeout=5):
     try:
         resp = q.get(timeout=timeout)
     except queue.Empty:
-        resp = {"error": "Timeout esperando respuesta del servicio medico"}
+        resp = {"error": "Timeout esperando respuesta del servicio médico"}
 
     client.loop_stop()
     client.disconnect()
     return resp
+
