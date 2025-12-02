@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import jwt
 import auth
-from servicios import pacienteComunicacion, medicoComunicacion  # agrega medicoComunicacion
+from servicios import pacienteComunicacion, medicoComunicacion,solicitudComunicacion  #  medio de Comunicacion
 
 app = Flask(__name__)
 CORS(app)
@@ -215,6 +215,24 @@ def consulta_expediente_mqtt():
     # expediente.publicar_consulta_expediente(_id, token)
     return jsonify({"status": "Consulta publicada por MQTT"}), 202
 
+
+# ----------------- NUEVOS para solicitar permiso -----------------
+
+@app.route("/solicitudes/crear", methods=["POST"])
+def crear_solicitud():
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    usuario = auth.validar_token(token)                    # LEE JWT DEL MÉDICO
+    # usuario["usuario"] = idSolicitante (médico)
+
+    data = request.get_json(silent=True) or {}
+    nss_paciente = data.get("nssPaciente")
+    motivo = data.get("motivo", "Consulta clínica")
+    id_solicitante = usuario.get("usuario")                # id del MÉDICO
+
+    res = solicitudComunicacion.crear_solicitud(
+        nss_paciente, id_solicitante, motivo, token        # MIDDLEWARE - ServicioSolicitud
+    )
+    return jsonify(res), 200
 
 
 

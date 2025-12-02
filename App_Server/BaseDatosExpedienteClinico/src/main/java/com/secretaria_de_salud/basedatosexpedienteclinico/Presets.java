@@ -3,6 +3,7 @@ package com.secretaria_de_salud.basedatosexpedienteclinico;
 import com.secretaria_de_salud.Expediente;
 import com.secretaria_de_salud.Medico;
 import com.secretaria_de_salud.Paciente;
+import com.secretaria_de_salud.SolicitudAcceso;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -83,6 +84,20 @@ public class Presets {
         med2.setPwd("med456");
         
         m.agregarMedico(med2);
+
+        
+        // Insertar una solicitud de acceso DE PRUEBA
+        SolicitudPersistencia sp = new SolicitudPersistencia();
+        sp.eliminarSolicitud();
+        SolicitudAcceso solicitud = new SolicitudAcceso();
+        solicitud.setNssPaciente("12345678901"); // el mismo NSS del paciente de prueba
+        solicitud.setIdMedico("medico_demo"); // identificador de médico de prueba
+        solicitud.setEstado("PENDIENTE");
+        solicitud.setFechaSolicitud(new Date());
+        solicitud.setMotivo("Solicitud de prueba desde preset");
+
+        // Insertar la solicitud (si tienes un método directo)
+        sp.insertarSolicitud(solicitud);
 
         // --- EJECUTAR PRUEBAS DE EXPEDIENTE ---
         Presets tester = new Presets();

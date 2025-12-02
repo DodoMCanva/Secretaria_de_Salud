@@ -12,6 +12,7 @@ import com.secretaria_de_salud.SolicitudAcceso;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.bson.Document;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -51,6 +52,9 @@ public class SolicitudPersistencia {
         col().insertOne(s);
         return s;
     }
+ public void insertarSolicitud(SolicitudAcceso s) {
+    col().insertOne(s);
+}
 
     public List<SolicitudAcceso> listarPendientesPorPaciente(String nssPaciente) {
         List<SolicitudAcceso> res = new ArrayList<>();
@@ -82,5 +86,12 @@ public class SolicitudPersistencia {
                 Filters.eq("estado", "ACEPTADA")
         )).first();
         return s != null;
+    }
+      //Auxiliar
+    public void eliminarSolicitud() {
+        MongoDatabase db = client.getDatabase("expedientedb");
+        MongoCollection<SolicitudAcceso> col = db.getCollection("", SolicitudAcceso.class);
+        col.deleteMany(new Document());
+
     }
 }

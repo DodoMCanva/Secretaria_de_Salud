@@ -225,6 +225,45 @@ function cargarExpedienteDetalle(pacienteId) {
     }, 500);
 }
 
+function solicitarAccesoExpediente(pacienteId) {
+  const token = localStorage.getItem('jwt');
+  if (!token) {
+    alert('Sesión expirada, inicia sesión de nuevo.');
+    window.location.href = 'login.html';
+    return;
+  }
+
+  // Por ahora usamos pacienteId como identificador a enviar.
+  // Cuando tengas NSS real en la tabla, aquí mandarás ese NSS.
+  const body = {
+    nssPaciente: pacienteId,
+    motivo: 'Revisión de expediente clínico'
+  };
+
+  fetch('http://localhost:5000/solicitudes/crear', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    },
+    body: JSON.stringify(body)
+  })
+    .then(r => r.json())
+    .then(data => {
+      console.log('Respuesta /solicitudes/crear:', data);
+      if (data.error) {
+        alert('Error creando solicitud: ' + data.error);
+      } else {
+        alert('Solicitud enviada. Espera a que el paciente autorice.');
+        // aquí podrías guardar data.id si tu backend lo devuelve
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Error al conectar con el servidor.');
+    });
+}
+
 
 /**
  * Re-adjunta los listeners para la búsqueda cuando se carga/restaura la vista.
@@ -264,6 +303,8 @@ function setupSearchListeners() {
         tablaResultados.addEventListener('click', (e) => {
             if (e.target.classList.contains('btn-solicitar')) {
                 const pacienteId = e.target.getAttribute('data-id');
+                 solicitarAccesoExpediente(pacienteId);
+
                 cargarExpedienteDetalle(pacienteId);
             }
         });
