@@ -21,9 +21,11 @@ public class SolicitudResource {
 
     // Médico crea solicitud de acceso
     @POST
+    @Path("/solicitudes")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response crearSolicitud(SolicitudAcceso dto) {
+        System.out.println("los pollos hermanos"+dto);
         if (dto.getNssPaciente() == null || dto.getIdMedico() == null) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"error\":\"Faltan datos\"}")
