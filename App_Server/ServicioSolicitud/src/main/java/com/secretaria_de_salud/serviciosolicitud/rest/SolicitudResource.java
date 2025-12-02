@@ -22,22 +22,20 @@ public class SolicitudResource {
     // Médico crea solicitud de acceso
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/crear")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response crearSolicitud(SolicitudAcceso dto) {
-        if (dto.getNssPaciente() == null || dto.getIdMedico() == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("{\"error\":\"Faltan datos\"}")
+    public Response crearSolicitud(@QueryParam("nssPaciente") String nssPaciente, @QueryParam("nssMedico") String nssMedico, @QueryParam("motivo") String motivo) {
+        sp.crearSolicitud(nssPaciente, nssMedico, motivo);
+        return Response.ok("Se armo").build();
+        /*if (paciente != null) {
+            return Response.ok(paciente).build"Se armo"
+        } else {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("{\"error\":\"contraseña o usuario incorrectos\"}")
                     .type(MediaType.APPLICATION_JSON)
                     .build();
-        }
-        SolicitudAcceso creada = sp.crearSolicitud(
-                dto.getNssPaciente(),
-                dto.getIdMedico(),
-                dto.getMotivo()
-        );
-        return Response.ok(creada).build();
+        }*/
     }
-
     // Paciente ve sus solicitudes pendientes
     @GET
     @Path("/paciente/{nss}")
