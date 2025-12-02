@@ -113,6 +113,37 @@ function responderSolicitud(idSolicitud, nuevoEstado) {
 
   console.log(`Intentando responder ${nuevoEstado} a la solicitud ${idSolicitud}`);
 
-  //agregar el fetch para guardar la respuesta real 
-  alert(`Funcionalidad en construcción.\nSe enviaría: ${nuevoEstado} para ID: ${idSolicitud}`);
+  const token = localStorage.getItem('jwt');
+  if (!token) {
+    alert('Sesión expirada. Inicia sesión de nuevo.');
+    window.location.href = 'login.html';
+    return;
+  }
+
+  fetch('http://localhost:5000/solicitudes/responder', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    },
+    body: JSON.stringify({
+      id: idSolicitud,
+      estado: nuevoEstado   // "ACEPTADA" o "RECHAZADA"
+    })
+  })
+  .then(r => r.json().then(body => ({ ok: r.ok, status: r.status, body })))
+  .then(res => {
+    console.log('Respuesta responder_solicitud:', res);
+    if (res.ok) {
+      // Volver a cargar las solicitudes para refrescar la tabla
+      consultarSolicitudes();
+      alert(`Solicitud ${nuevoEstado} correctamente.`);
+    } else {
+      alert(`Error al responder solicitud (${res.status}): ` + (res.body.error || JSON.stringify(res.body)));
+    }
+  })
+  .catch(err => {
+    console.error('Error al llamar /solicitudes/responder:', err);
+    alert('Error de conexión con el servidor.');
+  });
 }

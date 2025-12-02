@@ -2,13 +2,20 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import jwt
 import auth
+<<<<<<< HEAD
 from servicios import pacienteComunicacion, medicoComunicacion,solicitudComunicacion, expedienteComunicacion  #  medio de Comunicacion
+=======
+from servicios import pacienteComunicacion, medicoComunicacion, solicitudComunicacion
+>>>>>>> Cesar
 
 app = Flask(__name__)
-CORS(app)
 
+# CORS: permitir llamadas desde tu front en 8800
+CORS(app, resources={r"/*": {"origins": "http://localhost:8800"}}, supports_credentials=True)
 
 SECRET = "cesvalferpaukimivsectrsalud!!@##"
+
+
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -38,7 +45,7 @@ def login():
             "usuario": paciente.get("nss"),
             "rol": "paciente"
         }), 200
-    
+
     try:
         medico = medicoComunicacion.login_rest(usuario, password, jwt_token=None)
     except Exception as e:
@@ -91,7 +98,7 @@ def consulta_paciente():
     data = request.json
     nss = data.get('nss')
     print("Entró /paciente/consulta con nss:", nss)
-    
+
     resp = pacienteComunicacion.consulta_paciente_esperando_respuesta(nss, token)
     print("Respuesta desde MQTT:", resp)
     return jsonify(resp), 200
@@ -105,10 +112,10 @@ def consulta_paciente():
 def buscar_pacientes():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
     usuario_info = auth.validar_token(token)
-    
+
     if not usuario_info:
         return jsonify({"error": "Token inválido o expirado"}), 401
-    
+
     # 1. Obtener el término de búsqueda del frontend (desde input-paciente-search)
     data = request.get_json(silent=True) or {}
     termino = data.get('termino', '').lower()
@@ -121,14 +128,14 @@ def buscar_pacientes():
     try:
         # Aquí se realizaría la llamada a tu servicio de comunicación para la búsqueda
         # resp = pacienteComunicacion.buscar_pacientes(termino, token)
-        
+
         # SIMULACIÓN de respuesta de pacientes (debes reemplazar con tu lógica de backend/DB)
         pacientes_simulados = [
             {"id": "pat_001", "nombreCompleto": "María Elena González López", "curp": "GOLM890515...", "ultModf": "2025-11-20"},
             {"id": "pat_002", "nombreCompleto": "Juan Carlos Ramírez Pérez", "curp": "RAPJ950101...", "ultModf": "2025-10-05"},
             {"id": "pat_003", "nombreCompleto": "Ana Torres", "curp": "TORA871212...", "ultModf": "2025-11-01"},
         ]
-        
+
         # Filtro simple por nombre (simulado)
         resultados = [p for p in pacientes_simulados if termino in p['nombreCompleto'].lower() or termino in p['id'].lower()]
 
@@ -146,7 +153,7 @@ def buscar_pacientes():
 def detalle_expediente():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
     usuario_info = auth.validar_token(token)
-    
+
     if not usuario_info:
         return jsonify({"error": "Token inválido o expirado"}), 401
 
@@ -180,7 +187,7 @@ def detalle_expediente():
                 "imagenes": [],
                 "recetas": []
             }
-        
+
         return jsonify({
             "status": "OK",
             "expediente": detalle
@@ -274,7 +281,7 @@ def medico_actual():
 
     if not usuario:
         return jsonify({"error": "Token inválido o expirado"}), 401
-    
+
     if usuario.get("rol") != "medico":
         return jsonify({"error": "No autorizado"}), 403
 
@@ -293,27 +300,22 @@ def medico_actual():
 
 # ----------------- Consultar solicitudes paciente-----------------
 
-
 @app.route("/solicitudes/consulta-mqtt", methods=["POST"])
 def consultar_solicitudes_paciente_mqtt():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
     usuario = auth.validar_token(token)
-    
+
     if not usuario:
         return jsonify({"error": "Token inválido"}), 401
 
     data = request.json
     nss = data.get('nss')
-    
-    # Validar que el usuario solo consulte sus propias solicitudes (opcional pero recomendado)
+
     if usuario.get('usuario') != nss:
-         return jsonify({"error": "No autorizado para ver estos datos"}), 403
+        return jsonify({"error": "No autorizado para ver estos datos"}), 403
 
     print(f"Consultando solicitudes MQTT para NSS: {nss}")
-
-    # Llamada a la nueva función MQTT
     resp = solicitudComunicacion.consultar_solicitudes_mqtt(nss, token)
-    
     return jsonify(resp), 200
 
 @app.route("/expediente/consulta", methods=["GET"])
@@ -334,6 +336,24 @@ def consulta_expediente():
 
     return jsonify(response), 200
 
+
+# -------------------- responder Solicitud -------------------
+@app.route("/solicitudes/responder", methods=["POST"])
+def responder_solicitud():
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    usuario = auth.validar_token(token)
+    if not usuario:
+        return jsonify({"error": "Token inválido"}), 401
+
+    data = request.get_json(silent=True) or {}
+    id_solicitud = data.get("id")
+    nuevo_estado = data.get("estado")  # "ACEPTADA" o "RECHAZADA"
+
+    if not id_solicitud or not nuevo_estado:
+        return jsonify({"error": "Faltan datos"}), 400
+
+    resp = solicitudComunicacion.responder_solicitud(id_solicitud, nuevo_estado, token)
+    return jsonify(resp), 200
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

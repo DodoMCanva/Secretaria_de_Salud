@@ -88,7 +88,7 @@ class grafico {
     cargarExpediente() {
 
     }
-    
+
     //navigacion
     initNavigation() {
         const self = this;
@@ -99,7 +99,7 @@ class grafico {
                 self.switchView(view);
             });
         });
-        
+
         // Iniciar tabs también
         this.initTabs();
     }
@@ -188,22 +188,26 @@ class grafico {
             try {
                 console.log(`Procesando fila ${index}:`, sol);
 
-                // --- A. OBTENER ID SEGURO ---
-                let idSafe = "error_id";
+                // --- A. OBTENER ID SEGURO (usar siempre el _id real de Mongo) ---
+                let idSafe = null;
 
-                if (sol.id) {
-                    if (typeof sol.id === 'string') {
-                        idSafe = sol.id;
-                    } else if (sol.id.$oid) {
-                        idSafe = sol.id.$oid; 
-                    } else if (sol.id.timestamp) {
-                        idSafe = "temp_" + sol.id.timestamp; 
-                    } else {
-                        idSafe = JSON.stringify(sol.id).replace(/["'{}]/g, "");
-                    }
-                } else if (sol._id) {
-                    idSafe = sol._id.$oid || sol._id;
+                // Caso típico: viene como { _id: { $oid: "..." } }
+                if (sol._id && sol._id.$oid) {
+                    idSafe = sol._id.$oid;
+                } else if (typeof sol._id === 'string') {
+                    // Por si el backend ya manda el string plano
+                    idSafe = sol._id;
+                } else if (sol.id && typeof sol.id === 'string') {
+                    // Fallback por si el campo se llama id
+                    idSafe = sol.id;
                 }
+
+                if (!idSafe) {
+                    console.error("No se pudo determinar un ID válido para la solicitud:", sol);
+                    // Opcional: no renders botones si no hay ID válido
+                    idSafe = "error_id";
+                }
+
 
                 // --- B. OBTENER OTROS DATOS ---
                 const medico = sol.nombreMedico || sol.idMedico || "Médico";
