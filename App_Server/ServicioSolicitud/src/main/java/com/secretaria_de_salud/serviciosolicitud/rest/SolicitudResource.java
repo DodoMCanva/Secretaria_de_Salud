@@ -47,17 +47,11 @@ public class SolicitudResource {
 
     // Paciente responde (ACEPTADA/RECHAZADA)
     @PUT
-    @Path("/{id}")
+    @Path("/responder")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response responder(@PathParam("id") String id, SolicitudAcceso dto) {
-        if (dto.getEstado() == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("{\"error\":\"Falta estado\"}")
-                    .type(MediaType.APPLICATION_JSON)
-                    .build();
-        }
-        sp.actualizarEstado(id, dto.getEstado());
+    public Response responder(@PathParam("id") String id, @PathParam("estado") String estado) {
+        sp.actualizarEstado(id, estado);
         return Response.ok("{\"status\":\"OK\"}")
                 .type(MediaType.APPLICATION_JSON)
                 .build();

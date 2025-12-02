@@ -71,7 +71,7 @@ def responder_solicitud(id_solicitud, nuevo_estado, jwt_token):
     """
     Cambia el estado de la solicitud a ACEPTADA o RECHAZADA.
     """
-    url = f"{GLASSFISH_URL_SOLICITUD_BASE}/solicitudes/{id_solicitud}"
+    url = f"{GLASSFISH_URL_SOLICITUD_BASE}/solicitudes/responder"
     headers = {
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json",
