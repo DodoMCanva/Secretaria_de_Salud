@@ -29,13 +29,13 @@ def crear_solicitud(nss_paciente, nss_medico, motivo, jwt_token):
         "nssMedico": nss_medico,
         "motivo": motivo,
     }
+
+
     # cuerpo vacío; todo va en query
     resp = requests.post(url, headers=headers, params=params)
     if resp.status_code == 200:
         return resp.text  # Java devuelve "Se armo"
     return {"error": resp.text or "Error creando solicitud", "status": resp.status_code}
-
-
 # Lógica para definir el puerto dinámicamente
 # Si existe una configuración específica "solicitud_mqtt" (Caso Fer), úsala.
 # Si no, usa la general "mqtt" (Caso Pau, Kim, etc).
@@ -76,8 +76,11 @@ def responder_solicitud(id_solicitud, nuevo_estado, jwt_token):
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json",
     }
-    payload = {"estado": nuevo_estado}  # "ACEPTADA" o "RECHAZADA"
-    resp = requests.put(url, json=payload, headers=headers)
+    params = {
+        id : id_solicitud
+        estado : nuevo_estado
+    }
+    resp = requests.put(url, headers=headers, params=params)
     if resp.status_code == 200:
         return resp.json()
     return {"error": resp.text or "Error respondiendo solicitud", "status": resp.status_code}
@@ -126,30 +129,3 @@ def consultar_solicitudes_mqtt(nss_paciente, jwt_token, timeout=10):
     client.disconnect()
     
     return resp
-
-# =========================
-# Saber si existe una solicitud aceptada 
-# =========================
-def esta_autorizado(nss_paciente, id_medico, jwt_token):
-    """
-    Llama a ServicioSolicitud para saber si existe una solicitud ACEPTADA
-    para (nss_paciente, id_medico).
-    """
-    url = f"{GLASSFISH_URL_SOLICITUD_BASE}/solicitudes/autorizacion"
-    headers = {
-        "Authorization": f"Bearer {jwt_token}"
-    }
-    params = {
-        "nss": nss_paciente,
-        "idMedico": id_medico
-    }
-    resp = requests.get(url, headers=headers, params=params)
-    try:
-        data = resp.json()
-    except Exception:
-        data = {"raw": resp.text}
-
-    if resp.status_code == 200:
-        # Java devuelve {"autorizado": true/false}
-        return data
-    return {"autorizado": False, "error": data.get("error") or "Error verificando autorización"}
