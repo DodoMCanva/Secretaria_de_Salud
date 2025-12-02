@@ -321,22 +321,18 @@ def consulta_expediente():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
     usuario = auth.validar_token(token)
     if not usuario:
-        return jsonify({"error": "Token inválido o expirado"}), 401
+    return jsonify({"error": "Token inválido o expirado"}), 401
 
-    data = request.json
-    nss = data.get('nss')
-    
+    nss = request.args.get("nss")
     if not nss:
         return jsonify({"error": "Falta el NSS para la consulta"}), 400
-
-    print(f"Solicitando consulta REST de expediente para NSS: {nss}")
     response = expedienteComunicacion.consulta_expediente(nss)
-    
-    if response.get("status") == "ERROR" or response.get("error"):
+
+    if isinstance(response, dict) and (response.get("status") == "ERROR" or response.get("error")):
         print("Error en la respuesta REST:", response)
-        return jsonify(response), 404 
-    
-    return jsonify(response), 200 
+        return jsonify(response), 404
+
+    return jsonify(response), 200
 
 
 if __name__ == "__main__":

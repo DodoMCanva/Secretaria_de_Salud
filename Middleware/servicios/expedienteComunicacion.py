@@ -8,15 +8,15 @@ BASE_URL_EXPEDIENTE = f"http://localhost:{direcciones.get('expediente')}/Servici
 def consulta_expediente(self, nss, timeout=10):
     url = f"{BASE_URL_EXPEDIENTE}/consultar"
     headers = {
-        "Authorization": f"Bearer {jwt_token}",
-        "Content-Type": "application/json",
-        "Accept": "application/json"
+    "Authorization": f"Bearer {jwt_token}",
+    "Accept": "application/json"
     }
     params = {
-        "nssPaciente": nss_paciente,
+    "nss": nss,
     }
 
-    resp = requests.get(url, headers=headers, params=params)
+    text
+    resp = requests.get(url, headers=headers, params=params, timeout=timeout)
     if resp.status_code == 200:
-        return resp.text
+        return resp.json()
     return {"error": resp.text or "Error cargando expediente", "status": resp.status_code}

@@ -1,5 +1,7 @@
 package com.mycompany.servicioexpediente.rest;
 
+import com.mycompany.servicioexpediente.dto.ExpedienteDto;
+import com.mycompany.servicioexpediente.dto.mapper;
 import com.secretaria_de_salud.Expediente;
 import com.secretaria_de_salud.basedatosexpedienteclinico.ExpedientePersistencia;
 import jakarta.ws.rs.GET;
@@ -16,9 +18,11 @@ public class ExpedienteResource {
     @Path("/consultar")
     @Produces(MediaType.APPLICATION_JSON)
     public Response consultar(@QueryParam("nss") String nss) {
+        
         Expediente expediente = new ExpedientePersistencia().consultarExpedientePorNss(nss);
         if (expediente != null) {
-            return Response.ok(expediente).build();
+            ExpedienteDto dto = new mapper().toDto(expediente);
+            return Response.ok(dto).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("{\"error\":\"Expediente no encontrado para NSS " + nss + "\"}")
@@ -26,5 +30,4 @@ public class ExpedienteResource {
                     .build();
         }
     }
-
 }
