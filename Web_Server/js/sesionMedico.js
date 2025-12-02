@@ -308,7 +308,9 @@ function setupSearchListeners() {
                 const pacienteId = e.target.getAttribute('data-id');
                  solicitarAccesoExpediente(pacienteId);
 
-                cargarExpedienteDetalle(pacienteId);
+               // cargarExpedienteDetalle(pacienteId);
+               abrirExpedienteSiAutorizado(pacienteId);
+
             }
         });
     }
@@ -412,5 +414,53 @@ function consultarMedico() {
     .catch(err => {
       console.error(err);
       alert('Error en el servidor');
+    });
+}
+
+function abrirExpedienteSiAutorizado(pacienteId) {
+  const token = localStorage.getItem('jwt');
+  if (!token) {
+    alert('Sesión expirada, inicia sesión de nuevo.');
+    window.location.href = 'login.html';
+    return;
+  }
+
+  const body = {
+    // Por ahora usamos pacienteId como nssPaciente de prueba.
+    // Cuando tengas el NSS real, aquí lo mandas.
+    nssPaciente: pacienteId
+  };
+
+  fetch(`${API_URL}/medico/expediente/abrir`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    },
+    body: JSON.stringify(body)
+  })
+    .then(r => r.json())
+    .then(data => {
+      console.log('Respuesta /medico/expediente/abrir:', data);
+
+      if (data.status === 'NO_AUTORIZADO') {
+        alert(data.mensaje || 'Aún no tienes autorización del paciente.');
+        return;
+      }
+
+      if (data.status === 'OK' && data.expediente) {
+        // Si quieres usar lo que manda el backend:
+        //cargarExpedienteDetalleDesdeBackend(pacienteId, data.expediente);
+        // Si prefieres seguir usando tu mock local:
+        //FALTA QUE CARGUE LOS DATOS REALES DEL PACIENTE (ESTA MOCKEADO)
+         cargarExpedienteDetalle(pacienteId);
+
+      } else {
+        alert(data.error || 'Error al abrir expediente.');
+      }
+    })
+    .catch(err => {
+      console.error('Error /medico/expediente/abrir:', err);
+      alert('Error al conectar con el servidor.');
     });
 }

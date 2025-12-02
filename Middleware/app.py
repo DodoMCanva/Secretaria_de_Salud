@@ -153,7 +153,7 @@ def buscar_pacientes():
         print(f"Error en el endpoint /pacientes/buscar: {e}")
         return jsonify({"error": "Error al procesar la búsqueda"}), 500
 
-
+#--------------por el momento no lo uso----------------------
 @app.route("/expediente/detalle", methods=["POST"])
 def detalle_expediente():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
@@ -237,6 +237,58 @@ def crear_solicitud():
         nss_paciente, nss_medico, motivo, token
     )
     return jsonify({"respuesta": res}), 200
+#-------------Aqui abre el expediente si la solicitud esta autorizada-------------------------
+@app.route("/medico/expediente/abrir", methods=["POST"])
+def medico_abrir_expediente():
+    """
+    El médico intenta abrir el expediente de un paciente.
+    1) Valida JWT.
+    2) Pregunta a ServicioSolicitud si la solicitud está ACEPTADA.
+    3) Si está autorizado, devuelve un expediente simulado (por ahora).
+    """
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    usuario = auth.validar_token(token)
+    if not usuario:
+        return jsonify({"error": "Token inválido o expirado"}), 401
+
+    data = request.get_json(silent=True) or {}
+    nss_paciente = data.get("nssPaciente")
+    if not nss_paciente:
+        return jsonify({"error": "Falta nssPaciente"}), 400
+
+    id_medico = usuario.get("usuario")  # el NSS / id del médico en el token
+
+    # 1) Verificar autorización en ServicioSolicitud
+    auth_resp = solicitudComunicacion.esta_autorizado(nss_paciente, id_medico, token)
+
+    if not auth_resp.get("autorizado"):
+        # Todavía no hay solicitud aceptada
+        return jsonify({
+            "status": "NO_AUTORIZADO",
+            "mensaje": "El paciente aún no ha aceptado la solicitud."
+        }), 200
+
+    # 2) AUTORIZADO: por ahora devolvemos un expediente de prueba
+    expediente_mock = {
+        "nombre": "Paciente Autorizado",
+        "nss": nss_paciente,
+        "ultModf": "2025-11-20 14:30",
+        "estado": "Activo",
+        "edad": 36,
+        "curp": "GOLM890515MDFNLR08",
+        "tipoSangre": "O+",
+        "alergias": ["Penicilina", "Polen"],
+        "contactoEmergencia": "Contacto simulado",
+        "pdfs": ["Estudios_2025.pdf"],
+        "imagenes": ["RX_Torax.jpg"],
+        "recetas": ["Receta_Paracetamol.pdf"]
+    }
+
+    return jsonify({
+        "status": "OK",
+        "expediente": expediente_mock
+    }), 200
+
 
 # ----------------- Cargar Datos medico -----------------
 

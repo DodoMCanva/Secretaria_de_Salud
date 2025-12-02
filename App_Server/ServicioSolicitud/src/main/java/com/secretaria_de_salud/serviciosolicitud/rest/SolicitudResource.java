@@ -69,7 +69,7 @@ public class SolicitudResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response verificarAutorizacion(@QueryParam("nss") String nss,
                                           @QueryParam("idMedico") String idMedico) {
-        boolean ok = sp.existeAceptadaVigente(nss, idMedico);
+        boolean ok = sp.existeAceptadaVigente(nss,idMedico);
         if (ok) {
             return Response.ok("{\"autorizado\":true}")
                     .type(MediaType.APPLICATION_JSON)

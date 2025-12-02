@@ -7,6 +7,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
 import com.secretaria_de_salud.SolicitudAcceso;
 import java.util.ArrayList;
@@ -84,7 +85,9 @@ public class SolicitudPersistencia {
                 Filters.eq("nssPaciente", nssPaciente),
                 Filters.eq("idMedico", idMedico),
                 Filters.eq("estado", "ACEPTADA")
-        )).first();
+        )).sort(Sorts.descending("fechaSolicitud"))  // la más reciente primero
+        .first();
+
         return s != null;
     }
       //Auxiliar
