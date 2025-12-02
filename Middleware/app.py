@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import jwt
 import auth
-from servicios import pacienteComunicacion, medicoComunicacion,solicitudComunicacion  #  medio de Comunicacion
+from servicios import pacienteComunicacion, medicoComunicacion,solicitudComunicacion, expedienteComunicacion  #  medio de Comunicacion
 
 app = Flask(__name__)
 CORS(app)
@@ -59,18 +59,6 @@ def login():
         }), 200
     return jsonify({"error": "Credenciales incorrectas"}), 401
 
-#Este es el mismo del anterior caso para mqtt no creo que sea comun que se utilice
-@app.route("/expediente/consulta", methods=["POST"])
-def consulta_expediente():
-    token = request.headers.get("Authorization", "").replace("Bearer ", "")
-    usuario = auth.validar_token(token)
-    if not usuario:
-        return jsonify({"error": "Token inválido o expirado"}), 401
-
-    data = request.json
-    nss = data.get('nss')
-    #expediente.publicar_consulta_expediente(_id, token)
-    return jsonify({"status": "Consulta publicada por MQTT"}), 202
 
 
 @app.route("/medico/consulta", methods=["POST"])
@@ -202,19 +190,6 @@ def detalle_expediente():
         print(f"Error en el endpoint /expediente/detalle: {e}")
         return jsonify({"error": "Error al obtener el detalle del expediente"}), 500
 
-# Este endpoint existente es redundante si usas /expediente/detalle, pero se mantiene si lo necesitas para algo específico.
-@app.route("/expediente/consulta", methods=["POST"])
-def consulta_expediente_mqtt():
-    token = request.headers.get("Authorization", "").replace("Bearer ", "")
-    usuario = auth.validar_token(token)
-    if not usuario:
-        return jsonify({"error": "Token inválido o expirado"}), 401
-
-    data = request.json
-    nss = data.get('nss')
-    # expediente.publicar_consulta_expediente(_id, token)
-    return jsonify({"status": "Consulta publicada por MQTT"}), 202
-
 
 # ----------------- NUEVOS para solicitar permiso -----------------
 
@@ -340,6 +315,28 @@ def consultar_solicitudes_paciente_mqtt():
     resp = solicitudComunicacion.consultar_solicitudes_mqtt(nss, token)
     
     return jsonify(resp), 200
+
+@app.route("/expediente/consulta", methods=["GET"])
+def consulta_expediente():
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    usuario = auth.validar_token(token)
+    if not usuario:
+        return jsonify({"error": "Token inválido o expirado"}), 401
+
+    data = request.json
+    nss = data.get('nss')
+    
+    if not nss:
+        return jsonify({"error": "Falta el NSS para la consulta"}), 400
+
+    print(f"Solicitando consulta REST de expediente para NSS: {nss}")
+    response = expedienteComunicacion.consulta_expediente(nss)
+    
+    if response.get("status") == "ERROR" or response.get("error"):
+        print("Error en la respuesta REST:", response)
+        return jsonify(response), 404 
+    
+    return jsonify(response), 200 
 
 
 if __name__ == "__main__":
