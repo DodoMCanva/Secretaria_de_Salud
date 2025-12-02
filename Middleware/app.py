@@ -238,10 +238,56 @@ def crear_solicitud():
     )
     return jsonify({"respuesta": res}), 200
 
+# ----------------- Cargar Datos medico -----------------
+
+@app.route("/api/medico/actual", methods=["GET"])
+def medico_actual():
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    usuario = auth.validar_token(token)
+
+    if not usuario:
+        return jsonify({"error": "Token inválido o expirado"}), 401
+    
+    if usuario.get("rol") != "medico":
+        return jsonify({"error": "No autorizado"}), 403
+
+    nss_medico = usuario.get("usuario")
+    print("NSS del médico:", nss_medico)
+
+    datos_medico = medicoComunicacion.consulta_medico_esperando_respuesta(nss_medico, token)
+    print(datos_medico)
+
+    if isinstance(datos_medico, dict) and "medico" in datos_medico:
+        datos_medico = datos_medico["medico"]
+
+    print(datos_medico)
+
+    return jsonify(datos_medico), 200
+
+# ----------------- Consultar solicitudes paciente-----------------
 
 
+@app.route("/solicitudes/consulta-mqtt", methods=["POST"])
+def consultar_solicitudes_paciente_mqtt():
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    usuario = auth.validar_token(token)
+    
+    if not usuario:
+        return jsonify({"error": "Token inválido"}), 401
 
+    data = request.json
+    nss = data.get('nss')
+    
+    # Validar que el usuario solo consulte sus propias solicitudes (opcional pero recomendado)
+    if usuario.get('usuario') != nss:
+         return jsonify({"error": "No autorizado para ver estos datos"}), 403
 
+    print(f"Consultando solicitudes MQTT para NSS: {nss}")
+
+    # Llamada a la nueva función MQTT
+    resp = solicitudComunicacion.consultar_solicitudes_mqtt(nss, token)
+    
+    return jsonify(resp), 200
 
 
 if __name__ == "__main__":
