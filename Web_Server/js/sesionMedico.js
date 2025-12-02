@@ -246,7 +246,10 @@ function solicitarAccesoExpediente(pacienteId) {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + token
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify({
+        nssPaciente: pacienteId,
+        motivo: 'Revisión de expediente clínico'
+    })
   })
     .then(r => r.json())
     .then(data => {
