@@ -321,7 +321,7 @@ def consulta_expediente():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
     usuario = auth.validar_token(token)
     if not usuario:
-    return jsonify({"error": "Token inválido o expirado"}), 401
+        return jsonify({"error": "Token inválido o expirado"}), 401
 
     nss = request.args.get("nss")
     if not nss:
