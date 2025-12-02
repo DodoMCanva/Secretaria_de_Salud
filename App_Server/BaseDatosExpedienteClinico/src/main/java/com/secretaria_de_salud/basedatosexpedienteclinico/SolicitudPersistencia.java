@@ -90,7 +90,7 @@ public class SolicitudPersistencia {
       //Auxiliar
     public void eliminarSolicitud() {
         MongoDatabase db = client.getDatabase("expedientedb");
-        MongoCollection<SolicitudAcceso> col = db.getCollection("", SolicitudAcceso.class);
+        MongoCollection<SolicitudAcceso> col = db.getCollection("solicitudes_acceso", SolicitudAcceso.class);
         col.deleteMany(new Document());
 
     }
