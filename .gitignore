@@ -1,16 +1,46 @@
-/cliente_usuario/nbproject/private/
+##############################
+# Ignorar directorios target/
+##############################
+
 /App_Web_Server/ServicioExpediente/target/
 /App_Web_Server/ServicioMedico/target/
 /App_Server/ServicioExpediente/target/
 /App_Server/ServicioMedico/target/
-/App_Server/ObjetosSecretariaSalud/nbproject/private/
-/App_Server/Objetos_SecretariaSalud/target/
 /App_Server/ServicioPaciente/target/
 /App_Server/BaseDatosExpedienteClinico/target/
+/App_Server/Objetos_SecretariaSalud/target/
+/App_Server/ServicioSolicitud/target/
 
-# Archivos de configuración locales de NetBeans
+##############################
+# NetBeans - archivos privados
+##############################
+
+/cliente_usuario/nbproject/private/
+/App_Server/ObjetosSecretariaSalud/nbproject/private/
 App_Server/ServicioPaciente/nb-configuration.xml
 
-# Ignorar cualquier __pycache__ en todo el proyecto
+##############################
+# Python cache (por si acaso)
+##############################
 **/__pycache__/
-/App_Server/ServicioSolicitud/target/
+
+##############################
+# Node / Frontend
+##############################
+node_modules/
+dist/
+.env
+.env.local
+
+##############################
+# Java / Maven comunes
+##############################
+target/
+!.mvn/wrapper/maven-wrapper.jar
+*.log
+
+##############################
+# Sistema operativo
+##############################
+.DS_Store
+Thumbs.db

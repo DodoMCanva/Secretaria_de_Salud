@@ -1,24 +1,44 @@
 let graficoInstance = null;
 
+// 1. INICIALIZACIÓN 
 document.addEventListener('DOMContentLoaded', () => {
+  //  Verificar sesión primero
   if (!localStorage.getItem('jwt')) {
     alert('Debes iniciar sesión primero');
     window.location.href = 'login.html';
     return;
   }
 
+  //  Inicializar la clase gráfica
   graficoInstance = new grafico();
   graficoInstance.initNavigation();
 
-  
+  //  Cargar datos iniciales del paciente
   consultarPaciente();
-  
+
+  //  Configurar botón de Cerrar Sesión
   const cerrarSesion = document.getElementById('logout-button');
   if (cerrarSesion) {
     cerrarSesion.addEventListener('click', (e) => {
       e.preventDefault();
       localStorage.clear();
       window.location.href = 'login.html';
+    });
+  }
+
+  // Listener para el botón "Solicitudes" 
+  const btnSolicitudes = document.querySelector('button[data-view="solicitudesvista"]');
+  if (btnSolicitudes) {
+    btnSolicitudes.addEventListener('click', () => {
+      console.log("Pestaña Solicitudes seleccionada: Forzando vista y actualizando tabla...");
+      
+      // 1. FORZAR CAMBIO DE VISTA (Por si el initNavigation falló)
+      if (graficoInstance) {
+          graficoInstance.switchView('solicitudesvista');
+      }
+
+      // 2. CONSULTAR DATOS
+      consultarSolicitudes();
     });
   }
 });
@@ -31,7 +51,7 @@ function consultarPaciente() {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + localStorage.getItem('jwt')  
+      'Authorization': 'Bearer ' + localStorage.getItem('jwt')
     },
     body: JSON.stringify({
       nss: usuario.nss
@@ -56,12 +76,15 @@ function consultarPaciente() {
     });
 }
 
-// Agrega esta función al final o dentro del scope global accesible
+// Consulta las solicitudes vía MQTT a través de Flask
 function consultarSolicitudes() {
   const usuario = JSON.parse(localStorage.getItem('usuario'));
-  if(!usuario || !usuario.nss) return;
+  // Validamos que exista el usuario antes de intentar nada
+  if (!usuario || !usuario.nss) return;
 
-  fetch('http://localhost:5000/solicitudes/consulta-mqtt', { // Nuevo endpoint
+  console.log("Consultando solicitudes MQTT para:", usuario.nss);
+
+  fetch('http://localhost:5000/solicitudes/consulta-mqtt', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -69,34 +92,27 @@ function consultarSolicitudes() {
     },
     body: JSON.stringify({ nss: usuario.nss })
   })
-  .then(r => r.json())
-  .then(data => {
-    console.log("Solicitudes recibidas:", data);
-    if (data.status === 'OK') {
-        // Llamar al metodo grafico
-        if(graficoInstance) {
-            graficoInstance.cargarSolicitudesEnTabla(data.solicitudes);
+    .then(r => r.json())
+    .then(data => {
+      console.log("Respuesta servidor (Solicitudes):", data);
+      if (data.status === 'OK') {
+        if (graficoInstance) {
+          // Llamamos al método que arreglamos en graficoPaciente.js
+          graficoInstance.cargarSolicitudesEnTabla(data.solicitudes);
         }
-    } else {
-        console.error("Error trayendo solicitudes:", data.error);
-    }
-  })
-  .catch(err => console.error(err));
+      } else {
+        console.error("Error o lista vacía:", data.error);
+      }
+    })
+    .catch(err => console.error("Error en conexión de solicitudes:", err));
 }
 
-// Modificar el initNavigation en graficoPaciente.js O hacerlo aquí en el DOMContentLoaded
-document.addEventListener('DOMContentLoaded', () => {
-    // ... código existente ...
+// Función global para que los botones HTML (onclick="") la encuentren
+function responderSolicitud(idSolicitud, nuevoEstado) {
+  if (!confirm(`¿Estás seguro de que deseas ${nuevoEstado} esta solicitud?`)) return;
 
-    // Agregar listener para cuando hagan click en el botón de solicitudes
-    const btnSolicitudes = document.querySelector('button[data-view="solicitudesvista"]');
-    if(btnSolicitudes){
-        btnSolicitudes.addEventListener('click', () => {
-            consultarSolicitudes();
-        });
-    }
-    
-    // Opcional: llamar al inicio también si quieres
-    consultarSolicitudes();
-});
+  console.log(`Intentando responder ${nuevoEstado} a la solicitud ${idSolicitud}`);
 
+  //agregar el fetch para guardar la respuesta real 
+  alert(`Funcionalidad en construcción.\nSe enviaría: ${nuevoEstado} para ID: ${idSolicitud}`);
+}
