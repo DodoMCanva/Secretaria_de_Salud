@@ -56,3 +56,47 @@ function consultarPaciente() {
     });
 }
 
+// Agrega esta función al final o dentro del scope global accesible
+function consultarSolicitudes() {
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
+  if(!usuario || !usuario.nss) return;
+
+  fetch('http://localhost:5000/solicitudes/consulta-mqtt', { // Nuevo endpoint
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+    },
+    body: JSON.stringify({ nss: usuario.nss })
+  })
+  .then(r => r.json())
+  .then(data => {
+    console.log("Solicitudes recibidas:", data);
+    if (data.status === 'OK') {
+        // Llamar al metodo grafico
+        if(graficoInstance) {
+            graficoInstance.cargarSolicitudesEnTabla(data.solicitudes);
+        }
+    } else {
+        console.error("Error trayendo solicitudes:", data.error);
+    }
+  })
+  .catch(err => console.error(err));
+}
+
+// Modificar el initNavigation en graficoPaciente.js O hacerlo aquí en el DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    // ... código existente ...
+
+    // Agregar listener para cuando hagan click en el botón de solicitudes
+    const btnSolicitudes = document.querySelector('button[data-view="solicitudesvista"]');
+    if(btnSolicitudes){
+        btnSolicitudes.addEventListener('click', () => {
+            consultarSolicitudes();
+        });
+    }
+    
+    // Opcional: llamar al inicio también si quieres
+    consultarSolicitudes();
+});
+

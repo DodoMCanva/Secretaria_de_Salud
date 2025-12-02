@@ -25,7 +25,7 @@ class grafico {
         this.setText('dato-id', usuario.nss);
         this.setText('dato-curp', usuario.curp);
         this.setText('dato-nss', usuario.nss);
-        this.setText('dato-sangre', usuario.tipoSangre); 
+        this.setText('dato-sangre', usuario.tipoSangre);
 
         // nombre y telefono del contacto
         const contacto = (usuario.nombreContEm || "") + " - " + (usuario.telefonoContEm || "");
@@ -33,16 +33,16 @@ class grafico {
 
         //edad
         if (usuario.fehcaNac) {
-             const edadTexto = this.calcularEdadCorregida(usuario.fehcaNac);
-             this.setText('dato-edad', edadTexto);
+            const edadTexto = this.calcularEdadCorregida(usuario.fehcaNac);
+            this.setText('dato-edad', edadTexto);
         } else {
-             this.setText('dato-edad', "--");
+            this.setText('dato-edad', "--");
         }
 
         // alergias
         const divAlergias = document.getElementById('dato-alergias');
         if (divAlergias) {
-            divAlergias.innerHTML = ''; 
+            divAlergias.innerHTML = '';
             if (usuario.alergias && usuario.alergias.length > 0) {
                 usuario.alergias.forEach(al => {
                     const span = document.createElement('span');
@@ -163,5 +163,46 @@ class grafico {
             activeContent.classList.add('active');
         }
     }
-   
+
+
+    cargarSolicitudesEnTabla(solicitudes) {
+        const tbody = document.getElementById('tabla-accesos');
+        if (!tbody) return;
+
+        tbody.innerHTML = ''; // Limpiar tabla
+
+        if (!solicitudes || solicitudes.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center">No hay solicitudes pendientes</td></tr>';
+            return;
+        }
+
+        solicitudes.forEach(sol => {
+            const tr = document.createElement('tr');
+
+            // Asumiendo que el objeto solicitud tiene estos campos
+            // Ajusta según tu clase Java Solicitud
+            const fechaFmt = sol.fecha || "Sin fecha";
+            const medicoNombre = sol.nombreMedico || sol.idMedico || "Médico";
+
+            // Renderizar estado con estilo
+            let badgeClass = 'badge-purple';
+            if (sol.estado === 'ACEPTADA') badgeClass = 'badge-success';
+            if (sol.estado === 'RECHAZADA') badgeClass = 'badge-danger';
+
+            tr.innerHTML = `
+                <td>${medicoNombre}</td> <td>Médico General</td> <td>${sol.idMedico}</td> <td><span class="badge ${badgeClass}">${sol.estado}</span></td>
+                <td>${fechaFmt}</td>
+                <td class="text-right">
+                    ${sol.estado === 'PENDIENTE' ?
+                    `<button class="btn btn-primary btn-sm" onclick="responderSolicitud('${sol.id}', 'ACEPTADA')">Aceptar</button>
+                         <button class="btn btn-ghost btn-danger btn-sm" onclick="responderSolicitud('${sol.id}', 'RECHAZADA')">Rechazar</button>`
+                    : '--'}
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+
+
 }
