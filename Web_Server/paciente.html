@@ -73,6 +73,8 @@
         </aside>
 
         <main class="main-content">
+            
+            <!-- VISTA 1: EXPEDIENTE-->
             <div id="view-expedientevista" class="view-content active">
                 <div class="content-wrapper">
                     <div class="card">
@@ -85,6 +87,7 @@
                                     </svg>
                                 </div>
                                 <div>
+                                    <!-- DATOS DEL EXPEDIENTE -->
                                     <h2 id="dato-nombre">Cargando...</h2>
                                     <p class="text-muted">Expediente Clínico - ID: <span id="dato-id">...</span></p>
                                 </div>
@@ -111,17 +114,15 @@
                                 </div>
                                 <div class="info-item">
                                     <label>Alergias</label>
-                                    <div class="badge-group">
-                                        <div class="badge-group" id="dato-alergias">
-                                        </div>
-                                    </div>
-                                    <div class="info-item">
-                                        <label>Contacto de Emergencia</label>
-                                        <p id="dato-contacto">--</p>
-                                    </div>
+                                    <div class="badge-group" id="dato-alergias"></div>
+                                </div>
+                                <div class="info-item">
+                                    <label>Contacto de Emergencia</label>
+                                    <p id="dato-contacto">--</p>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
                         <div class="card">
                             <div class="card-header">
@@ -145,7 +146,6 @@
 
                     </div>
                 </div>
-            </div>
 
             <div id="view-citasvista" class="view-content">
                 <div class="content-wrapper">
@@ -237,11 +237,11 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="profile-header">
-                                <div class="avatar-large">DR</div>
+                                <div class="avatar-large">P</div>
                                 <div>
-                                    <h2>Perfil Profesional</h2>
+                                    <h2>Mi Perfil</h2>
                                     <p class="text-muted">
-                                        <span class="badge badge-outline">Personal Médico</span>
+                                        <span class="badge badge-outline">Paciente</span>
                                     </p>
                                 </div>
                             </div>
@@ -262,9 +262,22 @@
                                     </div>
                                     <div class="card-content">
                                         <div class="form-grid">
+                                            <!-- DATOS DEL PACIENTE -->
                                             <div class="form-group">
                                                 <label>Nombre Completo</label>
                                                 <input type="text" id="perfil-nombre" class="form-input" disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>NSS</label>
+                                                <input type="text" id="perfil-nss" class="form-input" disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>CURP</label>
+                                                <input type="text" id="perfil-curp" class="form-input" disabled>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Tipo de Sangre</label>
+                                                <input type="text" id="perfil-sangre" class="form-input" disabled>
                                             </div>
                                             <div class="form-group">
                                                 <label>Correo Electrónico</label>
@@ -275,8 +288,8 @@
                                                 <input type="tel" id="perfil-telefono" class="form-input" disabled>
                                             </div>
                                             <div class="form-group">
-                                                <label>Cédula Profesional</label>
-                                                <input type="text" id="perfil-cedula" class="form-input" disabled>
+                                                <label>Contacto Emergencia</label>
+                                                <input type="text" id="perfil-contacto" class="form-input" disabled>
                                             </div>
                                         </div>
                                     </div>

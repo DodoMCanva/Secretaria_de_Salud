@@ -5,40 +5,40 @@ const appState = {
 class grafico {
 
     cargarDatosEnInterfaz(usuario) {
-        console.log("Procesando datos para la vista:", usuario);
+        console.log("Procesando datos visuales:", usuario);
 
-        // nombre del paciente en la barra
+        // A. Barra Lateral
         const sideName = document.getElementById('user-name');
-        if (sideName) sideName.innerText = usuario.nombre || "Usuario";
+        if (sideName) sideName.innerText = usuario.nombre || "Paciente";
 
-        const perfilNombre = document.getElementById('perfil-nombre');
-        if (perfilNombre) {
-            perfilNombre.value = usuario.nombre || "";
-            document.getElementById('perfil-email').value = usuario.correo || "";
-            document.getElementById('perfil-telefono').value = usuario.telefono || "";
-            document.getElementById('perfil-cedula').value = usuario.nss || "";
-        }
-
-        // datos de paciente
+        // B. Datos Personales (Vista Configuración - Inputs)
+        this.setValue('perfil-nombre', usuario.nombre);
+        this.setValue('perfil-nss', usuario.nss);
+        this.setValue('perfil-curp', usuario.curp);
+        this.setValue('perfil-sangre', usuario.tipoSangre);
+        this.setValue('perfil-email', usuario.correo);
+        this.setValue('perfil-telefono', usuario.telefono);
+        
+        // Contacto de emergencia en inputs
+        const contactoInfo = (usuario.nombreContEm || "") + " (" + (usuario.telefonoContEm || "") + ")";
+        this.setValue('perfil-contacto', contactoInfo);
+        
+        // C. Vista Expediente (Tarjetas de solo lectura)
         this.setText('dato-nombre', usuario.nombre);
         this.setText('dato-id', usuario.nss);
         this.setText('dato-curp', usuario.curp);
         this.setText('dato-nss', usuario.nss);
         this.setText('dato-sangre', usuario.tipoSangre);
+        this.setText('dato-contacto', contactoInfo);
 
-        // nombre y telefono del contacto
-        const contacto = (usuario.nombreContEm || "") + " - " + (usuario.telefonoContEm || "");
-        this.setText('dato-contacto', contacto);
-
-        //edad
+        // Edad
         if (usuario.fehcaNac) {
-            const edadTexto = this.calcularEdadCorregida(usuario.fehcaNac);
-            this.setText('dato-edad', edadTexto);
-        } else {
-            this.setText('dato-edad', "--");
-        }
+            const edad = this.calcularEdadCorregida(usuario.fehcaNac);
+            this.setText('dato-edad', edad);
+            
+        }    
 
-        // alergias
+        // Alergias
         const divAlergias = document.getElementById('dato-alergias');
         if (divAlergias) {
             divAlergias.innerHTML = '';
@@ -51,7 +51,7 @@ class grafico {
                     divAlergias.appendChild(span);
                 });
             } else {
-                divAlergias.innerText = "Ninguna";
+                divAlergias.innerHTML = '<span class="badge badge-success">Ninguna</span>';
             }
         }
     }
@@ -80,6 +80,15 @@ class grafico {
         const el = document.getElementById(id);
         if (el) {
             el.innerText = texto || "--";
+        } else {
+            console.warn("Falta en el HTML el ID: " + id);
+        }
+    }
+
+    setValue(id, valor) {      
+        const el = document.getElementById(id);
+        if (el) {
+            el.value = valor || "";
         } else {
             console.warn("Falta en el HTML el ID: " + id);
         }

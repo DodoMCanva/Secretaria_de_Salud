@@ -61,6 +61,8 @@ def login():
         }), 200
     return jsonify({"error": "Credenciales incorrectas"}), 401
 
+
+
 @app.route("/medico/consulta", methods=["POST"])
 def consulta_medico():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
@@ -78,6 +80,8 @@ def consulta_medico():
     print("Respuesta desde MQTT medico:", resp)
     return jsonify(resp), 200
 
+
+
 @app.route("/paciente/consulta", methods=["POST"])
 def consulta_paciente():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
@@ -94,6 +98,8 @@ def consulta_paciente():
     resp = pacienteComunicacion.consulta_paciente_esperando_respuesta(nss, token)
     print("Respuesta desde MQTT:", resp)
     return jsonify(resp), 200
+
+
 
 @app.route("/pacientes/buscar", methods=["POST"])
 def buscar_pacientes():
@@ -134,6 +140,8 @@ def buscar_pacientes():
     except Exception as e:
         print(f"Error en el endpoint /pacientes/buscar: {e}")
         return jsonify({"error": "Error al procesar la búsqueda"}), 500
+    
+
 
 #--------------por el momento no lo uso----------------------
 @app.route("/expediente/detalle", methods=["POST"])
@@ -183,6 +191,8 @@ def detalle_expediente():
     except Exception as e:
         print(f"Error en el endpoint /expediente/detalle: {e}")
         return jsonify({"error": "Error al obtener el detalle del expediente"}), 500
+    
+
 
 @app.route("/solicitudes/crear", methods=["POST"])
 def crear_solicitud():
@@ -203,6 +213,8 @@ def crear_solicitud():
         nss_paciente, nss_medico, motivo, token
     )
     return jsonify({"respuesta": res}), 200
+
+
 
 @app.route("/medico/expediente/abrir", methods=["POST"])
 def medico_abrir_expediente():
@@ -255,6 +267,9 @@ def medico_abrir_expediente():
         "expediente": expediente_mock
     }), 200
 
+
+
+#--------------carga los datos del medico----------------------
 @app.route("/api/medico/actual", methods=["GET"])
 def medico_actual():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
@@ -279,6 +294,9 @@ def medico_actual():
 
     return jsonify(datos_medico), 200
 
+
+
+
 @app.route("/solicitudes/consulta-mqtt", methods=["POST"])
 def consultar_solicitudes_paciente_mqtt():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
@@ -296,6 +314,9 @@ def consultar_solicitudes_paciente_mqtt():
     print(f"Consultando solicitudes MQTT para NSS: {nss}")
     resp = solicitudComunicacion.consultar_solicitudes_mqtt(nss, token)
     return jsonify(resp), 200
+
+
+
 
 @app.post("/solicitudes/consulta")
 def consultar_solicitudes_paciente():
@@ -332,6 +353,9 @@ def consulta_expediente():
 
     return jsonify(response), 200
 
+
+
+
 @app.route("/solicitudes/responder", methods=["POST"])
 def responder_solicitud():
     token = request.headers.get("Authorization", "").replace("Bearer ", "")
@@ -354,6 +378,9 @@ def responder_solicitud():
         nss_paciente, nss_medico, nuevo_estado, token
     )
     return jsonify(resp), 200
+
+
+
 
 @app.route('/expediente/consultar', methods=['GET'])
 def consultar_expediente_endpoint():
@@ -381,6 +408,24 @@ def consultar_expediente_endpoint():
     except Exception as e:
         print("ERROR EXPEDIENTE:", str(e))
         return jsonify({"error": "Error interno"}), 500
+    
+
+ #--------------carga los datos del paciente----------------------   
+
+@app.route('/api/paciente/actual', methods=['GET'])
+def obtener_paciente_real():
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    usuario_info = auth.validar_token(token)
+    
+    if not usuario_info: return jsonify({"error": "No autorizado"}), 401
+
+    nss_paciente = usuario_info.get('usuario')
+    paciente = PACIENTES_DB.get(nss_paciente)
+
+    if paciente:
+        return jsonify(paciente), 200
+    
+    return jsonify({"error": "Paciente no encontrado"}), 404
         
     
 if __name__ == "__main__":
