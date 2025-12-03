@@ -315,25 +315,6 @@ def consultar_solicitudes_paciente_mqtt():
     resp = solicitudComunicacion.consultar_solicitudes_mqtt(nss, token)
     return jsonify(resp), 200
 
-@app.route("/expediente/consulta", methods=["GET"])
-def consulta_expediente():
-    token = request.headers.get("Authorization", "").replace("Bearer ", "")
-    usuario = auth.validar_token(token)
-    if not usuario:
-        return jsonify({"error": "Token inválido o expirado"}), 401
-
-    nss = request.args.get("nss")
-    if not nss:
-        return jsonify({"error": "Falta el NSS para la consulta"}), 400
-    response = expedienteComunicacion.consulta_expediente(nss)
-
-    if isinstance(response, dict) and (response.get("status") == "ERROR" or response.get("error")):
-        print("Error en la respuesta REST:", response)
-        return jsonify(response), 404
-
-    return jsonify(response), 200
-
-
 # -------------------- responder Solicitud -------------------
 @app.route("/solicitudes/responder", methods=["POST"])
 def responder_solicitud():
@@ -351,7 +332,37 @@ def responder_solicitud():
 
     resp = solicitudComunicacion.responder_solicitud(id_solicitud, nuevo_estado, token)
     return jsonify(resp), 200
-    
+
+
+
+@app.route('/expediente/consultar', methods=['GET'])
+def consultar_expediente_endpoint():
+    try:
+        # 1. Obtener y validar token
+        token = request.headers.get('Authorization', '').replace('Bearer ', '')
+        usuario = auth.validar_token(token)
+
+        if not usuario:
+            return jsonify({"error": "Token inválido o expirado"}), 401
+
+        # 2. Obtener NSS por query string (GET)
+        nss = request.args.get("nss")
+        if not nss:
+            return jsonify({"error": "Falta el NSS"}), 400
+
+        # 3. Llamar al servicio real
+        resultado = expedienteComunicacion.consulta_expediente(nss, token)
+
+        if isinstance(resultado, dict) and resultado.get("status") == "ERROR":
+            return jsonify(resultado), 404
+
+        return jsonify(resultado), 200
+
+    except Exception as e:
+        print("ERROR EXPEDIENTE:", str(e))
+        return jsonify({"error": "Error interno"}), 500
+
+
 if __name__ == "__main__":
     print("Servidor Flask corriendo en http://localhost:5000")
     app.run(debug=True, port=5000)

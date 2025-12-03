@@ -16,6 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
   //  Cargar datos iniciales del paciente
   consultarPaciente();
 
+  // consultaExpediente
+  consultarExpediente();
+
+
   //  Configurar botón de Cerrar Sesión
   const cerrarSesion = document.getElementById('logout-button');
   if (cerrarSesion) {
@@ -31,10 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnSolicitudes) {
     btnSolicitudes.addEventListener('click', () => {
       console.log("Pestaña Solicitudes seleccionada: Forzando vista y actualizando tabla...");
-      
+
       // 1. FORZAR CAMBIO DE VISTA (Por si el initNavigation falló)
       if (graficoInstance) {
-          graficoInstance.switchView('solicitudesvista');
+        graficoInstance.switchView('solicitudesvista');
       }
 
       // 2. CONSULTAR DATOS
@@ -74,6 +78,27 @@ function consultarPaciente() {
       console.error(err);
       alert('Error en el servidor');
     });
+}
+
+
+function consultarExpediente() {
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
+  if (!usuario || !usuario.nss) return;
+
+  fetch(`http://localhost:5000/expediente/consultar?nss=${usuario.nss}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+    }
+  })
+    .then(r => r.json())
+    .then(data => {
+      console.log("Expediente:", data);
+      if (graficoInstance) {
+        graficoInstance.cargarExpediente(data);
+      }
+    })
+    .catch(err => console.error("Error cargando expediente:", err));
 }
 
 // Consulta las solicitudes vía MQTT a través de Flask
@@ -131,19 +156,19 @@ function responderSolicitud(idSolicitud, nuevoEstado) {
       estado: nuevoEstado   // "ACEPTADA" o "RECHAZADA"
     })
   })
-  .then(r => r.json().then(body => ({ ok: r.ok, status: r.status, body })))
-  .then(res => {
-    console.log('Respuesta responder_solicitud:', res);
-    if (res.ok) {
-      // Volver a cargar las solicitudes para refrescar la tabla
-      consultarSolicitudes();
-      alert(`Solicitud ${nuevoEstado} correctamente.`);
-    } else {
-      alert(`Error al responder solicitud (${res.status}): ` + (res.body.error || JSON.stringify(res.body)));
-    }
-  })
-  .catch(err => {
-    console.error('Error al llamar /solicitudes/responder:', err);
-    alert('Error de conexión con el servidor.');
-  });
+    .then(r => r.json().then(body => ({ ok: r.ok, status: r.status, body })))
+    .then(res => {
+      console.log('Respuesta responder_solicitud:', res);
+      if (res.ok) {
+        // Volver a cargar las solicitudes para refrescar la tabla
+        consultarSolicitudes();
+        alert(`Solicitud ${nuevoEstado} correctamente.`);
+      } else {
+        alert(`Error al responder solicitud (${res.status}): ` + (res.body.error || JSON.stringify(res.body)));
+      }
+    })
+    .catch(err => {
+      console.error('Error al llamar /solicitudes/responder:', err);
+      alert('Error de conexión con el servidor.');
+    });
 }

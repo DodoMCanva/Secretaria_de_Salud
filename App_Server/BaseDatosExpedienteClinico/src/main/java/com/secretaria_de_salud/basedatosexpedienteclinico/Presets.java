@@ -166,8 +166,7 @@ public class Presets {
         // --- 4. PRUEBA DE AGREGAR ARCHIVO BINARIO (PDF real) ---
         System.out.println("4. Agregando archivo PDF real...");
 
-        // ⚠️ DEBES AJUSTAR ESTA RUTA ⚠️
-        final String RUTA_ARCHIVO_PDF = "/home/dodo/Documents/ITSON/6toSemestre/Proyecto Secretaria de Salud/Secretaria_de_Salud/App_Server/BaseDatosExpedienteClinico/src/main/java/com/secretaria_de_salud/basedatosexpedienteclinico/Archivos_prueba/estudios_maria.pdf";
+        final String RUTA_ARCHIVO_PDF = "C:/Users/cesar/Documents/GitHub/Secretaria_de_Salud/App_Server/BaseDatosExpedienteClinico/src/main/java/com/secretaria_de_salud/basedatosexpedienteclinico/Archivos_prueba/estudios_maria.pdf";
 
         try {
             // 1. Leer el archivo y obtener sus bytes
@@ -197,8 +196,8 @@ public class Presets {
         // --- 5. PRUEBA DE AGREGAR ARCHIVO BINARIO (IMAGEN real) ---
         System.out.println("5. Agregando una imagen de prueba real...");
 
-        // ⚠️ DEBES AJUSTAR ESTA RUTA ⚠️
-        final String RUTA_ARCHIVO_IMAGEN = "/home/dodo/Documents/ITSON/6toSemestre/Proyecto Secretaria de Salud/Secretaria_de_Salud/App_Server/BaseDatosExpedienteClinico/src/main/java/com/secretaria_de_salud/basedatosexpedienteclinico/Archivos_prueba/radiografia_torso.png";
+        // ⚠ DEBES AJUSTAR ESTA RUTA ⚠
+        final String RUTA_ARCHIVO_IMAGEN = "C:/Users/cesar/Documents/GitHub/Secretaria_de_Salud/App_Server/BaseDatosExpedienteClinico/src/main/java/com/secretaria_de_salud/basedatosexpedienteclinico/Archivos_prueba/radiografia_torso.png";
 
         try {
             Path rutaImagen = new File(RUTA_ARCHIVO_IMAGEN).toPath();
@@ -244,7 +243,7 @@ public class Presets {
                 byte[] pdfBytes = pdfRecuperado.getData();
 
                 // Define la ruta de destino (el archivo recuperado)
-                Path rutaDestinoPdf = new File("/home/dodo/Documents/ITSON/6toSemestre/Proyecto Secretaria de Salud/Secretaria_de_Salud/App_Server/BaseDatosExpedienteClinico/src/main/java/com/secretaria_de_salud/basedatosexpedienteclinico/Archivos_prueba/estudios.pdf").toPath();
+                Path rutaDestinoPdf = new File("C:/Users/cesar/Documents/GitHub/Secretaria_de_Salud/App_Server/BaseDatosExpedienteClinico/src/main/java/com/secretaria_de_salud/basedatosexpedienteclinico/Archivos_prueba/estudios.pdf").toPath();
 
                 // Escribir los bytes al disco
                 Files.write(rutaDestinoPdf, pdfBytes);
@@ -256,7 +255,7 @@ public class Presets {
                     byte[] imagenBytes = imagenRecuperada.getData();
 
                     // Define la ruta de destino para la imagen
-                    Path rutaDestinoImg = new File("/home/dodo/Documents/ITSON/6toSemestre/Proyecto Secretaria de Salud/Secretaria_de_Salud/App_Server/BaseDatosExpedienteClinico/src/main/java/com/secretaria_de_salud/basedatosexpedienteclinico/Archivos_prueba/radiografia_torso.png").toPath();
+                    Path rutaDestinoImg = new File("C:/Users/cesar/Documents/GitHub/Secretaria_de_Salud/App_Server/BaseDatosExpedienteClinico/src/main/java/com/secretaria_de_salud/basedatosexpedienteclinico/Archivos_prueba/radiografia_torso.png").toPath();
                     Files.write(rutaDestinoImg, imagenBytes);
                     System.out.println("--> Imagen recuperada exitosamente en: " + rutaDestinoImg);
                 }
