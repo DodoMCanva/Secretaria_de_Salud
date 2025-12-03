@@ -147,51 +147,52 @@
                 </div>
             </div>
 
-            <div id="view-citasvista" class="view-content">
+                        <div id="view-citasvista" class="view-content">
                 <div class="content-wrapper">
                     <div class="card">
                         <div class="card-header">
                             <div>
                                 <h2>
-                                    <svg class="icon-medium inline" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    <svg class="icon-medium inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                     </svg>
                                     Gestión de Citas Médicas
                                 </h2>
+                                <p class="text-muted">ver citas proximas</p>
                             </div>
-                            <button class="btn btn-primary">
-                                <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 4v16m8-8H4" />
-                                </svg>
-                                Nueva Cita
-                            </button>
                         </div>
                     </div>
                     <div class="card">
                         <div class="card-header">
-                            <div>
-                                <h2>Mis Citas Programadas</h2>
-                            </div>
+                            <h2>Citas Programadas</h2>
                         </div>
                         <div class="card-content">
                             <div class="table-container">
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th>Fecha</th>
-                                            <th>Hora</th>
-                                            <th>Especialidad</th>
-                                            <th>Médico</th>
-                                            <th>Estado</th>
-                                            <th>Acciones</th>
+                                            <th>Fecha y Hora</th>
+                                            <th>Motivo</th>
+                                            <th>Consultorio</th>
+                                        
                                         </tr>
                                     </thead>
-                                    <tbody id="tabla-citas-paciente">
+                                    <tbody>
                                         <tr>
-                                            <td colspan="6" class="text-center">Cargando citas...</td>
+                                            <td>
+                                                <div class="date-cell">
+                                                    <svg class="icon-small text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                                    </svg>
+                                                    <div>
+                                                        <p>01/12/2025</p>
+                                                        <p class="text-muted text-sm">14:30</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>Cita general</td>
+                                            <td>Consultorio 2</td>
+                                            
                                         </tr>
                                     </tbody>
                                 </table>

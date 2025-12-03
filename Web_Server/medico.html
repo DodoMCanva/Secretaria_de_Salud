@@ -46,13 +46,7 @@
                     </svg>
                     Citas Médicas
                 </button>
-                <button class="nav-item" data-view="solicitudesvista">
-                    <svg class="icon-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                    Solicitudes
-                </button>
+            
                 <button class="nav-item" data-view="perfilvista">
                     <svg class="icon-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -216,20 +210,66 @@
                         <div class="card-header">
                             <div>
                                 <h2>
-                                    <svg class="icon-medium inline" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    <svg class="icon-medium inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                     </svg>
                                     Gestión de Citas Médicas
                                 </h2>
+                                <p class="text-muted">ver citas proximas</p>
                             </div>
-                            <button class="btn btn-primary">Nueva Cita</button>
                         </div>
                     </div>
                     <div class="card">
+                        <div class="card-header">
+                            <h2>Citas Programadas</h2>
+                        </div>
                         <div class="card-content">
-                            <p class="text-muted">Funcionalidad de citas en construcción...</p>
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha y Hora</th>
+                                            <th>Motivo</th>
+                                            <th>Consultorio</th>
+                                        
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="date-cell">
+                                                    <svg class="icon-small text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                                    </svg>
+                                                    <div>
+                                                        <p>15/03/2024</p>
+                                                        <p class="text-muted text-sm">10:00</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>Revision General</td>
+                                            <td>Consultorio 2</td>
+                                           
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="date-cell">
+                                                    <svg class="icon-small text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                                    </svg>
+                                                    <div>
+                                                        <p>22/03/2024</p>
+                                                        <p class="text-muted text-sm">14:30</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>Medicina General</td>
+                                            <td>Dra. Ana Ruiz</td>
+                                            
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
