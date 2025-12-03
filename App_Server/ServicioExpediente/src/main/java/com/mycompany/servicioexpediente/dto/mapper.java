@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.servicioexpediente.dto;
 
 import com.secretaria_de_salud.Expediente;
@@ -11,11 +7,25 @@ import java.util.List;
 import org.bson.types.Binary;
 
 /**
+ * Clase Mapper encargada de la conversión de objetos entre: Expediente(Entidad
+ * de Persistencia, usa {@code Binary} para archivos) ExpedienteDto(Objeto de
+ * Transferencia, usa {@code DocumentoDto} con Base64 para REST) Esta conversión
+ * es necesaria para manejar la serialización/deserialización de datos binarios
+ * a través de servicios web.
  *
- * @author dodo
+ * @author Secretaria de Salud
  */
 public class mapper {
 
+    /**
+     * Convierte un objeto Expediente (Entidad de Persistencia) a un
+     * ExpedienteDto (Transferencia). Este proceso incluye tomar los datos
+     * binarios (PDFs, Imágenes) y codificarlos a Base64 para su transmisión
+     * segura.
+     *
+     * @param expediente El objeto Expediente (con {@code Binary}) a mapear.
+     * @return El objeto ExpedienteDto listo para ser enviado por la API.
+     */
     public ExpedienteDto toDto(Expediente expediente) {
         ExpedienteDto dto = new ExpedienteDto();
         dto.setNss(expediente.getNss());
@@ -55,6 +65,15 @@ public class mapper {
 
     }
 
+    /**
+     * Convierte un objeto ExpedienteDto (Transferencia) a un Expediente
+     * (Entidad de Persistencia). Este proceso es inverso al {@code toDto},
+     * decodificando el contenido Base64 de los documentos para almacenarlos
+     * como tipos binarios de MongoDB ({@code Binary}).
+     *
+     * @param dto El objeto ExpedienteDto (con Base64) a mapear.
+     * @return El objeto Expediente listo para ser guardado en la base de datos.
+     */
     public Expediente toEntity(ExpedienteDto dto) {
         Expediente expediente = new Expediente();
 

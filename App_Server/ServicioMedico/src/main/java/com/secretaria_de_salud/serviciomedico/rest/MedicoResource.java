@@ -14,9 +14,27 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.client.*;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 
+/**
+ * Recurso RESTful para manejar las peticiones de inicio de sesión y
+ * autenticación relacionadas con el personal médico. Expone endpoints clave
+ * como {@code /login} y podría manejar la obtención de expedientes autorizados
+ * (actualmente comentado).
+ *
+ * @version 1.0
+ */
 @Path("/medicos")
 public class MedicoResource {
 
+    /**
+     * Endpoint para la autenticación de un médico. Recibe el Número de
+     * Seguridad Social  y la contraseña  y utiliza la capa de
+     * persistencia para verificar las credenciales.
+     *
+     * @param nss El Número de Seguridad Social del médico.
+     * @param pwd La contraseña de acceso.
+     * @return {@code Response} con los datos del médico o un mensaje
+     * de error si las credenciales son incorrectas.
+     */
     @GET
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
