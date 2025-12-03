@@ -10,11 +10,7 @@ def rutasFer():
         "solicitud" : "23106",
         "http_local" : "8800", 
         "mid" : "5000", 
-        "paciente_mqtt" : "1883", 
-        "medico_mqtt" : "1884", 
-        "expediente_mqtt" : "1885", 
-        "cita_mqtt" : "1886", 
-        "solicitud_mqtt" : "1887"}
+        "mqtt" : "1883"}
     return direcciones
 
 def rutasKim():
