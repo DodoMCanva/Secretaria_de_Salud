@@ -103,7 +103,7 @@
                                 </div>
                                 <div class="info-item">
                                     <label>NSS</label>
-                                     <p class="font-mono" id="dato-nss">--</p>
+                                    <p class="font-mono" id="dato-nss">--</p>
                                 </div>
                                 <div class="info-item">
                                     <label>Tipo de Sangre</label>
@@ -112,53 +112,39 @@
                                 <div class="info-item">
                                     <label>Alergias</label>
                                     <div class="badge-group">
-                                         <div class="badge-group" id="dato-alergias">   
+                                        <div class="badge-group" id="dato-alergias">
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>Contacto de Emergencia</label>
+                                        <p id="dato-contacto">--</p>
                                     </div>
                                 </div>
-                                <div class="info-item">
-                                    <label>Contacto de Emergencia</label>
-                                    <p id="dato-contacto">--</p>
-                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <h2>Historial de Consultas</h2>
-                                <p class="text-muted">Registro completo de consultas médicas</p>
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>Expediente Clínico</h2>
+                                <p class="text-muted">Archivos y recetas del paciente</p>
                             </div>
-                            <div class="btn-group">
-                                <button class="btn btn-primary">
-                                    <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 4v16m8-8H4" />
-                                    </svg>
-                                    Agregar Consulta
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-content">
-                            <div class="table-container">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Fecha</th>
-                                            <th>Médico</th>
-                                            <th>Diagnóstico</th>
-                                            <th>Tratamiento</th>
-                                            <th>Notas</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabla-historial">
-                                    </tbody>
-                                </table>
+
+                            <div class="card-content">
+
+                                <h3>Recetas</h3>
+                                <ul id="lista-recetas"></ul>
+
+                                <h3>Documentos PDF</h3>
+                                <ul id="lista-pdfs"></ul>
+
+                                <h3>Imágenes</h3>
+                                <ul id="lista-imagenes"></ul>
+
                             </div>
                         </div>
+
                     </div>
                 </div>
-            </div>
             </div>
 
             <div id="view-citasvista" class="view-content">
