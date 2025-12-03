@@ -188,13 +188,6 @@ class grafico {
             try {
                 console.log(`Procesando fila ${index}:`, sol);
 
-                const idSafe = sol.fechaSolicitud?.toString();
-
-                if (!idSafe) {
-                    console.error("No se pudo determinar un ID válido para la solicitud:", sol);
-                    return;
-                }
-
                 // --- B. OTROS DATOS ---
                 const medico = sol.nombreMedico || sol.idMedico || "Médico";
                 const estado = sol.estado || "PENDIENTE";
@@ -225,8 +218,8 @@ class grafico {
                 <td>${fechaFmt}</td>
                 <td class="text-right">
                     ${estado === 'PENDIENTE' ?
-                        `<button class="btn btn-primary btn-sm" onclick="responderSolicitud('${idSafe}', 'ACEPTADA')">Aceptar</button>
-                     <button class="btn btn-ghost btn-danger btn-sm" onclick="responderSolicitud('${idSafe}', 'RECHAZADA')">Rechazar</button>`
+                        `<button class="btn btn-primary btn-sm" onclick="responderSolicitud('${medico}', 'ACEPTADA')">Aceptar</button>
+                     <button class="btn btn-ghost btn-danger btn-sm" onclick="responderSolicitud('${medico}', 'RECHAZADA')">Rechazar</button>`
                         : '--'}
                 </td>
             `;

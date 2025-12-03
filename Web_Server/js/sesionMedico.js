@@ -64,20 +64,6 @@ function buscarPacientes(searchTerm) {
         }
     }, 500);
 
-    /* --- LÓGICA REAL DE API (DEBE DESCOMENTARSE Y USARSE) ---
-    fetch(`${API_URL}/pacientes/buscar`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify({ termino: searchTerm })
-    })
-    .then(r => r.json())
-    .then(data => {
-        // ... (Tu lógica para rellenar la tabla)
-    })
-    .catch(err => {
-        // ... (Manejo de errores)
-    });
-    */
 }
 
 

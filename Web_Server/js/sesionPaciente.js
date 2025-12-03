@@ -82,9 +82,7 @@ function consultarSolicitudes() {
   // Validamos que exista el usuario antes de intentar nada
   if (!usuario || !usuario.nss) return;
 
-  console.log("Consultando solicitudes MQTT para:", usuario.nss);
-
-  fetch('http://localhost:5000/solicitudes/consulta-mqtt', {
+  fetch('http://localhost:5000/solicitudes/consulta', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -110,9 +108,9 @@ function consultarSolicitudes() {
 // Función global para que los botones HTML (onclick="") la encuentren
 function responderSolicitud(idSolicitud, nuevoEstado) {
   if (!confirm(`¿Estás seguro de que deseas ${nuevoEstado} esta solicitud?`)) return;
+  const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
 
   console.log(`Intentando responder ${nuevoEstado} a la solicitud ${idSolicitud}`);
-
   const token = localStorage.getItem('jwt');
   if (!token) {
     alert('Sesión expirada. Inicia sesión de nuevo.');
@@ -127,8 +125,9 @@ function responderSolicitud(idSolicitud, nuevoEstado) {
       'Authorization': 'Bearer ' + token
     },
     body: JSON.stringify({
-      id: idSolicitud,
-      estado: nuevoEstado   // "ACEPTADA" o "RECHAZADA"
+      nssP: usuario.nss,
+      nssM: idSolicitud,
+      estado: nuevoEstado 
     })
   })
   .then(r => r.json().then(body => ({ ok: r.ok, status: r.status, body })))

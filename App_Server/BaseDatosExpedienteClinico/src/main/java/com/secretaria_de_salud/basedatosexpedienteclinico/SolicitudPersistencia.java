@@ -73,19 +73,21 @@ public class SolicitudPersistencia {
         return col().find(Filters.eq("_id", new ObjectId(id))).first();
     }
 
-    public void actualizarEstado(long fechaSolicitudMillis, String nuevoEstado) {
-
-        Date fecha = new Date(fechaSolicitudMillis);
-
+    public void actualizarEstado(String estado, String nssP, String nssM) {
         UpdateResult result = col().updateOne(
-                Filters.eq("fechaSolicitud", fecha),
+                Filters.and(
+                        Filters.eq("nssPaciente", nssP),
+                        Filters.eq("idMedico", nssM),
+                        Filters.eq("estado", "PENDIENTE")
+                ),
                 Updates.combine(
-                        Updates.set("estado", nuevoEstado),
-                        Updates.set("fechaRespuesta", new Date())
+                        Updates.set("estado", estado),
+                        Updates.set("fechaSolicitud", new Date())
                 )
         );
 
-        System.out.println("Documentos modificados: " + result.getModifiedCount());
+        System.out.println("Matched: " + result.getMatchedCount()
+                + " | Modified: " + result.getModifiedCount());
     }
 
     public boolean existeAceptadaVigente(String nssPaciente, String idMedico) {

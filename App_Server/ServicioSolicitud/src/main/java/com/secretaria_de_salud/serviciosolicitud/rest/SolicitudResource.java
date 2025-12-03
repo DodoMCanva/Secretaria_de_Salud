@@ -4,12 +4,16 @@
  */
 package com.secretaria_de_salud.serviciosolicitud.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.secretaria_de_salud.SolicitudAcceso;
 import jakarta.ws.rs.Path;
 import com.secretaria_de_salud.basedatosexpedienteclinico.SolicitudPersistencia;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,37 +33,34 @@ public class SolicitudResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response crearSolicitud(@QueryParam("nssPaciente") String nssPaciente, @QueryParam("nssMedico") String nssMedico, @QueryParam("motivo") String motivo) {
         sp.crearSolicitud(nssPaciente, nssMedico, motivo);
-        return Response.ok("Se armo").build();
-        /*if (paciente != null) {
-            return Response.ok(paciente).build"Se armo"
-        } else {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"error\":\"contraseña o usuario incorrectos\"}")
-                    .type(MediaType.APPLICATION_JSON)
-                    .build();
-        }*/
+        return Response.ok("Se creo solicitud").build();
     }
 
-    // Paciente ve sus solicitudes pendientes
     @GET
-    @Path("/paciente/{nss}")
+    @Path("/paciente")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listarPorPaciente(@PathParam("nss") String nss) {
-        List<SolicitudAcceso> lista = sp.listarPendientesPorPaciente(nss);
-        return Response.ok(lista).build();
+    public Response listarPorPaciente(@QueryParam("nss") String nss) {
+        List<SolicitudAcceso> solicitudes = sp.listarPendientesPorPaciente(nss);
+
+        Map<String, Object> root = new HashMap<>();
+        if (solicitudes != null) {
+            root.put("status", "OK");
+            root.put("solicitudes", solicitudes);
+        } else {
+            root.put("status", "ERROR");
+            root.put("error", "Error consultando base de datos");
+        }
+
+        return Response.ok(root).build();  // JAX‑RS + Jackson lo serializan a JSON plano
     }
 
     @PUT
     @Path("/responder")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response responder(Map<String, Object> body) {
-
-        long fechaSolicitud = ((Number) body.get("id")).longValue();
-        String estado = body.get("estado").toString();
-
-        //sp.actualizarEstado(fechaSolicitud, estado);
-
+    public Response responder(@QueryParam("estado") String estado,
+            @QueryParam("nssP") String nssP,
+            @QueryParam("nssM") String nssM) {
+        sp.actualizarEstado(estado, nssP, nssM);
         return Response.ok("{\"status\":\"OK\"}")
                 .type(MediaType.APPLICATION_JSON)
                 .build();

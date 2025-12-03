@@ -14,9 +14,6 @@ GLASSFISH_URL_SOLICITUD_BASE = (
     f"http://localhost:{direcciones['solicitud']}/ServicioSolicitud/resources"
 )
 
-# =========================
-# MÉDICO -> CREAR SOLICITUD
-# =========================
 def crear_solicitud(nss_paciente, nss_medico, motivo, jwt_token):
     # llama a /solicitudes/crear con QUERY PARAMS
     url = f"{GLASSFISH_URL_SOLICITUD_BASE}/solicitudes/crear"
@@ -36,6 +33,8 @@ def crear_solicitud(nss_paciente, nss_medico, motivo, jwt_token):
     if resp.status_code == 200:
         return resp.text  # Java devuelve "Se armo"
     return {"error": resp.text or "Error creando solicitud", "status": resp.status_code}
+
+
 # Lógica para definir el puerto dinámicamente
 # Si existe una configuración específica "solicitud_mqtt" (Caso Fer), úsala.
 # Si no, usa la general "mqtt" (Caso Pau, Kim, etc).
@@ -48,10 +47,6 @@ else:
 
 TOPIC_PUBLICAR_SOLICITUDES = "consulta/solicitudes"
 
-
-# =========================
-# PACIENTE -> LISTAR SOLICITUDES
-# =========================
 def listar_solicitudes_pendientes(nss_paciente, jwt_token):
     """
     Devuelve las solicitudes PENDIENTES para ese paciente.
@@ -63,33 +58,25 @@ def listar_solicitudes_pendientes(nss_paciente, jwt_token):
         return resp.json()
     return {"error": resp.text or "Error listando solicitudes", "status": resp.status_code}
 
-
-# =========================
-# PACIENTE -> RESPONDER SOLICITUD
-# =========================
-def responder_solicitud(id_solicitud, nuevo_estado, jwt_token):
-    """
-    Cambia el estado de la solicitud a ACEPTADA o RECHAZADA.
-    """
+def responder_solicitud(nssP, nssM, nuevo_estado, jwt_token):
     url = f"{GLASSFISH_URL_SOLICITUD_BASE}/solicitudes/responder"
     headers = {
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json",
     }
     params = {
-    "id": id_solicitud,
-    "estado": nuevo_estado
-}
+        "nssP": nssP,
+        "nssM": nssM,
+        "estado": nuevo_estado
+    }
 
     resp = requests.put(url, headers=headers, params=params)
     if resp.status_code == 200:
         return resp.json()
     return {"error": resp.text or "Error respondiendo solicitud", "status": resp.status_code}
 
-# =========================
-# NUEVO: CONSULTA MQTT
-# =========================
 def consultar_solicitudes_mqtt(nss_paciente, jwt_token, timeout=10):
+
     """
     Consulta las solicitudes de un paciente vía MQTT esperando respuesta síncrona.
     """
@@ -130,3 +117,16 @@ def consultar_solicitudes_mqtt(nss_paciente, jwt_token, timeout=10):
     client.disconnect()
     
     return resp
+
+def consultar_solicitudes(nss_paciente, jwt_token):
+    url = f"{GLASSFISH_URL_SOLICITUD_BASE}/solicitudes/paciente"
+    headers = {
+        "Authorization": f"Bearer {jwt_token}",
+        "Accept": "application/json",
+    }
+    params = {"nss": nss_paciente}
+    r = requests.get(url, params=params, headers=headers, timeout=5)
+    r.raise_for_status()
+    return r.json()  
+
+    

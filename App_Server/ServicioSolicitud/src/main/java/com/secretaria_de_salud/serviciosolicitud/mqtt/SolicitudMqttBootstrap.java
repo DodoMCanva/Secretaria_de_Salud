@@ -16,7 +16,6 @@ public class SolicitudMqttBootstrap {
         try {
             consumer = new SolicitudMqttConsumer();
             consumer.start();
-            System.out.println("PacienteMqttConsumer iniciado");
         } catch (Exception e) {
             e.printStackTrace();
         }
