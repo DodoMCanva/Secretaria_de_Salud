@@ -95,7 +95,7 @@ class grafico {
     }
 
     cargarExpediente(expediente) {
-
+        console.log("entro en el grafico de paciente");
         // ========== RECETAS ==========
         const listaRecetas = document.getElementById('lista-recetas');
         listaRecetas.innerHTML = '';

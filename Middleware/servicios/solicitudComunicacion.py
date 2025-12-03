@@ -34,10 +34,6 @@ def crear_solicitud(nss_paciente, nss_medico, motivo, jwt_token):
         return resp.text  # Java devuelve "Se armo"
     return {"error": resp.text or "Error creando solicitud", "status": resp.status_code}
 
-
-# Lógica para definir el puerto dinámicamente
-# Si existe una configuración específica "solicitud_mqtt" (Caso Fer), úsala.
-# Si no, usa la general "mqtt" (Caso Pau, Kim, etc).
 if "solicitud_mqtt" in direcciones:
     MQTT_PORT = int(direcciones["solicitud_mqtt"])
 elif "mqtt" in direcciones:
@@ -74,6 +70,21 @@ def responder_solicitud(nssP, nssM, nuevo_estado, jwt_token):
     if resp.status_code == 200:
         return resp.json()
     return {"error": resp.text or "Error respondiendo solicitud", "status": resp.status_code}
+
+def consultar_autorizacion(nssP, nssM, jwt_token):
+    url = f"{GLASSFISH_URL_SOLICITUD_BASE}/solicitudes/autorizacion"
+    headers = {
+        "Authorization": f"Bearer {jwt_token}",
+        "Accept": "application/json",
+    }
+    params = {
+        "nss": nssP,
+        "idMedico": nssM,
+    }
+
+    r = requests.get(url, headers=headers, params=params, timeout=5)
+    r.raise_for_status()
+    return r.json() 
 
 def consultar_solicitudes_mqtt(nss_paciente, jwt_token, timeout=10):
 

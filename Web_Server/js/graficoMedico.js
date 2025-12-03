@@ -122,7 +122,7 @@ class GraficoMedico {
     }
     
     cargarExpediente(expediente) {
-
+        console.log("entro en el grafico de medico");
         // ========== RECETAS ==========
         const listaRecetas = document.getElementById('lista-recetas');
         listaRecetas.innerHTML = '';

@@ -98,7 +98,7 @@ function solicitarAccesoExpediente(pacienteId) {
                 alert('Error creando solicitud: ' + data.error);
             } else {
                 alert('Solicitud enviada. Espera a que el paciente autorice.');
-                // aquí podrías guardar data.id si tu backend lo devuelve
+                abrirExpedienteSiAutorizado(pacienteId)
             }
         })
         .catch(err => {
@@ -106,10 +106,6 @@ function solicitarAccesoExpediente(pacienteId) {
             alert('Error al conectar con el servidor.');
         });
 }
-
-
-
-
 
 // --- Lógica Principal y de Inicialización (DOMContentLoaded) ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -196,13 +192,14 @@ function abrirExpedienteSiAutorizado(pacienteId) {
         return;
     }
 
+    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+
     const body = {
-        // Por ahora usamos pacienteId como nssPaciente de prueba.
-        // Cuando tengas el NSS real, aquí lo mandas.
-        nssPaciente: pacienteId
+        nssPaciente: pacienteId,
+        idMedico: usuario.nss   
     };
 
-    fetch(`${API_URL}/medico/expediente/abrir`, {
+    fetch('http://localhost:5000/solicitud/autorizada', { 
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -212,32 +209,22 @@ function abrirExpedienteSiAutorizado(pacienteId) {
     })
         .then(r => r.json())
         .then(data => {
-            console.log('Respuesta /medico/expediente/abrir:', data);
-
-            if (data.status === 'NO_AUTORIZADO') {
-                alert(data.mensaje || 'Aún no tienes autorización del paciente.');
+            console.log('Respuesta /solicitud/autorizada:', data);
+            if (!data.autorizado) {
+                alert('Aún no tienes autorización del paciente.');
                 return;
             }
-
-            if (data.status === 'OK' && data.expediente) {
-                // Si quieres usar lo que manda el backend:
-                //cargarExpedienteDetalleDesdeBackend(pacienteId, data.expediente);
-                // Si prefieres seguir usando tu mock local:
-                //FALTA QUE CARGUE LOS DATOS REALES DEL PACIENTE (ESTA MOCKEADO)
-                consultarExpediente(pacienteId);
-
-            } else {
-                alert(data.error || 'Error al abrir expediente.');
-            }
+            consultarExpediente(pacienteId);
         })
         .catch(err => {
-            console.error('Error /medico/expediente/abrir:', err);
+            console.error('Error /solicitud/autorizada:', err);
             alert('Error al conectar con el servidor.');
         });
-
 }
 
+
 function consultarExpediente(pacienteId) {
+    console.log("se consulto")
     fetch(`http://localhost:5000/expediente/consultar?nss=${pacienteId}`, {
         method: 'GET',
         headers: {
@@ -247,8 +234,12 @@ function consultarExpediente(pacienteId) {
         .then(r => r.json())
         .then(data => {
             console.log("Expediente:", data);
-            if (graficoInstance) {
-                graficoInstance.cargarExpediente(data);
+            let instance = new GraficoMedico();
+            if (instance) {
+                //llega hasta aqui
+                instance.cargarExpediente(data);
+            }else{
+                console.log("instance no inicializado")
             }
         })
         .catch(err => console.error("Error cargando expediente:", err));

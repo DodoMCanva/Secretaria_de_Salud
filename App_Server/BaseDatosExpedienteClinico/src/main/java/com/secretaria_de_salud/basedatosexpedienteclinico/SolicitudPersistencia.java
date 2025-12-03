@@ -9,6 +9,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import com.secretaria_de_salud.SolicitudAcceso;
 import java.util.ArrayList;
@@ -46,6 +47,11 @@ public class SolicitudPersistencia {
     }
 
     public SolicitudAcceso crearSolicitud(String nssPaciente, String idMedico, String motivo) {
+        DeleteResult del = col().deleteMany(Filters.and(
+                Filters.eq("nssPaciente", nssPaciente),
+                Filters.eq("idMedico", idMedico)
+        ));
+
         SolicitudAcceso s = new SolicitudAcceso();
         s.setNssPaciente(nssPaciente);
         s.setIdMedico(idMedico);
@@ -95,8 +101,7 @@ public class SolicitudPersistencia {
                 Filters.eq("nssPaciente", nssPaciente),
                 Filters.eq("idMedico", idMedico),
                 Filters.eq("estado", "ACEPTADA")
-        )).sort(Sorts.descending("fechaSolicitud")) // la más reciente primero
-                .first();
+        )).first();
 
         return s != null;
     }
