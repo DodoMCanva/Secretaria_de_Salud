@@ -355,6 +355,33 @@ def responder_solicitud():
     )
     return jsonify(resp), 200
 
+@app.route('/expediente/consultar', methods=['GET'])
+def consultar_expediente_endpoint():
+    try:
+        # 1. Obtener y validar token
+        token = request.headers.get('Authorization', '').replace('Bearer ', '')
+        usuario = auth.validar_token(token)
+
+        if not usuario:
+            return jsonify({"error": "Token inválido o expirado"}), 401
+
+        # 2. Obtener NSS por query string (GET)
+        nss = request.args.get("nss")
+        if not nss:
+            return jsonify({"error": "Falta el NSS"}), 400
+
+        # 3. Llamar al servicio real
+        resultado = expedienteComunicacion.consulta_expediente(nss, token)
+
+        if isinstance(resultado, dict) and resultado.get("status") == "ERROR":
+            return jsonify(resultado), 404
+
+        return jsonify(resultado), 200
+
+    except Exception as e:
+        print("ERROR EXPEDIENTE:", str(e))
+        return jsonify({"error": "Error interno"}), 500
+        
     
 if __name__ == "__main__":
     print("Servidor Flask corriendo en http://localhost:5000")
