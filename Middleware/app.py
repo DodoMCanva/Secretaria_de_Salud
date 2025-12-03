@@ -421,6 +421,35 @@ def verificar_acceso_autorizado():
         return jsonify({"error": "No se pudo verificar autorización"}), 500
 
 
+
+# NUEVO ENDPOINT PARA SUBIR ARCHIVOS (Carga por MQTT)
+@app.route("/expediente/subir", methods=["POST"])
+def subir_archivo():
+    token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    usuario = auth.validar_token(token)
+    
+    # Validación: Solo médicos pueden subir
+    if not usuario or usuario.get("rol") != "medico":
+        return jsonify({"error": "No autorizado. Solo médicos."}), 403
+
+    # Obtener datos del formulario (Multipart form-data)
+    nss = request.form.get('nss')
+    tipo = request.form.get('tipo') # "pdf" o "imagen"
+    archivo = request.files.get('archivo')
+
+    if not nss or not archivo:
+        return jsonify({"error": "Faltan datos (nss o archivo)"}), 400
+
+    print(f"Iniciando subida de archivo MQTT para NSS: {nss} ({tipo})")
+
+    # Llamar al servicio MQTT nuevo
+    res = expedienteComunicacion.subir_archivo_expediente_mqtt(nss, archivo, tipo, token)
+    
+    return jsonify(res), 200
+
+
+
+
 if __name__ == "__main__":
     print("Servidor Flask corriendo en http://localhost:5000")
     app.run(debug=True, port=5000)

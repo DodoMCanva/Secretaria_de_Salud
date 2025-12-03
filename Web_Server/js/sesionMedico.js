@@ -147,7 +147,88 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("los pollos hermanos");
         solicitarAccesoExpediente(inputSearch.value);
     });
+
+        const btnSubir = document.getElementById('btn-subir-archivo');
+    if (btnSubir) {
+        btnSubir.addEventListener('click', (e) => {
+            e.preventDefault();
+            subirArchivoExpediente();
+        });
+    }
 });
+
+
+// Subir Archivo
+
+function subirArchivoExpediente() {
+
+    // INTENTO 1: Buscar NSS en el título del expediente cargado (si existe el elemento)
+    let nssPaciente = document.getElementById('dato-id')?.innerText;
+
+    // INTENTO 2: Si no, usar el input de búsqueda como fallback (o una variable global)
+    if (!nssPaciente || nssPaciente === '...') {
+        // Aquí deberías guardar el NSS en una variable global cuando cargas el expediente con éxito
+        // Por ahora intentamos leerlo del input de búsqueda si no se ha limpiado
+        nssPaciente = document.getElementById('input-paciente-solicitar')?.value;
+    }
+
+    if (!nssPaciente) {
+        alert("Error: No se ha detectado un expediente activo.");
+        return;
+    }
+
+    // Obtener archivo y tipo
+    const inputArchivo = document.getElementById('input-archivo-medico');
+    const selectTipo = document.getElementById('select-tipo-archivo');
+
+    if (!inputArchivo || inputArchivo.files.length === 0) {
+        alert("Por favor selecciona un archivo.");
+        return;
+    }
+
+    const archivo = inputArchivo.files[0];
+    const tipo = selectTipo ? selectTipo.value : 'imagen';
+
+    const formData = new FormData();
+    formData.append('nss', nssPaciente);
+    formData.append('tipo', tipo);
+    formData.append('archivo', archivo);
+
+    const token = localStorage.getItem('jwt');
+    const btn = document.getElementById('btn-subir-archivo');
+    const textoOriginal = btn.innerText;
+    btn.innerText = "Subiendo...";
+    btn.disabled = true;
+
+    fetch('http://localhost:5000/expediente/subir', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        },
+        body: formData
+    })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'OK') {
+                alert("✅ Archivo guardado correctamente.");
+                inputArchivo.value = ""; // Limpiar input
+                // Opcional: Recargar el expediente para ver el nuevo archivo
+                consultarExpediente(nssPaciente);
+            } else {
+                alert("❌ Error al subir: " + (data.error || 'Error desconocido'));
+            }
+        })
+        .catch(err => {
+            console.error("Error subida:", err);
+            alert("Error de conexión.");
+        })
+        .finally(() => {
+            btn.innerText = textoOriginal;
+            btn.disabled = false;
+        });
+}
+
+
 
 function consultarMedico() {
     const usuario = JSON.parse(localStorage.getItem('usuario'));

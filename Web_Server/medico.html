@@ -90,7 +90,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="expediente-detalle" class="content-wrapper hidden">
                     <!--Aqui-->
                     <div class="card patient-detail-card">
@@ -143,32 +143,48 @@
                     <div class="card">
                         <div class="card-header">
                             <h2>Documentos del Expediente</h2>
-                            <button class="btn btn-primary" id="btn-subir-archivo">
-                                <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0l-4 4m4-4v12" />
-                                </svg>
-                                Subir Archivo
-                            </button>
                         </div>
-                        <div class="card">
-                            <div class="card-header">
-                                <h2>Expediente Clínico</h2>
-                                <p class="text-muted">Archivos y recetas del paciente</p>
+                        <div class="card-content">
+                            <!--Controles para subir archivo -->
+                            <div
+                                style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center; background: #f9f9f9; padding: 15px; border-radius: 8px;">
+
+                                <!-- Selector de tipo -->
+                                <select id="select-tipo-archivo" class="form-input" style="width: auto;">
+                                    <option value="imagen">Imagen (Radiografía, etc.)</option>
+                                    <option value="pdf">Documento PDF</option>
+                                </select>
+
+                                <!-- Input de archivo -->
+                                <input type="file" id="input-archivo-medico" class="form-input">
+
+                                <!-- Botón de subir -->
+                                <button class="btn btn-primary" id="btn-subir-archivo">
+                                    <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0l-4 4m4-4v12" />
+                                    </svg>
+                                    Subir
+                                </button>
                             </div>
-                            <div class="card-content">
-                                <h3>Recetas</h3>
-                                <ul id="lista-recetas"></ul>
-                                <h3>Documentos PDF</h3>
-                                <ul id="lista-pdfs"></ul>
 
-                                <h3>Imágenes</h3>
-                                <ul id="lista-imagenes"></ul>
 
+                            <div class="files-grid">
+                                <div>
+                                    <h4>Recetas</h4>
+                                    <ul id="lista-recetas"></ul>
+                                </div>
+                                <div>
+                                    <h4>Documentos PDF</h4>
+                                    <ul id="lista-pdfs"></ul>
+                                </div>
+                                <div>
+                                    <h4>Imágenes</h4>
+                                    <ul id="lista-imagenes"></ul>
+                                </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <!---->
             </div>
@@ -268,7 +284,8 @@
                                     <!-- AQUI CORREGÍ: AGREGUÉ IDs -->
                                     <h2 id="header-medico-nombre">Cargando...</h2>
                                     <p class="text-muted">
-                                        <span class="badge badge-outline" id="header-medico-rol">Personal Médico</span>
+                                        <span class="badge badge-outline" id="header-medico-rol">Personal
+                                            Médico</span>
                                     </p>
                                 </div>
                             </div>
@@ -318,7 +335,8 @@
                             <div id="tab-security" class="tab-content">
                                 <div class="card">
                                     <div class="card-content">
-                                        <p class="text-muted">Configuración de seguridad (huella digital, contraseña)
+                                        <p class="text-muted">Configuración de seguridad (huella digital,
+                                            contraseña)
                                             gestionada por administrador.</p>
                                     </div>
                                 </div>
