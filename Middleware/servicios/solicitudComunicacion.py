@@ -7,7 +7,8 @@ import queue
 
 direcciones = rutas.rutasActuales()
 MQTT_BROKER = "localhost"
-
+MQTT_PORT = 1883
+TOPIC_PUBLICAR_SOLICITUDES = "consulta/solicitudes"
 
 # ServicioSolicitud corre en otro puerto; ajústalo en rutasActuales()
 GLASSFISH_URL_SOLICITUD_BASE = (
@@ -33,15 +34,6 @@ def crear_solicitud(nss_paciente, nss_medico, motivo, jwt_token):
     if resp.status_code == 200:
         return resp.text  # Java devuelve "Se armo"
     return {"error": resp.text or "Error creando solicitud", "status": resp.status_code}
-
-if "solicitud_mqtt" in direcciones:
-    MQTT_PORT = int(direcciones["solicitud_mqtt"])
-elif "mqtt" in direcciones:
-    MQTT_PORT = int(direcciones["mqtt"])
-else:
-    MQTT_PORT = 1883 # Default de seguridad
-
-TOPIC_PUBLICAR_SOLICITUDES = "consulta/solicitudes"
 
 def listar_solicitudes_pendientes(nss_paciente, jwt_token):
     """

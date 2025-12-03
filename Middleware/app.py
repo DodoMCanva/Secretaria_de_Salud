@@ -434,7 +434,7 @@ def subir_archivo():
 
     # Obtener datos del formulario (Multipart form-data)
     nss = request.form.get('nss')
-    tipo = request.form.get('tipo') # "pdf" o "imagen"
+    tipo = request.form.get('tipo') 
     archivo = request.files.get('archivo')
 
     if not nss or not archivo:
@@ -442,7 +442,6 @@ def subir_archivo():
 
     print(f"Iniciando subida de archivo MQTT para NSS: {nss} ({tipo})")
 
-    # Llamar al servicio MQTT nuevo
     res = expedienteComunicacion.subir_archivo_expediente_mqtt(nss, archivo, tipo, token)
     
     return jsonify(res), 200

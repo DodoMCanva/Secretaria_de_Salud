@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         solicitarAccesoExpediente(inputSearch.value);
     });
 
-        const btnSubir = document.getElementById('btn-subir-archivo');
+    const btnSubir = document.getElementById('btn-subir-archivo');
     if (btnSubir) {
         btnSubir.addEventListener('click', (e) => {
             e.preventDefault();
@@ -162,9 +162,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function subirArchivoExpediente() {
 
-    // INTENTO 1: Buscar NSS en el título del expediente cargado (si existe el elemento)
-    let nssPaciente = document.getElementById('dato-id')?.innerText;
-
+    let nssPaciente = document.getElementById('detalle-nss')?.innerText;
+    console.log(nssPaciente)
     // INTENTO 2: Si no, usar el input de búsqueda como fallback (o una variable global)
     if (!nssPaciente || nssPaciente === '...') {
         // Aquí deberías guardar el NSS en una variable global cuando cargas el expediente con éxito
@@ -209,15 +208,11 @@ function subirArchivoExpediente() {
     })
         .then(r => r.json())
         .then(data => {
-            if (data.status === 'OK') {
-                alert("✅ Archivo guardado correctamente.");
-                inputArchivo.value = ""; // Limpiar input
-                // Opcional: Recargar el expediente para ver el nuevo archivo
-                consultarExpediente(nssPaciente);
-            } else {
-                alert("❌ Error al subir: " + (data.error || 'Error desconocido'));
-            }
+            inputArchivo.value = "";
+            consultarExpediente(nssPaciente);
+
         })
+
         .catch(err => {
             console.error("Error subida:", err);
             alert("Error de conexión.");
@@ -277,10 +272,10 @@ function abrirExpedienteSiAutorizado(pacienteId) {
 
     const body = {
         nssPaciente: pacienteId,
-        idMedico: usuario.nss   
+        idMedico: usuario.nss
     };
 
-    fetch('http://localhost:5000/solicitud/autorizada', { 
+    fetch('http://localhost:5000/solicitud/autorizada', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -319,7 +314,7 @@ function consultarExpediente(pacienteId) {
             let instance = new GraficoMedico();
             if (instance) {
                 instance.cargarExpediente(data);
-            }else{
+            } else {
                 console.log("instance no inicializado")
             }
         })
@@ -327,37 +322,37 @@ function consultarExpediente(pacienteId) {
 }
 
 function consultarPacienteExp(pacienteId) {
-  
-  console.log('usuario en consultarPaciente:', pacienteId);
 
-  fetch('http://localhost:5000/paciente/consulta', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + localStorage.getItem('jwt')
-    },
-    body: JSON.stringify({
-      nss: pacienteId
+    console.log('usuario en consultarPaciente:', pacienteId);
+
+    fetch('http://localhost:5000/paciente/consulta', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+        },
+        body: JSON.stringify({
+            nss: pacienteId
+        })
     })
-  })
-    .then(r => r.json())
-    .then(data => {
-      console.log(data);
-      if (data.status === 'OK' && data.paciente) {
-        let inst = new GraficoMedico
-        if (inst) {
-          inst.cargarDatosPaciente(data.paciente);
-        } else {
-          console.warn('graficoInstance no está inicializado');
-        }
-      } else {
-        alert(data.error || 'Error consultando paciente');
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      alert('Error en el servidor');
-    });
+        .then(r => r.json())
+        .then(data => {
+            console.log(data);
+            if (data.status === 'OK' && data.paciente) {
+                let inst = new GraficoMedico
+                if (inst) {
+                    inst.cargarDatosPaciente(data.paciente);
+                } else {
+                    console.warn('graficoInstance no está inicializado');
+                }
+            } else {
+                alert(data.error || 'Error consultando paciente');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Error en el servidor');
+        });
 }
 
 // Base64 -> Blob (sirve para PDF e imágenes)

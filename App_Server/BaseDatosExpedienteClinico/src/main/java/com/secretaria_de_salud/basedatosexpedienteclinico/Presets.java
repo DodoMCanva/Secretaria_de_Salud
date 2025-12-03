@@ -89,16 +89,7 @@ public class Presets {
         // Insertar una solicitud de acceso DE PRUEBA
         SolicitudPersistencia sp = new SolicitudPersistencia();
         sp.eliminarSolicitud();
-        SolicitudAcceso solicitud = new SolicitudAcceso();
-        solicitud.setNssPaciente("12345678901"); // el mismo NSS del paciente de prueba
-        solicitud.setIdMedico("22222222222"); // identificador de médico de prueba
-        solicitud.setEstado("PENDIENTE");
-        solicitud.setFechaSolicitud(new Date());
-        solicitud.setMotivo("Solicitud de prueba desde preset");
-
-        // Insertar la solicitud (si tienes un método directo)
-        sp.insertarSolicitud(solicitud);
-
+        
         // --- EJECUTAR PRUEBAS DE EXPEDIENTE ---
         Presets tester = new Presets();
 
