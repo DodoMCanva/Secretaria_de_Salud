@@ -237,6 +237,7 @@ function consultarExpediente(pacienteId) {
             let instance = new GraficoMedico();
             if (instance) {
                 //llega hasta aqui
+                instance.consultarPacienteExp(pacienteId)
                 instance.cargarExpediente(data);
             }else{
                 console.log("instance no inicializado")
@@ -245,7 +246,39 @@ function consultarExpediente(pacienteId) {
         .catch(err => console.error("Error cargando expediente:", err));
 }
 
+function consultarPacienteExp(pacienteId) {
+  
+  console.log('usuario en consultarPaciente:', pacienteId);
 
+  fetch('http://localhost:5000/paciente/consulta', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+    },
+    body: JSON.stringify({
+      nss: pacienteId
+    })
+  })
+    .then(r => r.json())
+    .then(data => {
+      console.log(data);
+      if (data.status === 'OK' && data.paciente) {
+        let inst = new GraficoMedico
+        if (inst) {
+          inst.cargarDatosPaciente(data.paciente);
+        } else {
+          console.warn('graficoInstance no está inicializado');
+        }
+      } else {
+        alert(data.error || 'Error consultando paciente');
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Error en el servidor');
+    });
+}
 
 // Base64 -> Blob (sirve para PDF e imágenes)
 function base64ToBlob(base64, contentType = '', sliceSize = 512) {

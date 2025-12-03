@@ -120,6 +120,53 @@ class GraficoMedico {
         const activeContent = document.getElementById('tab-' + tabName);
         if (activeContent) activeContent.classList.add('active');
     }
+
+    cargarDatosPaciente(usuario) {
+        console.log("Procesando datos visuales:", usuario);
+
+        // B. Datos Personales (Vista Configuración - Inputs)
+        this.setValue('detalle-nombre', usuario.nombre);
+        this.setValue('detalle-nss', usuario.nss);
+        this.setValue('detalle-curp', usuario.curp);
+        this.setValue('detalle-tiposangre', usuario.tipoSangre);
+       
+        
+        // Contacto de emergencia en inputs
+        const contactoInfo = (usuario.nombreContEm || "") + " (" + (usuario.telefonoContEm || "") + ")";
+        this.setValue('detalle-contacto', contactoInfo);
+        
+        // C. Vista Expediente (Tarjetas de solo lectura)
+        this.setText('detalle-nombre', usuario.nombre);
+        this.setText('detalle-nss', usuario.nss);
+        this.setText('detalle-curp', usuario.curp);
+        this.setText('dato-nss', usuario.nss);
+        this.setText('detalle-tiposangre', usuario.tipoSangre);
+        this.setText('detalle-contacto', contactoInfo);
+
+        // Edad
+        if (usuario.fehcaNac) {
+            const edad = this.calcularEdadCorregida(usuario.fehcaNac);
+            this.setText('detalle-edad', edad);
+            
+        }    
+
+        // Alergias
+        const divAlergias = document.getElementById('detalle-alergias');
+        if (divAlergias) {
+            divAlergias.innerHTML = '';
+            if (usuario.alergias && usuario.alergias.length > 0) {
+                usuario.alergias.forEach(al => {
+                    const span = document.createElement('span');
+                    span.className = 'badge badge-danger';
+                    span.innerText = al;
+                    span.style.marginRight = '5px';
+                    divAlergias.appendChild(span);
+                });
+            } else {
+                divAlergias.innerHTML = '<span class="badge badge-success">Ninguna</span>';
+            }
+        }
+    }
     
     cargarExpediente(expediente) {
         console.log("entro en el grafico de medico");
