@@ -16,6 +16,10 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bson.types.Binary;
 
 /**
+ * Clase responsable de la gestión de persistencia para la colección de
+ * expedientes clínicos almacenados en MongoDB. Permite consultar expedientes,
+ * agregar nuevos registros y almacenar documentos asociados (PDF, imágenes,
+ * recetas, etc.).
  *
  * @author Secretaria de Salud
  */
@@ -31,7 +35,10 @@ public class ExpedientePersistencia {
 
     private final MongoClient client;
 
-    // Constructor para inicializar la conexión
+    /**
+     * Constructor que inicializa la conexión a MongoDB utilizando el codec
+     * registry necesario para mapear POJOs automáticamente.
+     */
     public ExpedientePersistencia() {
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(URI))
@@ -108,6 +115,10 @@ public class ExpedientePersistencia {
         System.out.println("Receta agregada al expediente con NSS: " + nss);
     }
 
+    /**
+     * Cierra la conexión con MongoDB. Debe llamarse cuando la instancia ya no
+     * se necesite para liberar recursos.
+     */
     public void close() {
         if (client != null) {
             client.close();

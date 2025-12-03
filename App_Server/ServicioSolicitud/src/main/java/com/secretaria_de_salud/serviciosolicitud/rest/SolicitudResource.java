@@ -18,15 +18,27 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Recurso RESTful para gestionar las Solicitudes de Acceso a Expedientes. Esta
+ * clase expone la API para que el Middleware y otros microservicios puedan
+ * interactuar con las solicitudes (creación, listado por paciente, respuesta, y
+ * verificación de autorización).
  *
- * @author delll
+ * @autor Secretaria de Salud
  */
 @Path("/solicitudes")
 public class SolicitudResource {
 
     private SolicitudPersistencia sp = new SolicitudPersistencia();
 
-    // Médico crea solicitud de acceso
+    /**
+     * Endpoint para que un médico cree una nueva solicitud de acceso a un
+     * paciente.
+     *
+     * @param nssPaciente Número de Seguridad Social del paciente requerido.
+     * @param nssMedico Número de Seguridad Social del médico solicitante.
+     * @param motivo Razón breve de la solicitud.
+     * @return {@code Response} con estado OK y confirmación de la creación.
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/crear")
@@ -36,6 +48,15 @@ public class SolicitudResource {
         return Response.ok("Se creo solicitud").build();
     }
 
+    /**
+     * Endpoint para que un paciente liste todas las solicitudes pendientes
+     * dirigidas a su NSS. Utilizado por el Portal del Paciente para mostrar las
+     * peticiones de acceso pendientes.
+     *
+     * @param nss Número de Seguridad Social del paciente.
+     * @return {@code Response} con una lista de objetos {@code SolicitudAcceso}
+     * con status OK.
+     */
     @GET
     @Path("/paciente")
     @Produces(MediaType.APPLICATION_JSON)
@@ -54,6 +75,14 @@ public class SolicitudResource {
         return Response.ok(root).build();  // JAX‑RS + Jackson lo serializan a JSON plano
     }
 
+    /**
+     * Endpoint para que el paciente apruebe o rechace una solicitud de acceso.
+     *
+     * @param estado Nuevo estado a aplicar ("ACEPTADA" o "RECHAZADA").
+     * @param nssP NSS del paciente que responde (para seguridad).
+     * @param nssM NSS del médico afectado.
+     * @return {@code Response} con el status OK de la operación.
+     */
     @PUT
     @Path("/responder")
     @Produces(MediaType.APPLICATION_JSON)
@@ -66,7 +95,16 @@ public class SolicitudResource {
                 .build();
     }
 
-    // ServicioMedico pregunta si hay una solicitud aceptada vigente
+    /**
+     * Endpoint de verificación utilizado por el Servicio del Médico para
+     * comprobar si un médico tiene una solicitud previamente aceptada y vigente
+     * para un NSS específico.
+     *
+     * @param nss NSS del paciente.
+     * @param idMedico ID o NSS del médico que intenta acceder.
+     * @return {@code Response} con {@code "autorizado":true} o
+     * {@code "autorizado":false}.
+     */
     @GET
     @Path("/autorizacion")
     @Produces(MediaType.APPLICATION_JSON)
