@@ -77,9 +77,10 @@ def responder_solicitud(id_solicitud, nuevo_estado, jwt_token):
         "Content-Type": "application/json",
     }
     params = {
-        id : id_solicitud
-        estado : nuevo_estado
-    }
+    "id": id_solicitud,
+    "estado": nuevo_estado
+}
+
     resp = requests.put(url, headers=headers, params=params)
     if resp.status_code == 200:
         return resp.json()

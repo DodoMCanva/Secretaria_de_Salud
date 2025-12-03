@@ -2,11 +2,8 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import jwt
 import auth
-<<<<<<< HEAD
-from servicios import pacienteComunicacion, medicoComunicacion,solicitudComunicacion, expedienteComunicacion  #  medio de Comunicacion
-=======
+from servicios import (pacienteComunicacion, medicoComunicacion,solicitudComunicacion, expedienteComunicacion)  #  medio de Comunicacion
 from servicios import pacienteComunicacion, medicoComunicacion, solicitudComunicacion
->>>>>>> Cesar
 
 app = Flask(__name__)
 
@@ -354,6 +351,7 @@ def responder_solicitud():
 
     resp = solicitudComunicacion.responder_solicitud(id_solicitud, nuevo_estado, token)
     return jsonify(resp), 200
-
-if _name_ == "_main_":
+    
+if __name__ == "__main__":
+    print("Servidor Flask corriendo en http://localhost:5000")
     app.run(debug=True, port=5000)

@@ -11,12 +11,15 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
+import java.util.Map;
+
 /**
  *
  * @author delll
  */
 @Path("/solicitudes")
 public class SolicitudResource {
+
     private SolicitudPersistencia sp = new SolicitudPersistencia();
 
     // Médico crea solicitud de acceso
@@ -36,6 +39,7 @@ public class SolicitudResource {
                     .build();
         }*/
     }
+
     // Paciente ve sus solicitudes pendientes
     @GET
     @Path("/paciente/{nss}")
@@ -45,13 +49,17 @@ public class SolicitudResource {
         return Response.ok(lista).build();
     }
 
-    // Paciente responde (ACEPTADA/RECHAZADA)
     @PUT
     @Path("/responder")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response responder(@PathParam("id") String id, @PathParam("estado") String estado) {
-        sp.actualizarEstado(id, estado);
+    public Response responder(Map<String, Object> body) {
+
+        long fechaSolicitud = ((Number) body.get("id")).longValue();
+        String estado = body.get("estado").toString();
+
+        sp.actualizarEstado(fechaSolicitud, estado);
+
         return Response.ok("{\"status\":\"OK\"}")
                 .type(MediaType.APPLICATION_JSON)
                 .build();
@@ -62,8 +70,8 @@ public class SolicitudResource {
     @Path("/autorizacion")
     @Produces(MediaType.APPLICATION_JSON)
     public Response verificarAutorizacion(@QueryParam("nss") String nss,
-                                          @QueryParam("idMedico") String idMedico) {
-        boolean ok = sp.existeAceptadaVigente(nss,idMedico);
+            @QueryParam("idMedico") String idMedico) {
+        boolean ok = sp.existeAceptadaVigente(nss, idMedico);
         if (ok) {
             return Response.ok("{\"autorizado\":true}")
                     .type(MediaType.APPLICATION_JSON)

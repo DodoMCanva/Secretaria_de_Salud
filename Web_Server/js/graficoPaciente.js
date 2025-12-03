@@ -183,33 +183,19 @@ class grafico {
             return;
         }
 
-        // 2. Recorrer datos con seguridad
+        // 2. Recorrer datos correctamente
         solicitudes.forEach((sol, index) => {
             try {
                 console.log(`Procesando fila ${index}:`, sol);
 
-                // --- A. OBTENER ID SEGURO (usar siempre el _id real de Mongo) ---
-                let idSafe = null;
-
-                // Caso típico: viene como { _id: { $oid: "..." } }
-                if (sol._id && sol._id.$oid) {
-                    idSafe = sol._id.$oid;
-                } else if (typeof sol._id === 'string') {
-                    // Por si el backend ya manda el string plano
-                    idSafe = sol._id;
-                } else if (sol.id && typeof sol.id === 'string') {
-                    // Fallback por si el campo se llama id
-                    idSafe = sol.id;
-                }
+                const idSafe = sol.fechaSolicitud?.toString();
 
                 if (!idSafe) {
                     console.error("No se pudo determinar un ID válido para la solicitud:", sol);
-                    // Opcional: no renders botones si no hay ID válido
-                    idSafe = "error_id";
+                    return;
                 }
 
-
-                // --- B. OBTENER OTROS DATOS ---
+                // --- B. OTROS DATOS ---
                 const medico = sol.nombreMedico || sol.idMedico || "Médico";
                 const estado = sol.estado || "PENDIENTE";
 
@@ -219,7 +205,9 @@ class grafico {
                     try {
                         let fechaObj = new Date(sol.fechaSolicitud);
                         fechaFmt = fechaObj.toLocaleDateString() + " " + fechaObj.toLocaleTimeString();
-                    } catch (e) { fechaFmt = "Fecha inválida"; }
+                    } catch (e) {
+                        fechaFmt = "Fecha inválida";
+                    }
                 }
 
                 // Estilos
@@ -230,20 +218,19 @@ class grafico {
                 // --- C. CREAR HTML ---
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${medico}</td> 
-                    <td>Médico General</td> 
-                    <td>${sol.idMedico || '--'}</td> 
-                    <td><span class="badge ${badgeClass}">${estado}</span></td>
-                    <td>${fechaFmt}</td>
-                    <td class="text-right">
-                        ${estado === 'PENDIENTE' ?
+                <td>${medico}</td> 
+                <td>Médico General</td> 
+                <td>${sol.idMedico || '--'}</td> 
+                <td><span class="badge ${badgeClass}">${estado}</span></td>
+                <td>${fechaFmt}</td>
+                <td class="text-right">
+                    ${estado === 'PENDIENTE' ?
                         `<button class="btn btn-primary btn-sm" onclick="responderSolicitud('${idSafe}', 'ACEPTADA')">Aceptar</button>
-                         <button class="btn btn-ghost btn-danger btn-sm" onclick="responderSolicitud('${idSafe}', 'RECHAZADA')">Rechazar</button>`
+                     <button class="btn btn-ghost btn-danger btn-sm" onclick="responderSolicitud('${idSafe}', 'RECHAZADA')">Rechazar</button>`
                         : '--'}
-                    </td>
-                `;
+                </td>
+            `;
 
-                // --- D. AGREGAR A LA TABLA ---
                 tbody.appendChild(tr);
                 console.log(`Fila ${index} agregada correctamente.`);
 
@@ -253,4 +240,5 @@ class grafico {
             }
         });
     }
+
 }

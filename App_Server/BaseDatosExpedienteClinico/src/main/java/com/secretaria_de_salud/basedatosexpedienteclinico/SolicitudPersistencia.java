@@ -9,6 +9,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
 import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
 import com.secretaria_de_salud.SolicitudAcceso;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,7 +26,8 @@ import org.bson.types.ObjectId;
  * @author Secretaria de Salud
  */
 public class SolicitudPersistencia {
-      private String uri = "mongodb://secretariasalud:cesvalferpaukimivan@localhost:27017/expedientedb?authSource=admin";
+
+    private String uri = "mongodb://secretariasalud:cesvalferpaukimivan@localhost:27017/expedientedb?authSource=admin";
 
     private CodecRegistry pojoCodecRegistry = fromRegistries(
             MongoClientSettings.getDefaultCodecRegistry(),
@@ -53,9 +55,10 @@ public class SolicitudPersistencia {
         col().insertOne(s);
         return s;
     }
- public void insertarSolicitud(SolicitudAcceso s) {
-    col().insertOne(s);
-}
+
+    public void insertarSolicitud(SolicitudAcceso s) {
+        col().insertOne(s);
+    }
 
     public List<SolicitudAcceso> listarPendientesPorPaciente(String nssPaciente) {
         List<SolicitudAcceso> res = new ArrayList<>();
@@ -70,14 +73,19 @@ public class SolicitudPersistencia {
         return col().find(Filters.eq("_id", new ObjectId(id))).first();
     }
 
-    public void actualizarEstado(String id, String nuevoEstado) {
-        col().updateOne(
-                Filters.eq("_id", new ObjectId(id)),
+    public void actualizarEstado(long fechaSolicitudMillis, String nuevoEstado) {
+
+        Date fecha = new Date(fechaSolicitudMillis);
+
+        UpdateResult result = col().updateOne(
+                Filters.eq("fechaSolicitud", fecha),
                 Updates.combine(
                         Updates.set("estado", nuevoEstado),
                         Updates.set("fechaRespuesta", new Date())
                 )
         );
+
+        System.out.println("Documentos modificados: " + result.getModifiedCount());
     }
 
     public boolean existeAceptadaVigente(String nssPaciente, String idMedico) {
@@ -85,12 +93,13 @@ public class SolicitudPersistencia {
                 Filters.eq("nssPaciente", nssPaciente),
                 Filters.eq("idMedico", idMedico),
                 Filters.eq("estado", "ACEPTADA")
-        )).sort(Sorts.descending("fechaSolicitud"))  // la más reciente primero
-        .first();
+        )).sort(Sorts.descending("fechaSolicitud")) // la más reciente primero
+                .first();
 
         return s != null;
     }
-      //Auxiliar
+    //Auxiliar
+
     public void eliminarSolicitud() {
         MongoDatabase db = client.getDatabase("expedientedb");
         MongoCollection<SolicitudAcceso> col = db.getCollection("solicitudes_acceso", SolicitudAcceso.class);

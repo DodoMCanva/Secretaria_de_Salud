@@ -68,11 +68,11 @@ def rutasCesar():
     #Servicios: paciente, medico, expediente, cita, solicitud
     #adicional: base de datos, http local, middleware, mqtt
     direcciones = {
-        "paciente" : "8084", 
-        "medico" : "8083", 
-        "expediente" : "8082", 
-        "cita" : "8081", 
-        "solicitud" : "8085",
+        "paciente" : "18919", 
+        "medico" : "15848", 
+        "expediente" : "46252", 
+        "cita" : "43057", 
+        "solicitud" : "9787",
         "http_local" : "8800", 
         "mid" : "5000", 
         "mqtt" : "1883"}
