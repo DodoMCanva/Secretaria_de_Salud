@@ -73,7 +73,7 @@
         </aside>
 
         <main class="main-content">
-            
+
             <!-- VISTA 1: EXPEDIENTE-->
             <div id="view-expedientevista" class="view-content active">
                 <div class="content-wrapper">
@@ -124,28 +124,28 @@
                         </div>
                     </div>
 
-                        <div class="card">
-                            <div class="card-header">
-                                <h2>Expediente Clínico</h2>
-                                <p class="text-muted">Archivos y recetas del paciente</p>
-                            </div>
-
-                            <div class="card-content">
-
-                                <h3>Recetas</h3>
-                                <ul id="lista-recetas"></ul>
-
-                                <h3>Documentos PDF</h3>
-                                <ul id="lista-pdfs"></ul>
-
-                                <h3>Imágenes</h3>
-                                <ul id="lista-imagenes"></ul>
-
-                            </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Expediente Clínico</h2>
+                            <p class="text-muted">Archivos y recetas del paciente</p>
                         </div>
 
+                        <div class="card-content">
+
+                            <h3>Recetas</h3>
+                            <ul id="lista-recetas"></ul>
+
+                            <h3>Documentos PDF</h3>
+                            <ul id="lista-pdfs"></ul>
+
+                            <h3>Imágenes</h3>
+                            <ul id="lista-imagenes"></ul>
+
+                        </div>
                     </div>
+
                 </div>
+            </div>
 
             <div id="view-citasvista" class="view-content">
                 <div class="content-wrapper">
@@ -161,12 +161,41 @@
                                     Gestión de Citas Médicas
                                 </h2>
                             </div>
-                            <button class="btn btn-primary">Nueva Cita</button>
+                            <button class="btn btn-primary">
+                                <svg class="icon-small" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4v16m8-8H4" />
+                                </svg>
+                                Nueva Cita
+                            </button>
                         </div>
                     </div>
                     <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h2>Mis Citas Programadas</h2>
+                            </div>
+                        </div>
                         <div class="card-content">
-                            <p class="text-muted">Funcionalidad de citas en construcción...</p>
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Hora</th>
+                                            <th>Especialidad</th>
+                                            <th>Médico</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabla-citas-paciente">
+                                        <tr>
+                                            <td colspan="6" class="text-center">Cargando citas...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -174,41 +203,10 @@
 
             <div id="view-solicitudesvista" class="view-content">
                 <div class="content-wrapper">
-                    <div class="card">
-                        <div class="card-header">
-                            <div>
-                                <h2>
-                                    <svg class="icon-medium inline" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                    </svg>
-                                    Administración de Accesos
-                                </h2>
-                                <p class="text-muted">Gestione los permisos de acceso al expediente clínico</p>
-                            </div>
-                            <button class="btn btn-primary">Agregar Acceso</button>
-                        </div>
-                    </div>
-
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon stat-icon-success">
-                                <svg class="icon-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="stat-label">Activos</p>
-                                <p class="stat-value">2</p>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="card">
                         <div class="card-header">
-                            <h2>Usuarios Autorizados</h2>
+                            <h2>Solicitudes</h2>
                         </div>
                         <div class="card-content">
                             <div class="table-container">
