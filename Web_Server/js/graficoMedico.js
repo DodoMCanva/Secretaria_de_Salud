@@ -33,7 +33,7 @@ class GraficoMedico {
                     'Content-Type': 'application/json'
                 }
             });
-            
+
             if (respuesta.status === 401) {
                 alert("Su sesión ha expirado.");
                 window.location.href = 'login.html';
@@ -55,7 +55,7 @@ class GraficoMedico {
             this.setValue('perfil-nombre', medico.nombre);
             this.setValue('perfil-email', medico.correo);
             this.setValue('perfil-telefono', medico.telefono);
-            this.setValue('perfil-cedula', medico.cedula || medico.nss); 
+            this.setValue('perfil-cedula', medico.cedula || medico.nss);
 
         } catch (error) {
             console.error("Error al cargar datos:", error);
@@ -120,6 +120,123 @@ class GraficoMedico {
         const activeContent = document.getElementById('tab-' + tabName);
         if (activeContent) activeContent.classList.add('active');
     }
+    
+    cargarExpediente(expediente) {
+
+        // ========== RECETAS ==========
+        const listaRecetas = document.getElementById('lista-recetas');
+        listaRecetas.innerHTML = '';
+
+        if (expediente.recetas && expediente.recetas.length > 0) {
+            expediente.recetas.forEach((receta, index) => {
+                const li = document.createElement('li');
+
+                const btn = document.createElement('button');
+                btn.textContent = `Descargar Receta ${index + 1}`;
+                btn.className = "btn btn-warning btn-sm";
+                btn.onclick = () => {
+                    const blob = new Blob([receta], { type: "text/plain" });
+                    const url = URL.createObjectURL(blob);
+
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `receta_${index + 1}.txt`;
+                    a.click();
+
+                    URL.revokeObjectURL(url);
+                };
+
+                li.appendChild(btn);
+                listaRecetas.appendChild(li);
+            });
+        } else {
+            listaRecetas.innerHTML = '<li>No hay recetas registradas.</li>';
+        }
+
+        // ========== PDFS ==========
+        const listaPdfs = document.getElementById('lista-pdfs');
+        listaPdfs.innerHTML = '';
+
+        if (expediente.pdfs && expediente.pdfs.length > 0) {
+            expediente.pdfs.forEach((pdf, index) => {
+                const li = document.createElement('li');
+
+                const btn = document.createElement('button');
+                btn.textContent = `Descargar Documento ${index + 1}`;
+                btn.className = "btn btn-primary btn-sm";
+
+                btn.onclick = () => {
+                    this.descargarBase64(
+                        pdf.contenidoBase64,
+                        `documento_${index + 1}.pdf`,
+                        "application/pdf"
+                    );
+                };
+
+                li.appendChild(btn);
+                listaPdfs.appendChild(li);
+            });
+        } else {
+            listaPdfs.innerHTML = '<li>No hay PDFs registrados.</li>';
+        }
+
+        // ========== IMÁGENES ==========
+        const listaImagenes = document.getElementById('lista-imagenes');
+        listaImagenes.innerHTML = '';
+
+        if (expediente.imagenes && expediente.imagenes.length > 0) {
+            expediente.imagenes.forEach((img, index) => {
+                const li = document.createElement('li');
+
+                // Vista previa
+                const imgEl = document.createElement('img');
+                imgEl.src = `data:image/jpeg;base64,${img.contenidoBase64}`;
+                imgEl.style.width = "120px";
+                imgEl.style.display = "block";
+                imgEl.style.marginBottom = "6px";
+
+                const btn = document.createElement('button');
+                btn.textContent = `Descargar Imagen ${index + 1}`;
+                btn.className = "btn btn-success btn-sm";
+
+                btn.onclick = () => {
+                    this.descargarBase64(
+                        img.contenidoBase64,
+                        `imagen_${index + 1}.jpg`,
+                        "image/jpeg"
+                    );
+                };
+
+                li.appendChild(imgEl);
+                li.appendChild(btn);
+                listaImagenes.appendChild(li);
+            });
+        } else {
+            listaImagenes.innerHTML = '<li>No hay imágenes registradas.</li>';
+        }
+    }
+
+    descargarBase64(base64Data, nombreArchivo, tipoMime) {
+        const byteCharacters = atob(base64Data);
+        const byteNumbers = new Array(byteCharacters.length);
+
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: tipoMime });
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = nombreArchivo;
+        document.body.appendChild(a);
+        a.click();
+
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
 }
 
 // --- INICIALIZACIÓN ---
@@ -127,13 +244,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const appMedico = new GraficoMedico();
     appMedico.initNavigation();
     appMedico.initTabs();
-    
+
     // Al cargar, busca los datos reales
     appMedico.cargarDatosPerfil();
-    
+
     // Configurar botón cerrar sesión
     const btnLogout = document.getElementById('logout-button');
-    if(btnLogout) {
+    if (btnLogout) {
         btnLogout.addEventListener('click', () => {
             localStorage.removeItem('jwt'); // Borrar token
             window.location.href = 'login.html';

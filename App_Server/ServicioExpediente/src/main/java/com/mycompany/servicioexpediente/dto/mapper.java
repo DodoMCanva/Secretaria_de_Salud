@@ -41,8 +41,8 @@ public class mapper {
             int index = 1;
             for (Binary bin : expediente.getImagenes()) {
                 DocumentoDto doc = new DocumentoDto();
-                doc.setNombre("imagen_" + index + ".png"); 
-                doc.setTipo("image/png");                
+                doc.setNombre("imagen_" + index + ".png");
+                doc.setTipo("image/png");
                 String base64 = Base64.getEncoder().encodeToString(bin.getData());
                 doc.setContenidoBase64(base64);
                 imgDtos.add(doc);
@@ -53,5 +53,39 @@ public class mapper {
 
         return dto;
 
+    }
+
+    public Expediente toEntity(ExpedienteDto dto) {
+        Expediente expediente = new Expediente();
+
+        expediente.setNss(dto.getNss());
+        expediente.setUltModf(dto.getUltModf());
+        expediente.setRecetas(dto.getRecetas());
+
+        // Reconstruir PDFs
+        List<Binary> pdfs = new ArrayList<>();
+        if (dto.getPdfs() != null) {
+            for (DocumentoDto doc : dto.getPdfs()) {
+                if (doc.getContenidoBase64() != null) {
+                    byte[] bytes = Base64.getDecoder().decode(doc.getContenidoBase64());
+                    pdfs.add(new Binary(bytes));
+                }
+            }
+        }
+        expediente.setPdfs(pdfs);
+
+        // Reconstruir Imágenes
+        List<Binary> imagenes = new ArrayList<>();
+        if (dto.getImagenes() != null) {
+            for (DocumentoDto doc : dto.getImagenes()) {
+                if (doc.getContenidoBase64() != null) {
+                    byte[] bytes = Base64.getDecoder().decode(doc.getContenidoBase64());
+                    imagenes.add(new Binary(bytes));
+                }
+            }
+        }
+        expediente.setImagenes(imagenes);
+
+        return expediente;
     }
 }

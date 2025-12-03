@@ -224,7 +224,7 @@ function abrirExpedienteSiAutorizado(pacienteId) {
                 //cargarExpedienteDetalleDesdeBackend(pacienteId, data.expediente);
                 // Si prefieres seguir usando tu mock local:
                 //FALTA QUE CARGUE LOS DATOS REALES DEL PACIENTE (ESTA MOCKEADO)
-                cargarExpedienteDetalle(pacienteId);
+                consultarExpediente(pacienteId);
 
             } else {
                 alert(data.error || 'Error al abrir expediente.');
@@ -234,87 +234,27 @@ function abrirExpedienteSiAutorizado(pacienteId) {
             console.error('Error /medico/expediente/abrir:', err);
             alert('Error al conectar con el servidor.');
         });
+
 }
 
-function cargarExpedienteDetalle(pacienteId) {
-    const token = localStorage.getItem('jwt');
-    fetch(`http://localhost:5000/expediente/consulta?nss=${encodeURIComponent(pacienteId)}`, {
+function consultarExpediente(pacienteId) {
+    fetch(`http://localhost:5000/expediente/consultar?nss=${pacienteId}`, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': 'Bearer ' + localStorage.getItem('jwt')
         }
     })
         .then(r => r.json())
         .then(data => {
-            console.log(data);
-            if (data && !data.error) {
-
-                // PDFs
-                const listaPdfs = document.getElementById('lista-pdfs');
-                listaPdfs.innerHTML = '';
-                if (Array.isArray(data.pdfs)) {
-                    data.pdfs.forEach((pdf, index) => {
-                        const mime = pdf.tipo || 'application/pdf';
-                        const blob = base64ToBlob(pdf.contenidoBase64, mime);
-                        const url = URL.createObjectURL(blob);
-
-                        const li = document.createElement('li');
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.target = '_blank';
-                        a.textContent = pdf.nombre || `PDF ${index + 1}`;
-                        // a.download = pdf.nombre || `pdf_${index + 1}.pdf`;
-
-                        li.appendChild(a);
-                        listaPdfs.appendChild(li);
-                    });
-                }
-
-                // Imágenes
-                const listaImagenes = document.getElementById('lista-imagenes');
-                listaImagenes.innerHTML = '';
-                if (Array.isArray(data.imagenes)) {
-                    data.imagenes.forEach((imgDoc, index) => {
-                        const mime = imgDoc.tipo || 'image/png';
-                        const blob = base64ToBlob(imgDoc.contenidoBase64, mime);
-                        const url = URL.createObjectURL(blob);
-
-                        const li = document.createElement('li');
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.target = '_blank';
-
-                        const img = document.createElement('img');
-                        img.src = url;
-                        img.alt = imgDoc.nombre || `Imagen ${index + 1}`;
-                        img.style.maxWidth = '120px';
-
-                        a.appendChild(img);
-                        li.appendChild(a);
-                        listaImagenes.appendChild(li);
-                    });
-                }
-
-                // Recetas (texto)
-                const listaRecetas = document.getElementById('lista-recetas');
-                listaRecetas.innerHTML = '';
-                if (Array.isArray(data.recetas)) {
-                    data.recetas.forEach((receta, index) => {
-                        const li = document.createElement('li');
-                        li.textContent = receta || `Receta ${index + 1}`;
-                        listaRecetas.appendChild(li);
-                    });
-                }
-
-            } else {
-                alert(data.error || 'Credenciales inválidas');
+            console.log("Expediente:", data);
+            if (graficoInstance) {
+                graficoInstance.cargarExpediente(data);
             }
         })
-        .catch(err => {
-            console.error(err);
-            alert('Error en el servidor');
-        });
+        .catch(err => console.error("Error cargando expediente:", err));
 }
+
+
 
 // Base64 -> Blob (sirve para PDF e imágenes)
 function base64ToBlob(base64, contentType = '', sliceSize = 512) {
