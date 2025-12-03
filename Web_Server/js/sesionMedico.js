@@ -142,21 +142,57 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSearch = document.getElementById('btn-solicitar-pacientes');
     const inputSearch = document.getElementById('input-paciente-solicitar');
 
+  // --- REFERENCIAS PARA EL OVERLAY DE HUELLA ---
+    const overlay = document.getElementById('fingerprint-overlay');
+    const circleReq = document.getElementById('fingerprint-circle');
+    const textReq = document.getElementById('biometric-text-request');
+    let isRequestScanning = false;
+    
+    if (btnSearch) {
+      btnSearch.addEventListener('click', function (e) {
+       e.preventDefault();
+        const pacienteId = inputSearch ? inputSearch.value.trim() : '';
 
-    btnSearch.addEventListener('click', function (e) {
-        console.log("los pollos hermanos");
-        solicitarAccesoExpediente(inputSearch.value);
-    });
+        if (!pacienteId) {
+            alert('Ingresa un NSS o identificador de paciente.');
+            return;
+        }
 
-    const btnSubir = document.getElementById('btn-subir-archivo');
-    if (btnSubir) {
-        btnSubir.addEventListener('click', (e) => {
-            e.preventDefault();
-            subirArchivoExpediente();
-        });
+        if (isRequestScanning) return;
+        isRequestScanning = true;
+
+        // Mostrar overlay y animación de huella
+        if (overlay) {
+            overlay.style.display = 'flex';
+        }
+        if (circleReq) {
+            circleReq.classList.add('fingerprint-scanning');
+        }
+        if (textReq) {
+            textReq.textContent = 'Escaneando huella para solicitar acceso...';
+        }
+
+        // Simular 2 segundos de escaneo biométrico
+        setTimeout(() => {
+            if (textReq) {
+            textReq.textContent = 'Verificando solicitud...';
+            }
+
+            // Ahora sí, llamar a la función real
+            solicitarAccesoExpediente(pacienteId);
+
+            // Ocultar overlay y detener animación
+            if (circleReq) {
+            circleReq.classList.remove('fingerprint-scanning');
+            }
+            if (overlay) {
+            overlay.style.display = 'none';
+            }
+            isRequestScanning = false;
+        },5000);
+      });
     }
 });
-
 
 // Subir Archivo
 
