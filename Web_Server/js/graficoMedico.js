@@ -124,40 +124,35 @@ class GraficoMedico {
     cargarDatosPaciente(usuario) {
         console.log("Procesando datos visuales:", usuario);
 
-        // B. Datos Personales (Vista Configuración - Inputs)
-        this.setValue('detalle-nombre', usuario.nombre);
-        this.setValue('detalle-nss', usuario.nss);
-        this.setValue('detalle-curp', usuario.curp);
-        this.setValue('detalle-tiposangre', usuario.tipoSangre);
-       
-        
-        // Contacto de emergencia en inputs
+        // B. Datos Personales (vista configuración - inputs, si existen)
+        this.setValue('detalle-nombre-input', usuario.nombre);
+        this.setValue('detalle-nss-input', usuario.nss);
+        this.setValue('detalle-curp-input', usuario.curp);
+        this.setValue('detalle-tiposangre-input', usuario.tipoSangre);
+
         const contactoInfo = (usuario.nombreContEm || "") + " (" + (usuario.telefonoContEm || "") + ")";
-        this.setValue('detalle-contacto', contactoInfo);
-        
-        // C. Vista Expediente (Tarjetas de solo lectura)
-        this.setText('detalle-nombre', usuario.nombre);
-        this.setText('detalle-nss', usuario.nss);
-        this.setText('detalle-curp', usuario.curp);
-        this.setText('dato-nss', usuario.nss);
-        this.setText('detalle-tiposangre', usuario.tipoSangre);
-        this.setText('detalle-contacto', contactoInfo);
+        this.setValue('detalle-contacto-input', contactoInfo);
 
-        // Edad
-        if (usuario.fehcaNac) {
-            const edad = this.calcularEdadCorregida(usuario.fehcaNac);
-            this.setText('detalle-edad', edad);
-            
-        }    
+        // C. Vista Expediente (tarjeta solo lectura: los IDs son los del HTML que pegaste)
+        this.setText('detalle-nombre', `Expediente de ${usuario.nombre}`);
+        this.setText('detalle-id', usuario.id || usuario._id || '');
+        this.setText('detalle-ultmodf', usuario.ultimaModificacion || '');
+        this.setText('detalle-curp', usuario.curp || '--');
+        this.setText('detalle-nss', usuario.nss || '--');
+        this.setText('detalle-tiposangre', usuario.tipoSangre || '--');
+        this.setText('detalle-contacto', contactoInfo || '--');
 
-        // Alergias
+        // Estado del paciente
+        this.setText('detalle-estado', usuario.estado || 'Activo');
+
+        // Alergias (badge-group)
         const divAlergias = document.getElementById('detalle-alergias');
         if (divAlergias) {
             divAlergias.innerHTML = '';
             if (usuario.alergias && usuario.alergias.length > 0) {
                 usuario.alergias.forEach(al => {
                     const span = document.createElement('span');
-                    span.className = 'badge badge-danger';
+                    span.className = 'badge badge-danger'; // o classes Bootstrap que uses
                     span.innerText = al;
                     span.style.marginRight = '5px';
                     divAlergias.appendChild(span);
@@ -167,7 +162,26 @@ class GraficoMedico {
             }
         }
     }
-    
+
+    calcularEdadCorregida(fechaInput) {
+        if (!fechaInput) return "--";
+        let fechaNac = new Date(fechaInput);
+        const anioActual = new Date().getFullYear();
+        if (fechaNac.getFullYear() > anioActual) {
+            console.warn("Fecha futura detectada (" + fechaNac.getFullYear() + "). Corrigiendo error de Java...");
+            fechaNac.setFullYear(fechaNac.getFullYear() - 1900);
+        }
+        const hoy = new Date();
+        let edad = hoy.getFullYear() - fechaNac.getFullYear();
+        const mes = hoy.getMonth() - fechaNac.getMonth();
+        if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+            edad--;
+        }
+
+        return edad + " años";
+    }
+
+
     cargarExpediente(expediente) {
         console.log("entro en el grafico de medico");
         // ========== RECETAS ==========

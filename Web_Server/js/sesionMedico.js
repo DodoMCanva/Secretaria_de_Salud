@@ -215,6 +215,7 @@ function abrirExpedienteSiAutorizado(pacienteId) {
                 return;
             }
             consultarExpediente(pacienteId);
+            consultarPacienteExp(pacienteId);
         })
         .catch(err => {
             console.error('Error /solicitud/autorizada:', err);
@@ -236,8 +237,6 @@ function consultarExpediente(pacienteId) {
             console.log("Expediente:", data);
             let instance = new GraficoMedico();
             if (instance) {
-                //llega hasta aqui
-                instance.consultarPacienteExp(pacienteId)
                 instance.cargarExpediente(data);
             }else{
                 console.log("instance no inicializado")
