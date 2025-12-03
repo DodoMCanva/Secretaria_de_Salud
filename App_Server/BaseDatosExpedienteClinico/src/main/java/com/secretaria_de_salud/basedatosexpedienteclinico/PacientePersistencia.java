@@ -19,6 +19,8 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 /**
+ * Maneja las operaciones CRUD relacionadas con los pacientes en MongoDB.
+ * Incluye autenticación, consulta, inserción y asignación de tutor.
  *
  * @author Secretaria de Salud
  */
@@ -37,7 +39,13 @@ public class PacientePersistencia {
 
     private MongoClient client = MongoClients.create(settings);
 
-    //metodos reciclados simplificar
+     /**
+     * Realiza el inicio de sesión verificando NSS y contraseña.
+     *
+     * @param nss NSS del paciente.
+     * @param pwd Contraseña del paciente.
+     * @return Paciente autenticado o null si no coincide.
+     */
     public Paciente login(String nss, String pwd) {
         System.out.println("logeamos");
         MongoDatabase db = client.getDatabase("expedientedb");
@@ -56,12 +64,23 @@ public class PacientePersistencia {
         return paciente;
     }
 
+    /**
+     * Agrega un nuevo paciente a la base de datos.
+     *
+     * @param paciente Objeto Paciente a insertar.
+     */
     public void agregarPaciente(Paciente paciente) {
         MongoDatabase db = client.getDatabase("expedientedb");
         MongoCollection<Paciente> pacientesCol = db.getCollection("pacientes", Paciente.class);
         pacientesCol.insertOne(paciente);
     }
 
+    /**
+     * Asigna un tutor a un paciente.
+     *
+     * @param paciente ID del paciente.
+     * @param tutor ID del tutor.
+     */
     public void asignarTutor(ObjectId paciente, ObjectId tutor) {
         MongoDatabase db = client.getDatabase("expedientedb");
         MongoCollection<Paciente> col = db.getCollection("pacientes", Paciente.class);
@@ -71,6 +90,12 @@ public class PacientePersistencia {
         );
     }
 
+    /**
+     * Busca un paciente por NSS.
+     *
+     * @param nss Número de seguridad social.
+     * @return Paciente encontrado o null.
+     */
     public Paciente buscarPaciente(String nss) {
         MongoDatabase db = client.getDatabase("expedientedb");
         MongoCollection<Paciente> col = db.getCollection("pacientes", Paciente.class);
@@ -81,7 +106,9 @@ public class PacientePersistencia {
         return paciente;
     }
 
-    //Auxiliar
+    /**
+     * Elimina todos los pacientes de la colección.
+     */
     public void eliminarPacientes() {
         MongoDatabase db = client.getDatabase("expedientedb");
         MongoCollection<Paciente> col = db.getCollection("pacientes", Paciente.class);
@@ -89,6 +116,9 @@ public class PacientePersistencia {
 
     }
 
+    /**
+     * Cierra la conexión con MongoDB.
+     */
     public void close() {
         if (client != null) {
             client.close();

@@ -19,6 +19,9 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 /**
+ * Clase encargada de gestionar la persistencia de los médicos dentro de
+ * MongoDB. Permite login, registro, búsqueda y eliminación de documentos en la
+ * colección medicos.
  *
  * @author Secretaria de Salud
  */
@@ -37,6 +40,14 @@ public class MedicoPersistencia {
 
     private MongoClient client = MongoClients.create(settings);
 
+    /**
+     * Verifica las credenciales del médico para permitir su acceso al sistema.
+     *
+     * @param nss NSS del médico.
+     * @param pwd Contraseña del médico.
+     * @return El objeto Medico si las credenciales coinciden, null si no existe
+     * o no coincide.
+     */
     public Medico login(String nss, String pwd) {
         System.out.println("Entro aqui login medico");
         MongoDatabase db = client.getDatabase("expedientedb");
@@ -62,14 +73,23 @@ public class MedicoPersistencia {
         return medico;
     }
 
-    // Agregar médico
+    /**
+     * Inserta un nuevo médico en la base de datos.
+     *
+     * @param medico Objeto Medico que será agregado.
+     */
     public void agregarMedico(Medico medico) {
         MongoDatabase db = client.getDatabase("expedientedb");
         MongoCollection<Medico> col = db.getCollection("medicos", Medico.class);
         col.insertOne(medico);
     }
 
-    // Buscar médico por NSS
+    /**
+     * Busca un médico por su NSS.
+     *
+     * @param nss Número de Seguro Social del médico.
+     * @return El médico encontrado o null si no existe.
+     */
     public Medico buscarMedico(String nss) {
         MongoDatabase db = client.getDatabase("expedientedb");
         MongoCollection<Medico> col = db.getCollection("medicos", Medico.class);
@@ -81,20 +101,30 @@ public class MedicoPersistencia {
         return medico;
     }
 
-    // Eliminar todos los médicos (similar a eliminarPacientes)
+    /**
+     * Elimina todos los documentos dentro de la colección de médicos. Útil para
+     * limpiar datos de prueba.
+     */
     public void eliminarMedicos() {
         MongoDatabase db = client.getDatabase("expedientedb");
         MongoCollection<Medico> col = db.getCollection("medicos", Medico.class);
         col.deleteMany(new Document());
     }
 
-    // Eliminar un médico por NSS (opcional, por si lo necesitas)
+    /**
+     * Elimina un médico específico según su NSS.
+     *
+     * @param nss NSS del médico a eliminar.
+     */
     public void eliminarMedicoPorNss(String nss) {
         MongoDatabase db = client.getDatabase("expedientedb");
         MongoCollection<Medico> col = db.getCollection("medicos", Medico.class);
         col.deleteOne(eq("nss", nss));
     }
-    
+
+    /**
+     * Cierra la conexión activa con la base de datos MongoDB.
+     */
     public void close() {
         if (client != null) {
             client.close();

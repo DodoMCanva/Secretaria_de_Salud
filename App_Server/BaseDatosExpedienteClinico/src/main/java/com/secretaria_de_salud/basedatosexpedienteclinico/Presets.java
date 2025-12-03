@@ -13,6 +13,9 @@ import java.util.Date;
 import org.bson.types.Binary;
 
 /**
+ * Clase utilizada para generar registros de pacientes, médicos y solicitudes en
+ * la base de datos MongoDB. También ejecuta pruebas de creación y consulta de
+ * expedientes clínicos, así como la inserción y recuperación de archivos.
  *
  * @author Secretaria de Salud
  */
@@ -25,6 +28,7 @@ public class Presets {
         PacientePersistencia p = new PacientePersistencia();
         MedicoPersistencia m = new MedicoPersistencia();
 
+        // ===== PACIENTES =====
         //Limpiar expedientebd de mongo
         p.eliminarPacientes();
         //Agregar registros predeterminados
@@ -66,7 +70,7 @@ public class Presets {
 
         // ===== MEDICOS =====
         m.eliminarMedicos();
-        
+
         Medico med1 = new Medico();
         med1.setNss("150294");
         med1.setNombre("Dr. Carlos López");
@@ -82,10 +86,9 @@ public class Presets {
         med2.setCorreo("ana.medico@example.com");
         med2.setTelefono("6447776666");
         med2.setPwd("med456");
-        
+
         m.agregarMedico(med2);
 
-        
         // Insertar una solicitud de acceso DE PRUEBA
         SolicitudPersistencia sp = new SolicitudPersistencia();
         sp.eliminarSolicitud();
@@ -98,10 +101,14 @@ public class Presets {
         // Cerrar las conexiones
         p.close();
         m.close();
-        
 
     }
 
+    /**
+     * Ejecuta una serie de pruebas automatizadas sobre la colección Expediente:
+     * creación, consulta, inserción de recetas y archivos binarios, y
+     * recuperación de los mismos.
+     */
     public void PruebasExpediente() {
         System.out.println("\n--- INICIANDO PRUEBAS DE EXPEDIENTE ---");
 
