@@ -49,10 +49,17 @@ def consulta_paciente_esperando_respuesta(nss, jwt_token, timeout=10):
 
     def on_message(client, userdata, msg):
         try:
-            data = json.loads(msg.payload.decode("utf-8"))
+            payload = msg.payload
+            try:
+                text = payload.decode("utf-8")
+            except UnicodeDecodeError:
+                text = payload.decode("latin-1")
+
+            data = json.loads(text)
             q.put(data)
         except Exception as e:
             q.put({"error": str(e)})
+
 
     client = mqtt.Client()
     client.on_message = on_message
