@@ -91,7 +91,7 @@ public class Presets {
         sp.eliminarSolicitud();
         SolicitudAcceso solicitud = new SolicitudAcceso();
         solicitud.setNssPaciente("12345678901"); // el mismo NSS del paciente de prueba
-        solicitud.setIdMedico("medico_demo"); // identificador de médico de prueba
+        solicitud.setIdMedico("22222222222"); // identificador de médico de prueba
         solicitud.setEstado("PENDIENTE");
         solicitud.setFechaSolicitud(new Date());
         solicitud.setMotivo("Solicitud de prueba desde preset");

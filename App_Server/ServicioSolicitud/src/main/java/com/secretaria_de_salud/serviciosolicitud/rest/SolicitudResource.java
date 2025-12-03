@@ -58,7 +58,7 @@ public class SolicitudResource {
         long fechaSolicitud = ((Number) body.get("id")).longValue();
         String estado = body.get("estado").toString();
 
-        sp.actualizarEstado(fechaSolicitud, estado);
+        //sp.actualizarEstado(fechaSolicitud, estado);
 
         return Response.ok("{\"status\":\"OK\"}")
                 .type(MediaType.APPLICATION_JSON)

@@ -216,6 +216,7 @@ def crear_solicitud():
         nss_paciente, nss_medico, motivo, token
     )
     return jsonify({"respuesta": res}), 200
+    
 #-------------Aqui abre el expediente si la solicitud esta autorizada-------------------------
 @app.route("/medico/expediente/abrir", methods=["POST"])
 def medico_abrir_expediente():

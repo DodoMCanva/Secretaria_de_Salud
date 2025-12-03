@@ -23,7 +23,6 @@ function renderExpedienteContent(htmlContent) {
  */
 function renderSearchUI() {
     renderExpedienteContent(initialSearchHtml);
-    setupSearchListeners(); // Re-adjunta los listeners de la búsqueda y la tabla
 }
 
 /**
@@ -94,14 +93,6 @@ function solicitarAccesoExpediente(pacienteId) {
         window.location.href = 'login.html';
         return;
     }
-
-    // Por ahora usamos pacienteId como identificador a enviar.
-    // Cuando tengas NSS real en la tabla, aquí mandarás ese NSS.
-    const body = {
-        nssPaciente: pacienteId,
-        motivo: 'Revisión de expediente clínico'
-    };
-
     fetch('http://localhost:5000/solicitudes/crear', {
         method: 'POST',
         headers: {
@@ -110,7 +101,8 @@ function solicitarAccesoExpediente(pacienteId) {
         },
         body: JSON.stringify({
             nssPaciente: pacienteId,
-            motivo: 'Revisión de expediente clínico'
+            motivo: 'Revisión de expediente clínico',
+            usuario: localStorage.getItem('usuario')
         })
     })
         .then(r => r.json())
@@ -130,87 +122,10 @@ function solicitarAccesoExpediente(pacienteId) {
 }
 
 
-/**
- * Re-adjunta los listeners para la búsqueda cuando se carga/restaura la vista.
- */
-function setupSearchListeners() {
-    // 1. Re-adjuntar listeners de la búsqueda (btnSearch y inputSearch)
-    const btnSearch = document.getElementById('btn-search-pacientes');
-    const inputSearch = document.getElementById('input-paciente-search');
 
-    if (btnSearch && inputSearch) {
-        // Clonar y reemplazar para asegurar que los listeners antiguos se limpien 
-        const newBtnSearch = btnSearch.cloneNode(true);
-        btnSearch.parentNode.replaceChild(newBtnSearch, btnSearch);
-
-        const handleSearch = () => {
-            const searchTerm = inputSearch.value.trim();
-            if (searchTerm.length > 2) {
-                buscarPacientes(searchTerm);
-            } else {
-                alert("Por favor, introduce al menos 3 caracteres para buscar.");
-            }
-        };
-
-        newBtnSearch.addEventListener('click', handleSearch);
-        inputSearch.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                handleSearch();
-            }
-        });
-    }
-
-    // 2. Re-adjuntar listener de delegación para "Solicitar Expediente"
-    // Usamos el contenedor de la tabla para escuchar el click en los botones dinámicos.
-    const tablaResultados = document.getElementById('tabla-pacientes-resultados');
-    if (tablaResultados) {
-        tablaResultados.addEventListener('click', (e) => {
-            if (e.target.classList.contains('btn-solicitar')) {
-                const pacienteId = e.target.getAttribute('data-id');
-                solicitarAccesoExpediente(pacienteId);
-
-                // cargarExpedienteDetalle(pacienteId);
-                abrirExpedienteSiAutorizado(pacienteId);
-
-            }
-        });
-    }
-}
-
-
-// --- Función consultarPaciente (EXISTENTE) ---
-function consultarPaciente() {
-    const usuario = JSON.parse(localStorage.getItem('usuario'));
-
-    fetch('http://localhost:5000/paciente/consulta', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + localStorage.getItem('jwt')
-        },
-        body: JSON.stringify({
-            nss: usuario.nss
-        })
-    })
-        .then(r => r.json())
-        .then(data => {
-            if (data.status === 'OK' && data.paciente) {
-                if (graficoInstance) {
-                    graficoInstance.cargarDatosEnInterfaz(data.paciente);
-                }
-            } else {
-                console.error(data.error || 'Error consultando paciente');
-            }
-        })
-        .catch(err => {
-            console.error(err);
-        });
-}
 
 
 // --- Lógica Principal y de Inicialización (DOMContentLoaded) ---
-
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Verificación de sesión
     if (!localStorage.getItem('jwt')) {
@@ -230,7 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (expedienteContainer) {
         // Capturamos el HTML de la primera vista (Búsqueda)
         initialSearchHtml = expedienteContainer.innerHTML;
-        setupSearchListeners();
     }
 
     // 4. Configuración de cierre de sesión
@@ -242,6 +156,15 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'login.html';
         });
     }
+
+    const btnSearch = document.getElementById('btn-solicitar-pacientes');
+    const inputSearch = document.getElementById('input-paciente-solicitar');
+
+
+    btnSearch.addEventListener('click', function (e) {
+        console.log("los pollos hermanos");
+        solicitarAccesoExpediente(inputSearch.value);
+    });
 });
 
 function consultarMedico() {
